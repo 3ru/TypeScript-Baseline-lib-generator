@@ -1,0 +1,60 @@
+{
+    "name": "typescript-baseline-lib-generator",
+    "version": "0.0.1",
+    "private": true,
+    "license": "Apache-2.0",
+    "description": "Generates Baseline widely available JavaScript built-in declarations for TypeScript.",
+    "keywords": [
+        "typescript",
+        "baseline",
+        "generator",
+        "javascript",
+        "web-features"
+    ],
+    "homepage": "https://github.com/3ru/TypeScript-Baseline-lib-generator",
+    "bugs": {
+        "url": "https://github.com/3ru/TypeScript-Baseline-lib-generator/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/3ru/TypeScript-Baseline-lib-generator.git"
+    },
+    "author": {
+        "name": "Ryuya",
+        "email": "ryuyxx@gmail.com"
+    },
+    "type": "module",
+    "engines": {
+        "node": ">= 22.18.0"
+    },
+    "scripts": {
+        "generate": "node scripts/generate.mjs",
+        "update:typescript-toolchain": "node scripts/update-typescript-toolchain.mjs",
+        "update:web-features": "node scripts/update-web-features.mjs",
+        "checkout:typescript-source": "node scripts/checkout-typescript-source.mjs",
+        "write:update-pr-body": "node scripts/write-update-pr-body.mjs",
+        "lint": "node node_modules/typescript-strada/bin/tsc -p tsconfig.typecheck.json --pretty false",
+        "validate:registry": "node scripts/validate-compat-management-registry.mjs",
+        "prepare:typescript-pr": "node scripts/prepare-typescript-pr.mjs",
+        "prepare:typescript-go-pr": "node scripts/prepare-typescript-go-pr.mjs",
+        "test:typescript:smoke": "node scripts/test-typescript-integration.mjs --mode smoke",
+        "test:typescript:gate": "node scripts/test-typescript-integration.mjs --mode gate",
+        "test:typescript:full": "node scripts/test-typescript-integration.mjs --mode full",
+        "test:typescript-go": "node scripts/test-typescript-go-integration.mjs",
+        "pack:baseline": "node deploy/createPackage.mjs",
+        "pack:baseline:tarball": "node deploy/createPackageTarball.mjs",
+        "release:dry-run": "node deploy/deployChangedPackage.mjs --dry-run --notes-out .tmp/package-release-notes.md --summary-out .tmp/package-release-summary.json",
+        "release:publish": "node deploy/deployChangedPackage.mjs --notes-out .tmp/package-release-notes.md --summary-out .tmp/package-release-summary.json --github-release",
+        "test": "node --test test/*.test.mjs",
+        "validate": "npm run lint && npm run validate:registry && npm run generate && npm test"
+    },
+    "dependencies": {
+        "ajv": "8.17.1",
+        "typescript": "7.0.2",
+        "typescript-strada": "npm:typescript@6.0.3",
+        "web-features": "3.32.0"
+    },
+    "devDependencies": {
+        "@types/node": "24.10.0"
+    }
+}

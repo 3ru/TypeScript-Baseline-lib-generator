@@ -1,0 +1,49 @@
+{
+    "snapshot": {
+        "name": "baseline-js",
+        "baselineDate": "2026-07-07",
+        "generatorVersion": "0.0.1",
+        "typescriptVersion": "7.0.2",
+        "webFeaturesPackageVersion": "3.32.0",
+        "webFeaturesGitHead": "720a40b4e4b722bfa74dad329570f6078ec1f239",
+        "typescriptStradaVersion": "6.0.3"
+    },
+    "toolchain": {
+        "typescriptPackage": "typescript",
+        "typescriptStradaPackage": "typescript-strada",
+        "webFeaturesPackage": "web-features"
+    },
+    "typescriptSource": {
+        "repository": "https://github.com/microsoft/TypeScript.git",
+        "tag": "v6.0.3",
+        "commit": "050880ce59e30b356b686bd3144efe24f875ebc8"
+    },
+    "baselineTarget": "high",
+    "dataset": "../datasets/web-features-js-compat.json",
+    "compatManagementRegistry": "../registry/compat-management.json",
+    "classificationOutput": "../derived/current/classification.json",
+    "compatManagementOutput": "../derived/current/compat-management-report.json",
+    "inventoryOutput": "../derived/current/inventory.json",
+    "generationOutput": "../derived/current/generation.json",
+    "firstClassLib": {
+        "libName": "baseline",
+        "outputFile": "../generated/current/baseline.d.ts"
+    },
+    "libSource": {
+        "basePackage": "typescript",
+        "platformPackagePrefix": "@typescript/typescript-",
+        "referencePlatforms": [
+            "linux-x64",
+            "darwin-arm64",
+            "win32-x64"
+        ],
+        "libContentHash": "sha256-bc4de3c01fd5e0499aa13f277bc88818adb4cb549935e8b15b5ecb86b9c73f0a",
+        "libFileCount": 108
+    },
+    "typescriptGoSource": {
+        "repository": "https://github.com/microsoft/typescript-go.git",
+        "tag": "typescript/v7.0.2",
+        "commit": "2bd066d87f5bafd315be9f40889d0a60b9e58e0b",
+        "stradaSubmoduleCommit": "4d4f005c8541e0255a9d8791205fdce326e462bc"
+    }
+}

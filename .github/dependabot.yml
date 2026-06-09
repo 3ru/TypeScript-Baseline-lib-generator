@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Keep the GitHub Actions SHA pins current.
+  # npm deps (typescript, typescript-strada, web-features) are intentionally
+  # left out: this repo's own update workflows manage them with pin-and-bump.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"

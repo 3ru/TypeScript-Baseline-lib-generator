@@ -1,0 +1,6 @@
+node_modules/
+deploy/generated/
+coverage/
+npm-debug.log*
+.DS_Store
+.tmp

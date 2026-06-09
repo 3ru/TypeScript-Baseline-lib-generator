@@ -1,0 +1,67 @@
+name: TypeScript Go Integration
+
+# Forward-looking gate that embeds the baseline lib into TypeScript 7
+# (microsoft/typescript-go) and verifies tsgo --lib baseline runs self-consistently.
+# It's heavy (involves a Go build), so run it only on push to main / weekly / manually, not per PR.
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Every Friday 05:00 UTC (after web-features on Tue / TS toolchain on Thu)
+    - cron: "0 5 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: typescript-go-integration-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Regenerate baseline
+        run: npm run generate
+
+      - name: Checkout pinned typescript-go source
+        run: npm run checkout:typescript-source -- --source go --out .tmp/typescript-go --force
+
+      # generate.go and the build need src/lib from the submodule (_submodules/TypeScript).
+      - name: Initialize typescript-go submodule at pinned pointer
+        run: git -C .tmp/typescript-go submodule update --init --depth 1 _submodules/TypeScript
+
+      - name: Read required Go version
+        id: go-version
+        run: echo "version=$(grep -m1 '^go ' .tmp/typescript-go/go.mod | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: "${{ steps.go-version.outputs.version }}"
+          cache-dependency-path: .tmp/typescript-go/go.sum
+
+      - name: Run tsgo --lib baseline integration
+        run: npm run test:typescript-go -- --typescript-go-dir .tmp/typescript-go --out .tmp/typescript-go-integration-summary.md
+
+      - name: Upload integration summary
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: typescript-go-integration
+          path: .tmp/typescript-go-integration-summary.md
+          if-no-files-found: ignore

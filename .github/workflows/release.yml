@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  # Issue an OIDC token for npm provenance (Sigstore).
+  id-token: write
+
+# Serialize concurrent release runs (don't cancel).
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Create a `release` environment in repo settings with required reviewers
+    # to gate publishes behind human approval (see README).
+    environment: release
+
+    steps:
+      - name: Ensure release runs from main
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Release can only run from the main branch (ref: ${{ github.ref }})"
+          exit 1
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Run static JS checks
+        run: npm run lint
+
+      - name: Validate compat-management schema
+        run: npm run validate:registry
+
+      - name: Regenerate baseline
+        run: npm run generate
+
+      # Block publishing when checked-in artifacts don't match the regenerated
+      # output (i.e. publishing unreviewed content).
+      - name: Verify checked-in generated artifacts
+        run: git diff --exit-code -- derived/current generated/current
+
+      - name: Run validation and smoke tests
+        run: npm test
+
+      - name: Checkout pinned TypeScript source
+        run: npm run checkout:typescript-source -- --out .tmp/TypeScript --force
+
+      - name: Run pinned TypeScript integration gate
+        run: npm run test:typescript:full -- --typescript-dir ./.tmp/TypeScript --summary-out .tmp/typescript-integration-summary.md --baseline-diff-out .tmp/typescript-baseline-changes.diff --focused-baselines-out .tmp/typescript-focused-artifact --local-baselines-out .tmp/typescript-raw-local-baselines
+
+      - name: Stage publishable baseline package
+        run: npm run pack:baseline
+
+      - name: Upload integration summary and focused artifacts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-typescript-integration
+          path: |
+            .tmp/typescript-integration-summary.md
+            .tmp/typescript-baseline-changes.diff
+            .tmp/typescript-focused-artifact
+          if-no-files-found: ignore
+
+      - name: Upload raw local baselines
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-typescript-integration-raw-local-baselines
+          path: .tmp/typescript-raw-local-baselines
+          if-no-files-found: ignore
+
+      - name: Configure npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+      # npm provenance is only verifiable on public repositories, so attach it
+      # only when the repo is public.
+      - name: Publish changed package and create GitHub release
+        run: npm run release:publish -- ${{ !github.event.repository.private && '--provenance' || '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

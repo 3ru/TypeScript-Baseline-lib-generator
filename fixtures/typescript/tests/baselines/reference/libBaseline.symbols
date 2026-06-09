@@ -1,0 +1,49 @@
+//// [tests/cases/compiler/libBaseline.ts] ////
+
+=== libBaseline.ts ===
+Intl.supportedValuesOf("currency");
+>Intl.supportedValuesOf : Symbol(Intl.supportedValuesOf, Decl(lib.baseline.d.ts, --, --))
+>Intl : Symbol(Intl, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --) ... and 3 more)
+>supportedValuesOf : Symbol(Intl.supportedValuesOf, Decl(lib.baseline.d.ts, --, --))
+
+new Intl.NumberFormat().formatRange(1, 2);
+>new Intl.NumberFormat().formatRange : Symbol(Intl.NumberFormat.formatRange, Decl(lib.baseline.d.ts, --, --))
+>Intl.NumberFormat : Symbol(Intl.NumberFormat, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --))
+>Intl : Symbol(Intl, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --) ... and 3 more)
+>NumberFormat : Symbol(Intl.NumberFormat, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --))
+>formatRange : Symbol(Intl.NumberFormat.formatRange, Decl(lib.baseline.d.ts, --, --))
+
+[1, 2, 3].at(0);
+>[1, 2, 3].at : Symbol(Array.at, Decl(lib.baseline.d.ts, --, --))
+>at : Symbol(Array.at, Decl(lib.baseline.d.ts, --, --))
+
+[1, 2, 3].toReversed();
+>[1, 2, 3].toReversed : Symbol(Array.toReversed, Decl(lib.baseline.d.ts, --, --))
+>toReversed : Symbol(Array.toReversed, Decl(lib.baseline.d.ts, --, --))
+
+"baseline".at(0);
+>"baseline".at : Symbol(String.at, Decl(lib.baseline.d.ts, --, --))
+>at : Symbol(String.at, Decl(lib.baseline.d.ts, --, --))
+
+Object.hasOwn({ baseline: true }, "baseline");
+>Object.hasOwn : Symbol(ObjectConstructor.hasOwn, Decl(lib.baseline.d.ts, --, --))
+>Object : Symbol(Object, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --))
+>hasOwn : Symbol(ObjectConstructor.hasOwn, Decl(lib.baseline.d.ts, --, --))
+>baseline : Symbol(baseline, Decl(libBaseline.ts, 7, 15))
+
+new Error("problem", { cause: new Error("root") });
+>Error : Symbol(Error, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --))
+>cause : Symbol(cause, Decl(libBaseline.ts, 8, 22))
+>Error : Symbol(Error, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --))
+
+/baseline/d.hasIndices;
+>/baseline/d.hasIndices : Symbol(RegExp.hasIndices, Decl(lib.baseline.d.ts, --, --))
+>hasIndices : Symbol(RegExp.hasIndices, Decl(lib.baseline.d.ts, --, --))
+
+(function probeCaller() {}).caller; // Error
+>probeCaller : Symbol(probeCaller, Decl(libBaseline.ts, 11, 1))
+
+"baseline".substr(1); // Error
+new RegExp("baseline").compile("baseline"); // Error
+>RegExp : Symbol(RegExp, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --) ... and 3 more)
+

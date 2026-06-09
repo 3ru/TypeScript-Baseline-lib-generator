@@ -1,0 +1,49 @@
+name: Package Dry Run
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-dry-run-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  package-dry-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Run static JS checks
+        run: npm run lint
+
+      - name: Validate compat-management schema
+        run: npm run validate:registry
+
+      - name: Regenerate baseline
+        run: npm run generate
+
+      - name: Stage publishable baseline package and create npm tarball
+        run: npm run pack:baseline:tarball
+
+      - name: Run packed consumer smoke
+        run: node --test test/packed-consumer-smoke.test.mjs
+
+      - name: Compute release decision
+        run: npm run release:dry-run

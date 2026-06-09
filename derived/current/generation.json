@@ -1,0 +1,2785 @@
+{
+  "snapshot": "baseline-js",
+  "baselineTarget": "high",
+  "libSource": {
+    "basePackage": "typescript",
+    "libContentHash": "sha256-bc4de3c01fd5e0499aa13f277bc88818adb4cb549935e8b15b5ecb86b9c73f0a",
+    "libFileCount": 108
+  },
+  "topLevelLib": {
+    "libName": "baseline",
+    "outputPath": "generated/current/baseline.d.ts"
+  },
+  "datasetPath": "datasets/web-features-js-compat.json",
+  "classificationOutputPath": "derived/current/classification.json",
+  "compatManagementOutputPath": "derived/current/compat-management-report.json",
+  "inventoryOutputPath": "derived/current/inventory.json",
+  "summary": {
+    "sourceLibCount": 84,
+    "classifiedCompatCount": 1146,
+    "selectedUnitCount": 1837,
+    "completeContainerCount": 171,
+    "excludedUnitCount": 373,
+    "transformedUnitCount": 2
+  },
+  "sourceLibs": [
+    {
+      "sourceFileName": "lib.es2015.collection.d.ts",
+      "libFileName": "lib.es2015.collection.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.collection.d.ts",
+      "sourceHash": "sha256-f0b6b1d3624fb143656dd86a8dd3e1950b7e65f218319b47bde52f65d47e2e4b"
+    },
+    {
+      "sourceFileName": "lib.es2015.core.d.ts",
+      "libFileName": "lib.es2015.core.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.core.d.ts",
+      "sourceHash": "sha256-770011bd32a52f929fc98fbf9976c1fa9d80b6445171c02b08627fdba9778933"
+    },
+    {
+      "sourceFileName": "lib.es2015.d.ts",
+      "libFileName": "lib.es2015.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.d.ts",
+      "sourceHash": "sha256-3f88bedbeb09c6f5a6645cb24c7c55f1aa22d19ae96c8e6959cbd8b85a707bc6"
+    },
+    {
+      "sourceFileName": "lib.es2015.generator.d.ts",
+      "libFileName": "lib.es2015.generator.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.generator.d.ts",
+      "sourceHash": "sha256-00343ca5b2e3d48fa5df1db6e32ea2a59afab09590274a6cccb1dbae82e60c7c"
+    },
+    {
+      "sourceFileName": "lib.es2015.iterable.d.ts",
+      "libFileName": "lib.es2015.iterable.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.iterable.d.ts",
+      "sourceHash": "sha256-ebd9f816d4002697cb2864bea1f0b70a103124e18a8cd9645eeccc09bdf80ab4"
+    },
+    {
+      "sourceFileName": "lib.es2015.promise.d.ts",
+      "libFileName": "lib.es2015.promise.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.promise.d.ts",
+      "sourceHash": "sha256-2c1afac30a01772cd2a9a298a7ce7706b5892e447bb46bdbeef720f7b5da77ad"
+    },
+    {
+      "sourceFileName": "lib.es2015.proxy.d.ts",
+      "libFileName": "lib.es2015.proxy.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.proxy.d.ts",
+      "sourceHash": "sha256-7b0225f483e4fa685625ebe43dd584bb7973bbd84e66a6ba7bbe175ee1048b4f"
+    },
+    {
+      "sourceFileName": "lib.es2015.reflect.d.ts",
+      "libFileName": "lib.es2015.reflect.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.reflect.d.ts",
+      "sourceHash": "sha256-c0a4b8ac6ce74679c1da2b3795296f5896e31c38e888469a8e0f99dc3305de60"
+    },
+    {
+      "sourceFileName": "lib.es2015.symbol.d.ts",
+      "libFileName": "lib.es2015.symbol.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.symbol.d.ts",
+      "sourceHash": "sha256-83e3871cda2abd4421970fa923cca51a9ce8cdbece6f898285643ab030cb80f3"
+    },
+    {
+      "sourceFileName": "lib.es2015.symbol.wellknown.d.ts",
+      "libFileName": "lib.es2015.symbol.wellknown.d.ts",
+      "sourcePath": "typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "sourceHash": "sha256-c5079c53f0f141a0698faa903e76cb41cd664e3efb01cc17a5c46ec2eb0bef42"
+    },
+    {
+      "sourceFileName": "lib.es2016.array.include.d.ts",
+      "libFileName": "lib.es2016.array.include.d.ts",
+      "sourcePath": "typescript/lib/lib.es2016.array.include.d.ts",
+      "sourceHash": "sha256-32cafbc484dea6b0ab62cf8473182bbcb23020d70845b406f80b7526f38ae862"
+    },
+    {
+      "sourceFileName": "lib.es2016.d.ts",
+      "libFileName": "lib.es2016.d.ts",
+      "sourcePath": "typescript/lib/lib.es2016.d.ts",
+      "sourceHash": "sha256-7fe93b39b810eadd916be8db880dd7f0f7012a5cc6ffb62de8f62a2117fa6f1f"
+    },
+    {
+      "sourceFileName": "lib.es2016.intl.d.ts",
+      "libFileName": "lib.es2016.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.es2016.intl.d.ts",
+      "sourceHash": "sha256-fca4cdcb6d6c5ef18a869003d02c9f0fd95df8cfaf6eb431cd3376bc034cad36"
+    },
+    {
+      "sourceFileName": "lib.es2017.arraybuffer.d.ts",
+      "libFileName": "lib.es2017.arraybuffer.d.ts",
+      "sourcePath": "typescript/lib/lib.es2017.arraybuffer.d.ts",
+      "sourceHash": "sha256-b93ec88115de9a9dc1b602291b85baf825c85666bf25985cc5f698073892b467"
+    },
+    {
+      "sourceFileName": "lib.es2017.d.ts",
+      "libFileName": "lib.es2017.d.ts",
+      "sourcePath": "typescript/lib/lib.es2017.d.ts",
+      "sourceHash": "sha256-bb0074cc08b84a2374af33d8bf044b80851ccc9e719a5e202eacf40db2c31600"
+    },
+    {
+      "sourceFileName": "lib.es2017.date.d.ts",
+      "libFileName": "lib.es2017.date.d.ts",
+      "sourcePath": "typescript/lib/lib.es2017.date.d.ts",
+      "sourceHash": "sha256-f5c06dcc3fe849fcb297c247865a161f995cc29de7aa823afdd75aaaddc1419b"
+    },
+    {
+      "sourceFileName": "lib.es2017.intl.d.ts",
+      "libFileName": "lib.es2017.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.es2017.intl.d.ts",
+      "sourceHash": "sha256-c7b3542146734342e440a84b213384bfa188835537ddbda50d30766f0593aff9"
+    },
+    {
+      "sourceFileName": "lib.es2017.object.d.ts",
+      "libFileName": "lib.es2017.object.d.ts",
+      "sourcePath": "typescript/lib/lib.es2017.object.d.ts",
+      "sourceHash": "sha256-b77e16112127a4b169ef0b8c3a4d730edf459c5f25fe52d5e436a6919206c4d7"
+    },
+    {
+      "sourceFileName": "lib.es2017.sharedmemory.d.ts",
+      "libFileName": "lib.es2017.sharedmemory.d.ts",
+      "sourcePath": "typescript/lib/lib.es2017.sharedmemory.d.ts",
+      "sourceHash": "sha256-fbffd9337146eff822c7c00acbb78b01ea7ea23987f6c961eba689349e744f8c"
+    },
+    {
+      "sourceFileName": "lib.es2017.string.d.ts",
+      "libFileName": "lib.es2017.string.d.ts",
+      "sourcePath": "typescript/lib/lib.es2017.string.d.ts",
+      "sourceHash": "sha256-6aaeba1e4f228fda4e9175e34d96807e2c6dc984d0b37a772b3af9365a456681"
+    },
+    {
+      "sourceFileName": "lib.es2017.typedarrays.d.ts",
+      "libFileName": "lib.es2017.typedarrays.d.ts",
+      "sourcePath": "typescript/lib/lib.es2017.typedarrays.d.ts",
+      "sourceHash": "sha256-ce6180fa19b1cccd07ee7f7dbb9a367ac19c0ed160573e4686425060b6df7f57"
+    },
+    {
+      "sourceFileName": "lib.es2018.asyncgenerator.d.ts",
+      "libFileName": "lib.es2018.asyncgenerator.d.ts",
+      "sourcePath": "typescript/lib/lib.es2018.asyncgenerator.d.ts",
+      "sourceHash": "sha256-3f02e2476bccb9dbe21280d6090f0df17d2f66b74711489415a8aa4df73c9675"
+    },
+    {
+      "sourceFileName": "lib.es2018.asynciterable.d.ts",
+      "libFileName": "lib.es2018.asynciterable.d.ts",
+      "sourcePath": "typescript/lib/lib.es2018.asynciterable.d.ts",
+      "sourceHash": "sha256-45e3ab34c1c013c8ab2dc1ba4c80c780744b13b5676800ae2e3be27ae862c40c"
+    },
+    {
+      "sourceFileName": "lib.es2018.d.ts",
+      "libFileName": "lib.es2018.d.ts",
+      "sourcePath": "typescript/lib/lib.es2018.d.ts",
+      "sourceHash": "sha256-1a7daebe4f45fb03d9ec53d60008fbf9ac45a697fdc89e4ce218bc94b94f94d6"
+    },
+    {
+      "sourceFileName": "lib.es2018.intl.d.ts",
+      "libFileName": "lib.es2018.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.es2018.intl.d.ts",
+      "sourceHash": "sha256-805c86f6cca8d7702a62a844856dbaa2a3fd2abef0536e65d48732441dde5b5b"
+    },
+    {
+      "sourceFileName": "lib.es2018.promise.d.ts",
+      "libFileName": "lib.es2018.promise.d.ts",
+      "sourcePath": "typescript/lib/lib.es2018.promise.d.ts",
+      "sourceHash": "sha256-e42e397f1a5a77994f0185fd1466520691456c772d06bf843e5084ceb879a0ad"
+    },
+    {
+      "sourceFileName": "lib.es2018.regexp.d.ts",
+      "libFileName": "lib.es2018.regexp.d.ts",
+      "sourcePath": "typescript/lib/lib.es2018.regexp.d.ts",
+      "sourceHash": "sha256-f4c2b41f90c95b1c532ecc874bd3c111865793b23aebcc1c3cbbabcd5d76ffb0"
+    },
+    {
+      "sourceFileName": "lib.es2019.array.d.ts",
+      "libFileName": "lib.es2019.array.d.ts",
+      "sourcePath": "typescript/lib/lib.es2019.array.d.ts",
+      "sourceHash": "sha256-ab26191cfad5b66afa11b8bf935ef1cd88fabfcb28d30b2dfa6fad877d050332"
+    },
+    {
+      "sourceFileName": "lib.es2019.d.ts",
+      "libFileName": "lib.es2019.d.ts",
+      "sourcePath": "typescript/lib/lib.es2019.d.ts",
+      "sourceHash": "sha256-f94b133a3cb14a288803be545ac2683e0d0ff6661bcd37e31aaaec54fc382aed"
+    },
+    {
+      "sourceFileName": "lib.es2019.intl.d.ts",
+      "libFileName": "lib.es2019.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.es2019.intl.d.ts",
+      "sourceHash": "sha256-689da16f46e647cef0d64b0def88910e818a5877ca5379ede156ca3afb780ac3"
+    },
+    {
+      "sourceFileName": "lib.es2019.object.d.ts",
+      "libFileName": "lib.es2019.object.d.ts",
+      "sourcePath": "typescript/lib/lib.es2019.object.d.ts",
+      "sourceHash": "sha256-2088bc26531e38fb05eedac2951480db5309f6be3fa4a08d2221abb0f5b4200d"
+    },
+    {
+      "sourceFileName": "lib.es2019.string.d.ts",
+      "libFileName": "lib.es2019.string.d.ts",
+      "sourcePath": "typescript/lib/lib.es2019.string.d.ts",
+      "sourceHash": "sha256-cb9d366c425fea79716a8fb3af0d78e6b22ebbab3bd64d25063b42dc9f531c1e"
+    },
+    {
+      "sourceFileName": "lib.es2019.symbol.d.ts",
+      "libFileName": "lib.es2019.symbol.d.ts",
+      "sourcePath": "typescript/lib/lib.es2019.symbol.d.ts",
+      "sourceHash": "sha256-500934a8089c26d57ebdb688fc9757389bb6207a3c8f0674d68efa900d2abb34"
+    },
+    {
+      "sourceFileName": "lib.es2020.bigint.d.ts",
+      "libFileName": "lib.es2020.bigint.d.ts",
+      "sourcePath": "typescript/lib/lib.es2020.bigint.d.ts",
+      "sourceHash": "sha256-bc21cc8b6fee4f4c2440d08035b7ea3c06b3511314c8bab6bef7a92de58a2593"
+    },
+    {
+      "sourceFileName": "lib.es2020.d.ts",
+      "libFileName": "lib.es2020.d.ts",
+      "sourcePath": "typescript/lib/lib.es2020.d.ts",
+      "sourceHash": "sha256-f59d0650799f8782fd74cf73c19223730c6d1b9198671b1c5b3a38e1188b5953"
+    },
+    {
+      "sourceFileName": "lib.es2020.date.d.ts",
+      "libFileName": "lib.es2020.date.d.ts",
+      "sourcePath": "typescript/lib/lib.es2020.date.d.ts",
+      "sourceHash": "sha256-7ca53d13d2957003abb47922a71866ba7cb2068f8d154877c596d63c359fed25"
+    },
+    {
+      "sourceFileName": "lib.es2020.intl.d.ts",
+      "libFileName": "lib.es2020.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.es2020.intl.d.ts",
+      "sourceHash": "sha256-db839fa0625981ae6e20a55e079c3613184310ca246879245b294573e7cc6926"
+    },
+    {
+      "sourceFileName": "lib.es2020.number.d.ts",
+      "libFileName": "lib.es2020.number.d.ts",
+      "sourcePath": "typescript/lib/lib.es2020.number.d.ts",
+      "sourceHash": "sha256-b7bf9377723203b5a6a4b920164df22d56a43f593269ba6ae1fdc97774b68855"
+    },
+    {
+      "sourceFileName": "lib.es2020.promise.d.ts",
+      "libFileName": "lib.es2020.promise.d.ts",
+      "sourcePath": "typescript/lib/lib.es2020.promise.d.ts",
+      "sourceHash": "sha256-54725f8c4df3d900cb4dac84b64689ce29548da0b4e9b7c2de61d41c79293611"
+    },
+    {
+      "sourceFileName": "lib.es2020.sharedmemory.d.ts",
+      "libFileName": "lib.es2020.sharedmemory.d.ts",
+      "sourcePath": "typescript/lib/lib.es2020.sharedmemory.d.ts",
+      "sourceHash": "sha256-e5594bc3076ac29e6c1ebda77939bc4c8833de72f654b6e376862c0473199323"
+    },
+    {
+      "sourceFileName": "lib.es2020.string.d.ts",
+      "libFileName": "lib.es2020.string.d.ts",
+      "sourcePath": "typescript/lib/lib.es2020.string.d.ts",
+      "sourceHash": "sha256-2f3eb332c2d73e729f3364fcc0c2b375e72a121e8157d25a82d67a138c83a95c"
+    },
+    {
+      "sourceFileName": "lib.es2020.symbol.wellknown.d.ts",
+      "libFileName": "lib.es2020.symbol.wellknown.d.ts",
+      "sourcePath": "typescript/lib/lib.es2020.symbol.wellknown.d.ts",
+      "sourceHash": "sha256-6f4427f9642ce8d500970e4e69d1397f64072ab73b97e476b4002a646ac743b1"
+    },
+    {
+      "sourceFileName": "lib.es2021.d.ts",
+      "libFileName": "lib.es2021.d.ts",
+      "sourcePath": "typescript/lib/lib.es2021.d.ts",
+      "sourceHash": "sha256-8a15b4607d9a499e2dbeed9ec0d3c0d7372c850b2d5f1fb259e8f6d41d468a84"
+    },
+    {
+      "sourceFileName": "lib.es2021.intl.d.ts",
+      "libFileName": "lib.es2021.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.es2021.intl.d.ts",
+      "sourceHash": "sha256-a917a49ac94cd26b754ab84e113369a75d1a47a710661d7cd25e961cc797065f"
+    },
+    {
+      "sourceFileName": "lib.es2021.promise.d.ts",
+      "libFileName": "lib.es2021.promise.d.ts",
+      "sourcePath": "typescript/lib/lib.es2021.promise.d.ts",
+      "sourceHash": "sha256-db9709688f82c9e5f65a119c64d835f906efe5f559d08b11642d56eb85b79357"
+    },
+    {
+      "sourceFileName": "lib.es2021.string.d.ts",
+      "libFileName": "lib.es2021.string.d.ts",
+      "sourcePath": "typescript/lib/lib.es2021.string.d.ts",
+      "sourceHash": "sha256-4b25b8c874acd1a4cf8444c3617e037d444d19080ac9f634b405583fd10ce1f7"
+    },
+    {
+      "sourceFileName": "lib.es2021.weakref.d.ts",
+      "libFileName": "lib.es2021.weakref.d.ts",
+      "sourcePath": "typescript/lib/lib.es2021.weakref.d.ts",
+      "sourceHash": "sha256-37be57d7c90cf1f8112ee2636a068d8fd181289f82b744160ec56a7dc158a9f5"
+    },
+    {
+      "sourceFileName": "lib.es2022.array.d.ts",
+      "libFileName": "lib.es2022.array.d.ts",
+      "sourcePath": "typescript/lib/lib.es2022.array.d.ts",
+      "sourceHash": "sha256-6d3261badeb7843d157ef3e6f5d1427d0eeb0af0cf9df84a62cfd29fd47ac86e"
+    },
+    {
+      "sourceFileName": "lib.es2022.d.ts",
+      "libFileName": "lib.es2022.d.ts",
+      "sourcePath": "typescript/lib/lib.es2022.d.ts",
+      "sourceHash": "sha256-26e0fe14baee4e127f4365d1ae0b276f400562e45e19e35fd2d4c296684715e6"
+    },
+    {
+      "sourceFileName": "lib.es2022.error.d.ts",
+      "libFileName": "lib.es2022.error.d.ts",
+      "sourcePath": "typescript/lib/lib.es2022.error.d.ts",
+      "sourceHash": "sha256-195daca651dde22f2167ac0d0a05e215308119a3100f5e6268e8317d05a92526"
+    },
+    {
+      "sourceFileName": "lib.es2022.intl.d.ts",
+      "libFileName": "lib.es2022.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.es2022.intl.d.ts",
+      "sourceHash": "sha256-8b11e4285cd2bb164a4dc09248bdec69e9842517db4ca47c1ba913011e44ff2f"
+    },
+    {
+      "sourceFileName": "lib.es2022.object.d.ts",
+      "libFileName": "lib.es2022.object.d.ts",
+      "sourcePath": "typescript/lib/lib.es2022.object.d.ts",
+      "sourceHash": "sha256-0508571a52475e245b02bc50fa1394065a0a3d05277fbf5120c3784b85651799"
+    },
+    {
+      "sourceFileName": "lib.es2022.regexp.d.ts",
+      "libFileName": "lib.es2022.regexp.d.ts",
+      "sourcePath": "typescript/lib/lib.es2022.regexp.d.ts",
+      "sourceHash": "sha256-fc611fea8d30ea72c6bbfb599c9b4d393ce22e2f5bfef2172534781e7d138104"
+    },
+    {
+      "sourceFileName": "lib.es2022.string.d.ts",
+      "libFileName": "lib.es2022.string.d.ts",
+      "sourcePath": "typescript/lib/lib.es2022.string.d.ts",
+      "sourceHash": "sha256-8f9af488f510c3015af3cc8c267a9e9d96c4dd38a1fdff0e11dc5a544711415b"
+    },
+    {
+      "sourceFileName": "lib.es2023.array.d.ts",
+      "libFileName": "lib.es2023.array.d.ts",
+      "sourcePath": "typescript/lib/lib.es2023.array.d.ts",
+      "sourceHash": "sha256-0bd714129fca875f7d4c477a1a392200b0bcd13fb2e80928cd334b63830ea047"
+    },
+    {
+      "sourceFileName": "lib.es2023.collection.d.ts",
+      "libFileName": "lib.es2023.collection.d.ts",
+      "sourcePath": "typescript/lib/lib.es2023.collection.d.ts",
+      "sourceHash": "sha256-e2c9037ae6cd2c52d80ceef0b3c5ffdb488627d71529cf4f63776daf11161c9a"
+    },
+    {
+      "sourceFileName": "lib.es2023.d.ts",
+      "libFileName": "lib.es2023.d.ts",
+      "sourcePath": "typescript/lib/lib.es2023.d.ts",
+      "sourceHash": "sha256-1e9332c23e9a907175e0ffc6a49e236f97b48838cc8aec9ce7e4cec21e544b65"
+    },
+    {
+      "sourceFileName": "lib.es2023.intl.d.ts",
+      "libFileName": "lib.es2023.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.es2023.intl.d.ts",
+      "sourceHash": "sha256-135d5cf4d345f59f1a9caadfafcd858d3d9cc68290db616cc85797224448cccc"
+    },
+    {
+      "sourceFileName": "lib.es2024.arraybuffer.d.ts",
+      "libFileName": "lib.es2024.arraybuffer.d.ts",
+      "sourcePath": "typescript/lib/lib.es2024.arraybuffer.d.ts",
+      "sourceHash": "sha256-bc238c3f81c2984751932b6aab223cd5b830e0ac6cad76389e5e9d2ffc03287d"
+    },
+    {
+      "sourceFileName": "lib.es2024.collection.d.ts",
+      "libFileName": "lib.es2024.collection.d.ts",
+      "sourcePath": "typescript/lib/lib.es2024.collection.d.ts",
+      "sourceHash": "sha256-4a07f9b76d361f572620927e5735b77d6d2101c23cdd94383eb5b706e7b36357"
+    },
+    {
+      "sourceFileName": "lib.es2024.d.ts",
+      "libFileName": "lib.es2024.d.ts",
+      "sourcePath": "typescript/lib/lib.es2024.d.ts",
+      "sourceHash": "sha256-3753fbc1113dc511214802a2342280a8b284ab9094f6420e7aa171e868679f91"
+    },
+    {
+      "sourceFileName": "lib.es2024.object.d.ts",
+      "libFileName": "lib.es2024.object.d.ts",
+      "sourcePath": "typescript/lib/lib.es2024.object.d.ts",
+      "sourceHash": "sha256-7c4e8dc6ab834cc6baa0227e030606d29e3e8449a9f67cdf5605ea5493c4db29"
+    },
+    {
+      "sourceFileName": "lib.es2024.promise.d.ts",
+      "libFileName": "lib.es2024.promise.d.ts",
+      "sourcePath": "typescript/lib/lib.es2024.promise.d.ts",
+      "sourceHash": "sha256-de7ba0fd02e06cd9a5bd4ab441ed0e122735786e67dde1e849cced1cd8b46b78"
+    },
+    {
+      "sourceFileName": "lib.es2024.regexp.d.ts",
+      "libFileName": "lib.es2024.regexp.d.ts",
+      "sourcePath": "typescript/lib/lib.es2024.regexp.d.ts",
+      "sourceHash": "sha256-6148e4e88d720a06855071c3db02069434142a8332cf9c182cda551adedf3156"
+    },
+    {
+      "sourceFileName": "lib.es2024.sharedmemory.d.ts",
+      "libFileName": "lib.es2024.sharedmemory.d.ts",
+      "sourcePath": "typescript/lib/lib.es2024.sharedmemory.d.ts",
+      "sourceHash": "sha256-d63dba625b108316a40c95a4425f8d4294e0deeccfd6c7e59d819efa19e23409"
+    },
+    {
+      "sourceFileName": "lib.es2024.string.d.ts",
+      "libFileName": "lib.es2024.string.d.ts",
+      "sourcePath": "typescript/lib/lib.es2024.string.d.ts",
+      "sourceHash": "sha256-0568d6befee03dd435bed4fc25c4e46865b24bdcb8c563fdc21f580a2c301904"
+    },
+    {
+      "sourceFileName": "lib.es2025.collection.d.ts",
+      "libFileName": "lib.es2025.collection.d.ts",
+      "sourcePath": "typescript/lib/lib.es2025.collection.d.ts",
+      "sourceHash": "sha256-30d62269b05b584741f19a5369852d5d34895aa2ac4fd948956f886d15f9cc0d"
+    },
+    {
+      "sourceFileName": "lib.es2025.d.ts",
+      "libFileName": "lib.es2025.d.ts",
+      "sourcePath": "typescript/lib/lib.es2025.d.ts",
+      "sourceHash": "sha256-999ca32883495a866aa5737fe1babc764a469e4cde6ee6b136a4b9ae68853e4b"
+    },
+    {
+      "sourceFileName": "lib.es2025.float16.d.ts",
+      "libFileName": "lib.es2025.float16.d.ts",
+      "sourcePath": "typescript/lib/lib.es2025.float16.d.ts",
+      "sourceHash": "sha256-f128dae7c44d8f35ee42e0a437000a57c9f06cc04f8b4fb42eebf44954d53dc8"
+    },
+    {
+      "sourceFileName": "lib.es2025.intl.d.ts",
+      "libFileName": "lib.es2025.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.es2025.intl.d.ts",
+      "sourceHash": "sha256-ffbe6d7b295306b2ba88030f65b74c107d8d99bdcf596ea99c62a02f606108b0"
+    },
+    {
+      "sourceFileName": "lib.es2025.iterator.d.ts",
+      "libFileName": "lib.es2025.iterator.d.ts",
+      "sourcePath": "typescript/lib/lib.es2025.iterator.d.ts",
+      "sourceHash": "sha256-996fb27b15277369c68a4ba46ed138b4e9e839a02fb4ec756f7997629242fd9f"
+    },
+    {
+      "sourceFileName": "lib.es2025.promise.d.ts",
+      "libFileName": "lib.es2025.promise.d.ts",
+      "sourcePath": "typescript/lib/lib.es2025.promise.d.ts",
+      "sourceHash": "sha256-79b712591b270d4778c89706ca2cfc56ddb8c3f895840e477388f1710dc5eda9"
+    },
+    {
+      "sourceFileName": "lib.es2025.regexp.d.ts",
+      "libFileName": "lib.es2025.regexp.d.ts",
+      "sourcePath": "typescript/lib/lib.es2025.regexp.d.ts",
+      "sourceHash": "sha256-20884846cef428b992b9bd032e70a4ef88e349263f63aeddf04dda837a7dba26"
+    },
+    {
+      "sourceFileName": "lib.es5.d.ts",
+      "libFileName": "lib.es5.d.ts",
+      "sourcePath": "typescript/lib/lib.es5.d.ts",
+      "sourceHash": "sha256-6388847232654d7fcbed7fe89ea511a65ad1f5104b41e905c43f90910e1408b6"
+    },
+    {
+      "sourceFileName": "lib.esnext.array.d.ts",
+      "libFileName": "lib.esnext.array.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.array.d.ts",
+      "sourceHash": "sha256-5fcab789c73a97cd43828ee3cc94a61264cf24d4c44472ce64ced0e0f148bdb2"
+    },
+    {
+      "sourceFileName": "lib.esnext.collection.d.ts",
+      "libFileName": "lib.esnext.collection.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.collection.d.ts",
+      "sourceHash": "sha256-db59a81f070c1880ad645b2c0275022baa6a0c4f0acdc58d29d349c6efcf0903"
+    },
+    {
+      "sourceFileName": "lib.esnext.d.ts",
+      "libFileName": "lib.esnext.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.d.ts",
+      "sourceHash": "sha256-17f13ecb98cbc39243f2eee1f16d45cd8ec4706b03ee314f1915f1a8b42f6984"
+    },
+    {
+      "sourceFileName": "lib.esnext.date.d.ts",
+      "libFileName": "lib.esnext.date.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.date.d.ts",
+      "sourceHash": "sha256-673294292640f5722b700e7d814e17aaf7d93f83a48a2c9b38f33cbc940ad8b0"
+    },
+    {
+      "sourceFileName": "lib.esnext.decorators.d.ts",
+      "libFileName": "lib.esnext.decorators.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.decorators.d.ts",
+      "sourceHash": "sha256-d786b48f934cbca483b3c6d0a798cb43bbb4ada283e76fb22c28e53ae05b9e69"
+    },
+    {
+      "sourceFileName": "lib.esnext.error.d.ts",
+      "libFileName": "lib.esnext.error.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.error.d.ts",
+      "sourceHash": "sha256-142efd4ce210576f777dc34df121777be89eda476942d6d6663b03dcb53be3ff"
+    },
+    {
+      "sourceFileName": "lib.esnext.intl.d.ts",
+      "libFileName": "lib.esnext.intl.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.intl.d.ts",
+      "sourceHash": "sha256-379bc41580c2d774f82e828c70308f24a005b490c25ba34d679d84bcf05c3d9d"
+    },
+    {
+      "sourceFileName": "lib.esnext.sharedmemory.d.ts",
+      "libFileName": "lib.esnext.sharedmemory.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.sharedmemory.d.ts",
+      "sourceHash": "sha256-ed484fb2aa8a1a23d0277056ec3336e0a0b52f9b8d6a961f338a642faf43235d"
+    },
+    {
+      "sourceFileName": "lib.esnext.temporal.d.ts",
+      "libFileName": "lib.esnext.temporal.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.temporal.d.ts",
+      "sourceHash": "sha256-4ffedae1d1c2d53fdbca1c96d3c7dda544281f7d262f99b6880634f8fd8d9820"
+    },
+    {
+      "sourceFileName": "lib.esnext.typedarrays.d.ts",
+      "libFileName": "lib.esnext.typedarrays.d.ts",
+      "sourcePath": "typescript/lib/lib.esnext.typedarrays.d.ts",
+      "sourceHash": "sha256-83a730b125d477dd264df8ba479afab27a3dae7152b005c214ab94dc7ee44fd3"
+    }
+  ],
+  "outputEntries": [
+    {
+      "kind": "top-level-lib",
+      "outputPath": "generated/current/baseline.d.ts"
+    }
+  ],
+  "transformedUnits": [
+    "lib.es2024.arraybuffer.d.ts::ArrayBufferConstructor.<construct>::10",
+    "lib.es2024.sharedmemory.d.ts::SharedArrayBufferConstructor.<construct>::11"
+  ],
+  "excludedUnits": [
+    {
+      "unitId": "lib.es2015.core.d.ts::String.anchor::83",
+      "compatKeys": [
+        "javascript.builtins.String.anchor"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.big::84",
+      "compatKeys": [
+        "javascript.builtins.String.big"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.blink::85",
+      "compatKeys": [
+        "javascript.builtins.String.blink"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.bold::86",
+      "compatKeys": [
+        "javascript.builtins.String.bold"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.fixed::87",
+      "compatKeys": [
+        "javascript.builtins.String.fixed"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.fontcolor::88",
+      "compatKeys": [
+        "javascript.builtins.String.fontcolor"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.fontsize::89",
+      "compatKeys": [
+        "javascript.builtins.String.fontsize"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.fontsize::90",
+      "compatKeys": [
+        "javascript.builtins.String.fontsize"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.italics::91",
+      "compatKeys": [
+        "javascript.builtins.String.italics"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.link::92",
+      "compatKeys": [
+        "javascript.builtins.String.link"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.small::93",
+      "compatKeys": [
+        "javascript.builtins.String.small"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.strike::94",
+      "compatKeys": [
+        "javascript.builtins.String.strike"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.sub::95",
+      "compatKeys": [
+        "javascript.builtins.String.sub"
+      ]
+    },
+    {
+      "unitId": "lib.es2015.core.d.ts::String.sup::96",
+      "compatKeys": [
+        "javascript.builtins.String.sup"
+      ]
+    },
+    {
+      "unitId": "lib.es2022.intl.d.ts::Intl.Segmenter.<construct>::30",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segmenter.Segmenter"
+      ]
+    },
+    {
+      "unitId": "lib.es2022.intl.d.ts::Intl.Segmenter.resolvedOptions::9",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segmenter.resolvedOptions"
+      ]
+    },
+    {
+      "unitId": "lib.es2022.intl.d.ts::Intl.Segmenter.segment::8",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segmenter.segment"
+      ]
+    },
+    {
+      "unitId": "lib.es2022.intl.d.ts::Intl.Segmenter.supportedLocalesOf::31",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segmenter.supportedLocalesOf"
+      ]
+    },
+    {
+      "unitId": "lib.es2022.intl.d.ts::Intl.Segmenter::28",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segmenter"
+      ]
+    },
+    {
+      "unitId": "lib.es2022.intl.d.ts::Intl.Segmenter::7",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segmenter"
+      ]
+    },
+    {
+      "unitId": "lib.es2022.intl.d.ts::Intl.Segments.@@iterator::20",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segments.@@iterator"
+      ]
+    },
+    {
+      "unitId": "lib.es2022.intl.d.ts::Intl.Segments.containing::19",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segments.containing"
+      ]
+    },
+    {
+      "unitId": "lib.es2022.intl.d.ts::Intl.Segments::18",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segments"
+      ]
+    },
+    {
+      "unitId": "lib.es2023.collection.d.ts::WeakKeyTypes.symbol::2",
+      "compatKeys": [
+        "javascript.builtins.FinalizationRegistry.register.symbol_as_target",
+        "javascript.builtins.FinalizationRegistry.unregister.symbol_as_target",
+        "javascript.builtins.WeakMap.symbol_as_keys",
+        "javascript.builtins.WeakRef.WeakRef.symbol_as_target",
+        "javascript.builtins.WeakSet.symbol_as_keys"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.detached::5",
+      "compatKeys": [
+        "javascript.builtins.ArrayBuffer.detached"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.maxByteLength::2",
+      "compatKeys": [
+        "javascript.builtins.ArrayBuffer.maxByteLength"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.resizable::3",
+      "compatKeys": [
+        "javascript.builtins.ArrayBuffer.resizable"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.resize::4",
+      "compatKeys": [
+        "javascript.builtins.ArrayBuffer.resize"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transfer::6",
+      "compatKeys": [
+        "javascript.builtins.ArrayBuffer.transfer"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transferToFixedLength::7",
+      "compatKeys": [
+        "javascript.builtins.ArrayBuffer.transferToFixedLength"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.collection.d.ts::MapConstructor.groupBy::2",
+      "compatKeys": [
+        "javascript.builtins.Map.groupBy"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.object.d.ts::ObjectConstructor.groupBy::2",
+      "compatKeys": [
+        "javascript.builtins.Object.groupBy"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.promise.d.ts::PromiseConstructor.withResolvers::7",
+      "compatKeys": [
+        "javascript.builtins.Promise.withResolvers"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.sharedmemory.d.ts::Atomics.waitAsync::2",
+      "compatKeys": [
+        "javascript.builtins.Atomics.waitAsync"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.sharedmemory.d.ts::Atomics.waitAsync::3",
+      "compatKeys": [
+        "javascript.builtins.Atomics.waitAsync"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.sharedmemory.d.ts::SharedArrayBuffer.grow::8",
+      "compatKeys": [
+        "javascript.builtins.SharedArrayBuffer.grow"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.sharedmemory.d.ts::SharedArrayBuffer.growable::6",
+      "compatKeys": [
+        "javascript.builtins.SharedArrayBuffer.growable"
+      ]
+    },
+    {
+      "unitId": "lib.es2024.sharedmemory.d.ts::SharedArrayBuffer.maxByteLength::7",
+      "compatKeys": [
+        "javascript.builtins.SharedArrayBuffer.maxByteLength"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::Set.difference::9",
+      "compatKeys": [
+        "javascript.builtins.Set.difference"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::Set.intersection::8",
+      "compatKeys": [
+        "javascript.builtins.Set.intersection"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::Set.isDisjointFrom::13",
+      "compatKeys": [
+        "javascript.builtins.Set.isDisjointFrom"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::Set.isSubsetOf::11",
+      "compatKeys": [
+        "javascript.builtins.Set.isSubsetOf"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::Set.isSupersetOf::12",
+      "compatKeys": [
+        "javascript.builtins.Set.isSupersetOf"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::Set.symmetricDifference::10",
+      "compatKeys": [
+        "javascript.builtins.Set.symmetricDifference"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::Set.union::7",
+      "compatKeys": [
+        "javascript.builtins.Set.union"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::DataView.getFloat16::67",
+      "compatKeys": [
+        "javascript.builtins.DataView.getFloat16"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::DataView.setFloat16::68",
+      "compatKeys": [
+        "javascript.builtins.DataView.setFloat16"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::Float16Array::1",
+      "compatKeys": [
+        "javascript.builtins.Float16Array"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::Float16Array::61",
+      "compatKeys": [
+        "javascript.builtins.Float16Array"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::50",
+      "compatKeys": [
+        "javascript.builtins.Float16Array.Float16Array"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::51",
+      "compatKeys": [
+        "javascript.builtins.Float16Array.Float16Array"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::52",
+      "compatKeys": [
+        "javascript.builtins.Float16Array.Float16Array"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::53",
+      "compatKeys": [
+        "javascript.builtins.Float16Array.Float16Array"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::54",
+      "compatKeys": [
+        "javascript.builtins.Float16Array.Float16Array"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::Float16ArrayConstructor::48",
+      "compatKeys": [
+        "javascript.builtins.Float16Array"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.float16.d.ts::Math.f16round::64",
+      "compatKeys": [
+        "javascript.builtins.Math.f16round"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.intl.d.ts::Intl.DurationFormat.<construct>::68",
+      "compatKeys": [
+        "javascript.builtins.Intl.DurationFormat.DurationFormat"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.intl.d.ts::Intl.DurationFormat.format::36",
+      "compatKeys": [
+        "javascript.builtins.Intl.DurationFormat.format"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.intl.d.ts::Intl.DurationFormat.formatToParts::37",
+      "compatKeys": [
+        "javascript.builtins.Intl.DurationFormat.formatToParts"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.intl.d.ts::Intl.DurationFormat.resolvedOptions::38",
+      "compatKeys": [
+        "javascript.builtins.Intl.DurationFormat.resolvedOptions"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.intl.d.ts::Intl.DurationFormat.supportedLocalesOf::69",
+      "compatKeys": [
+        "javascript.builtins.Intl.DurationFormat.supportedLocalesOf"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.intl.d.ts::Intl.DurationFormat::35",
+      "compatKeys": [
+        "javascript.builtins.Intl.DurationFormat"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.intl.d.ts::Intl.DurationFormat::66",
+      "compatKeys": [
+        "javascript.builtins.Intl.DurationFormat"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.promise.d.ts::PromiseConstructor.try::2",
+      "compatKeys": [
+        "javascript.builtins.Promise.try"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.regexp.d.ts::RegExpConstructor.escape::2",
+      "compatKeys": [
+        "javascript.builtins.RegExp.escape"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::Function.arguments::69",
+      "compatKeys": [
+        "javascript.builtins.Function.arguments"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::Function.caller::70",
+      "compatKeys": [
+        "javascript.builtins.Function.caller"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExp.compile::276",
+      "compatKeys": [
+        "javascript.builtins.RegExp.compile"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$1::284",
+      "compatKeys": [
+        "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$2::285",
+      "compatKeys": [
+        "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$3::286",
+      "compatKeys": [
+        "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$4::287",
+      "compatKeys": [
+        "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$5::288",
+      "compatKeys": [
+        "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$6::289",
+      "compatKeys": [
+        "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$7::290",
+      "compatKeys": [
+        "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$8::291",
+      "compatKeys": [
+        "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$9::292",
+      "compatKeys": [
+        "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.input::293",
+      "compatKeys": [
+        "javascript.builtins.RegExp.input"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.lastMatch::295",
+      "compatKeys": [
+        "javascript.builtins.RegExp.lastMatch"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.lastParen::297",
+      "compatKeys": [
+        "javascript.builtins.RegExp.lastParen"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.leftContext::299",
+      "compatKeys": [
+        "javascript.builtins.RegExp.leftContext"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.rightContext::301",
+      "compatKeys": [
+        "javascript.builtins.RegExp.rightContext"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::String.substr::120",
+      "compatKeys": [
+        "javascript.builtins.String.substr"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::escape::11",
+      "compatKeys": [
+        "javascript.builtins.escape"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::unescape::12",
+      "compatKeys": [
+        "javascript.builtins.unescape"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::2",
+      "compatKeys": [
+        "javascript.builtins.Array.fromAsync"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::3",
+      "compatKeys": [
+        "javascript.builtins.Array.fromAsync"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.collection.d.ts::Map.getOrInsert::2",
+      "compatKeys": [
+        "javascript.builtins.Map.getOrInsert"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.collection.d.ts::Map.getOrInsertComputed::3",
+      "compatKeys": [
+        "javascript.builtins.Map.getOrInsertComputed"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.collection.d.ts::WeakMap.getOrInsert::6",
+      "compatKeys": [
+        "javascript.builtins.WeakMap.getOrInsert"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.collection.d.ts::WeakMap.getOrInsertComputed::7",
+      "compatKeys": [
+        "javascript.builtins.WeakMap.getOrInsertComputed"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.date.d.ts::Date.toTemporalInstant::2",
+      "compatKeys": [
+        "javascript.builtins.Date.toTemporalInstant"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.error.d.ts::ErrorConstructor.isError::2",
+      "compatKeys": [
+        "javascript.builtins.Error.isError"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.intl.d.ts::Intl.Locale.getCalendars::11",
+      "compatKeys": [
+        "javascript.builtins.Intl.Locale.getCalendars"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.intl.d.ts::Intl.Locale.getCollations::12",
+      "compatKeys": [
+        "javascript.builtins.Intl.Locale.getCollations"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.intl.d.ts::Intl.Locale.getHourCycles::13",
+      "compatKeys": [
+        "javascript.builtins.Intl.Locale.getHourCycles"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.intl.d.ts::Intl.Locale.getNumberingSystems::14",
+      "compatKeys": [
+        "javascript.builtins.Intl.Locale.getNumberingSystems"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.intl.d.ts::Intl.Locale.getTextInfo::15",
+      "compatKeys": [
+        "javascript.builtins.Intl.Locale.getTextInfo"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.intl.d.ts::Intl.Locale.getTimeZones::16",
+      "compatKeys": [
+        "javascript.builtins.Intl.Locale.getTimeZones"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.intl.d.ts::Intl.Locale.getWeekInfo::17",
+      "compatKeys": [
+        "javascript.builtins.Intl.Locale.getWeekInfo"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.sharedmemory.d.ts::Atomics.pause::2",
+      "compatKeys": [
+        "javascript.builtins.Atomics.pause"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.abs::306",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.abs"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.add::307",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.add"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.blank::303",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.blank"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.days::295",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.days"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.hours::296",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.hours"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.microseconds::300",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.microseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.milliseconds::299",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.milliseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.minutes::297",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.minutes"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.months::293",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.months"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.nanoseconds::301",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.nanoseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.negated::305",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.negated"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.round::309",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.round::310",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.seconds::298",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.seconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.sign::302",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.sign"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.subtract::308",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.subtract"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.toJSON::315",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.toJSON"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.toLocaleString::314",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.toLocaleString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.toString::313",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.toString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.total::311",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.total"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.total::312",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.total"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.valueOf::316",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.valueOf"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.weeks::294",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.weeks"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.with::304",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.with"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration.years::292",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.years"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration::291",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Duration::324",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.DurationConstructor.<construct>::320",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.Duration"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.DurationConstructor.compare::323",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.compare"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.DurationConstructor.from::322",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration.from"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.DurationConstructor::319",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Duration"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.add::332",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.add"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.epochMilliseconds::330",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.epochMilliseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.epochNanoseconds::331",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.epochNanoseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.equals::338",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.equals"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.round::336",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.round::337",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.since::335",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.since"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.subtract::333",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.subtract"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.toJSON::341",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.toJSON"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.toLocaleString::340",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.toLocaleString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.toString::339",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.toString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.toZonedDateTimeISO::343",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.toZonedDateTimeISO"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.until::334",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.until"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant.valueOf::342",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.valueOf"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant::329",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Instant::353",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.InstantConstructor.<construct>::347",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.Instant"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.InstantConstructor.compare::352",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.compare"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.InstantConstructor.from::349",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.from"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.InstantConstructor.fromEpochMilliseconds::350",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.fromEpochMilliseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.InstantConstructor.fromEpochNanoseconds::351",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant.fromEpochNanoseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.InstantConstructor::346",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Instant"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Now.instant::78",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Now.instant"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Now.plainDateISO::81",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Now.plainDateISO"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Now.plainDateTimeISO::79",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Now.plainDateTimeISO"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Now.plainTimeISO::82",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Now.plainTimeISO"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Now.timeZoneId::77",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Now.timeZoneId"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Now.zonedDateTimeISO::80",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Now.zonedDateTimeISO"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.Now::76",
+      "compatKeys": [
+        "javascript.builtins.Temporal.Now"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.add::110",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.add"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.calendarId::92",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.calendarId"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.day::98",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.day"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.dayOfWeek::99",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.dayOfWeek"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.dayOfYear::100",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.dayOfYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.daysInMonth::104",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.daysInMonth"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.daysInWeek::103",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.daysInWeek"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.daysInYear::105",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.daysInYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.equals::116",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.equals"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.era::93",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.era"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.eraYear::94",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.eraYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.inLeapYear::107",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.inLeapYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.month::96",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.month"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.monthCode::97",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.monthCode"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.monthsInYear::106",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.monthsInYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.since::115",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.since"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.subtract::111",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.subtract"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.toJSON::122",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.toJSON"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.toLocaleString::121",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.toLocaleString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.toPlainDateTime::117",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.toPlainDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.toPlainMonthDay::109",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.toPlainMonthDay"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.toPlainYearMonth::108",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.toPlainYearMonth"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.toString::120",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.toString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.toZonedDateTime::118",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.toZonedDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.toZonedDateTime::119",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.toZonedDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.until::114",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.until"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.valueOf::123",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.valueOf"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.weekOfYear::101",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.weekOfYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.with::112",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.with"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.withCalendar::113",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.withCalendar"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.year::95",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.year"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate.yearOfWeek::102",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.yearOfWeek"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate::131",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDate::91",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateConstructor.<construct>::127",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.PlainDate"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateConstructor.compare::130",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.compare"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateConstructor.from::129",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate.from"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateConstructor::126",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDate"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.add::191",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.add"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.calendarId::166",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.calendarId"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.day::172",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.day"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.dayOfWeek::179",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.dayOfWeek"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.dayOfYear::180",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.dayOfYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.daysInMonth::184",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.daysInMonth"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.daysInWeek::183",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.daysInWeek"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.daysInYear::185",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.daysInYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.equals::197",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.equals"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.era::167",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.era"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.eraYear::168",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.eraYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.hour::173",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.hour"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.inLeapYear::187",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.inLeapYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.microsecond::177",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.microsecond"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.millisecond::176",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.millisecond"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.minute::174",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.minute"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.month::170",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.month"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.monthCode::171",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.monthCode"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.monthsInYear::186",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.monthsInYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.nanosecond::178",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.nanosecond"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.round::195",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.round::196",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.second::175",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.second"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.since::194",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.since"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.subtract::192",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.subtract"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.toJSON::200",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.toJSON"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.toLocaleString::199",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.toLocaleString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.toPlainDate::203",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.toPlainDate"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.toPlainTime::204",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.toPlainTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.toString::198",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.toString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.toZonedDateTime::202",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.toZonedDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.until::193",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.until"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.valueOf::201",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.valueOf"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.weekOfYear::181",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.weekOfYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.with::188",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.with"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.withCalendar::190",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.withCalendar"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.withPlainTime::189",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.withPlainTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.year::169",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.year"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime.yearOfWeek::182",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.yearOfWeek"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime::165",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTime::212",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTimeConstructor.<construct>::208",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.PlainDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTimeConstructor.compare::211",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.compare"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTimeConstructor.from::210",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime.from"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainDateTimeConstructor::207",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.calendarId::395",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.calendarId"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.day::397",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.day"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.equals::399",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.equals"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.monthCode::396",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.monthCode"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.toJSON::402",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.toJSON"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.toLocaleString::401",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.toLocaleString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.toPlainDate::404",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.toPlainDate"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.toString::400",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.toString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.valueOf::403",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.valueOf"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay.with::398",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.with"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay::394",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay::411",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDayConstructor.<construct>::408",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.PlainMonthDay"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDayConstructor.from::410",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay.from"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainMonthDayConstructor::407",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainMonthDay"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.add::142",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.add"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.equals::147",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.equals"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.hour::136",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.hour"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.microsecond::140",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.microsecond"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.millisecond::139",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.millisecond"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.minute::137",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.minute"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.nanosecond::141",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.nanosecond"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.round::148",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.round::149",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.second::138",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.second"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.since::146",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.since"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.subtract::143",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.subtract"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.toJSON::152",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.toJSON"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.toLocaleString::151",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.toLocaleString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.toString::150",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.toString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.until::145",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.until"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.valueOf::153",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.valueOf"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime.with::144",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.with"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime::135",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTime::161",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTimeConstructor.<construct>::157",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.PlainTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTimeConstructor.compare::160",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.compare"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTimeConstructor.from::159",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime.from"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainTimeConstructor::156",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.add::370",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.add"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.calendarId::359",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.calendarId"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.daysInMonth::366",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.daysInMonth"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.daysInYear::365",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.daysInYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.equals::374",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.equals"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.era::360",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.era"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.eraYear::361",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.eraYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.inLeapYear::368",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.inLeapYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.month::363",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.month"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.monthCode::364",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.monthCode"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.monthsInYear::367",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.monthsInYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.since::373",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.since"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.subtract::371",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.subtract"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.toJSON::377",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.toJSON"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.toLocaleString::376",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.toLocaleString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.toPlainDate::379",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.toPlainDate"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.toString::375",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.toString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.until::372",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.until"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.valueOf::378",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.valueOf"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.with::369",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.with"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth.year::362",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.year"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth::358",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth::387",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonthConstructor.<construct>::383",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.PlainYearMonth"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonthConstructor.compare::386",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.compare"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonthConstructor.from::385",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth.from"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.PlainYearMonthConstructor::382",
+      "compatKeys": [
+        "javascript.builtins.Temporal.PlainYearMonth"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.add::254",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.add"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.calendarId::222",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.calendarId"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.day::229",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.day"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.dayOfWeek::238",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.dayOfWeek"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.dayOfYear::239",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.dayOfYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.daysInMonth::244",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.daysInMonth"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.daysInWeek::243",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.daysInWeek"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.daysInYear::245",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.daysInYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.epochMilliseconds::236",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.epochMilliseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.epochNanoseconds::237",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.epochNanoseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.equals::260",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.equals"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.era::224",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.era"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.eraYear::225",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.eraYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.getTimeZoneTransition::266",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.getTimeZoneTransition"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.getTimeZoneTransition::267",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.getTimeZoneTransition"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.hour::230",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.hour"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.hoursInDay::242",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.hoursInDay"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.inLeapYear::247",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.inLeapYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.microsecond::234",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.microsecond"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.millisecond::233",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.millisecond"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.minute::231",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.minute"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.month::227",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.month"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.monthCode::228",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.monthCode"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.monthsInYear::246",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.monthsInYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.nanosecond::235",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.nanosecond"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.offset::249",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.offset"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.offsetNanoseconds::248",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.offsetNanoseconds"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.round::258",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.round::259",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.round"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.second::232",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.second"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.since::257",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.since"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.startOfDay::265",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.startOfDay"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.subtract::255",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.subtract"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.timeZoneId::223",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.timeZoneId"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.toInstant::268",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.toInstant"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.toJSON::263",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.toJSON"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.toLocaleString::262",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.toLocaleString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.toPlainDate::269",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.toPlainDate"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.toPlainDateTime::271",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.toPlainDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.toPlainTime::270",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.toPlainTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.toString::261",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.toString"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.until::256",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.until"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.valueOf::264",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.valueOf"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.weekOfYear::240",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.weekOfYear"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.with::250",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.with"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.withCalendar::253",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.withCalendar"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.withPlainTime::251",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.withPlainTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.withTimeZone::252",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.withTimeZone"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.year::226",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.year"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime.yearOfWeek::241",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.yearOfWeek"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime::221",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime::279",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTimeConstructor.<construct>::275",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.ZonedDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTimeConstructor.compare::278",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.compare"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTimeConstructor.from::277",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime.from"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal.ZonedDateTimeConstructor::274",
+      "compatKeys": [
+        "javascript.builtins.Temporal.ZonedDateTime"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.temporal.d.ts::Temporal::1",
+      "compatKeys": [
+        "javascript.builtins.Temporal"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.typedarrays.d.ts::Uint8Array.setFromBase64::3",
+      "compatKeys": [
+        "javascript.builtins.Uint8Array.setFromBase64"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.typedarrays.d.ts::Uint8Array.setFromHex::5",
+      "compatKeys": [
+        "javascript.builtins.Uint8Array.setFromHex"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.typedarrays.d.ts::Uint8Array.toBase64::2",
+      "compatKeys": [
+        "javascript.builtins.Uint8Array.toBase64"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.typedarrays.d.ts::Uint8Array.toHex::4",
+      "compatKeys": [
+        "javascript.builtins.Uint8Array.toHex"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.typedarrays.d.ts::Uint8ArrayConstructor.fromBase64::8",
+      "compatKeys": [
+        "javascript.builtins.Uint8Array.fromBase64"
+      ]
+    },
+    {
+      "unitId": "lib.esnext.typedarrays.d.ts::Uint8ArrayConstructor.fromHex::9",
+      "compatKeys": [
+        "javascript.builtins.Uint8Array.fromHex"
+      ]
+    }
+  ]
+}

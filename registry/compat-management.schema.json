@@ -1,0 +1,209 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/3ru/TypeScript-baseline-lib-generator/main/registry/compat-management.schema.json",
+    "title": "TypeScript Baseline Lib Compat Management Registry",
+    "type": "object",
+    "required": [
+        "kind",
+        "schemaVersion",
+        "groups"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "kind": {
+            "const": "typescript-baseline-lib/compat-management-registry"
+        },
+        "schemaVersion": {
+            "const": 1
+        },
+        "groups": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/group"
+            }
+        }
+    },
+    "$defs": {
+        "group": {
+            "type": "object",
+            "required": [
+                "id",
+                "category",
+                "delivery",
+                "upstreamState",
+                "reason",
+                "sourceUrls",
+                "externalAction",
+                "compatKeys"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "category": {
+                    "type": "string",
+                    "enum": [
+                        "ts_settled_limitation",
+                        "handled_outside_lib",
+                        "tracked_by_canonical_lib",
+                        "actionable_upstream_gap",
+                        "legacy_excluded"
+                    ]
+                },
+                "delivery": {
+                    "type": "string",
+                    "enum": [
+                        "cover-checker",
+                        "defer-upstream",
+                        "exclude"
+                    ]
+                },
+                "upstreamState": {
+                    "type": "string",
+                    "enum": [
+                        "settled",
+                        "tracked",
+                        "actionable"
+                    ]
+                },
+                "compatRoot": {
+                    "type": "string"
+                },
+                "expectedResolutionKinds": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "reason": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "sourceUrls": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "externalAction": {
+                    "$ref": "#/$defs/externalAction"
+                },
+                "compatKeys": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "externalAction": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "note"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                        "kind": {
+                            "const": "none"
+                        },
+                        "note": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "repo",
+                        "targetUrl",
+                        "note"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                        "kind": {
+                            "enum": [
+                                "watch-existing",
+                                "consider-focused-issue"
+                            ]
+                        },
+                        "repo": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "targetUrl": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "note": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "targetUrl",
+                        "note"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                        "kind": {
+                            "const": "watch-proposal"
+                        },
+                        "targetUrl": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "note": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "repo",
+                        "note"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                        "kind": {
+                            "const": "file-issue"
+                        },
+                        "repo": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "targetUrl": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "note": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

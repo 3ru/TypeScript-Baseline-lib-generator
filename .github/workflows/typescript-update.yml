@@ -1,0 +1,72 @@
+name: TypeScript Toolchain Update
+
+on:
+  schedule:
+    - cron: "0 16 * * 4"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Serialize so a scheduled run and a manual dispatch don't fight over the
+# same automation branch.
+concurrency:
+  group: typescript-update
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Run static JS checks
+        run: npm run lint
+
+      - name: Pin latest TypeScript toolchain
+        run: npm run update:typescript-toolchain
+
+      - name: Regenerate baseline
+        run: npm run generate
+
+      - name: Run standalone validation
+        run: npm test
+
+      - name: Prepare pull request body
+        run: npm run write:update-pr-body -- --out .tmp/typescript-toolchain-update-pr.md --summary-out .tmp/typescript-toolchain-update-summary.json
+
+      # By GitHub design, PRs opened with the default GITHUB_TOKEN don't trigger
+      # any pull_request workflow (validate / test-typescript / package-dry-run).
+      # Set AUTOMATION_TOKEN (a fine-grained PAT or GitHub App token) to run CI
+      # on bot PRs too.
+      - name: Warn when AUTOMATION_TOKEN is not configured
+        env:
+          AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+        run: |
+          if [ -z "$AUTOMATION_TOKEN" ]; then
+            message="AUTOMATION_TOKEN is not set, so PRs created by this workflow won't run pull_request CI automatically. Register a fine-grained PAT (contents: write / pull-requests: write) as AUTOMATION_TOKEN in the repository secrets."
+            echo "::warning title=CI won't run on bot PRs::${message}"
+            echo "> [!WARNING]" >> "$GITHUB_STEP_SUMMARY"
+            echo "> ${message}" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ secrets.AUTOMATION_TOKEN || github.token }}
+          branch: automation/weekly-typescript-toolchain-update
+          delete-branch: true
+          commit-message: "chore: update TypeScript toolchain snapshot"
+          title: "chore: update TypeScript toolchain snapshot"
+          body-path: .tmp/typescript-toolchain-update-pr.md

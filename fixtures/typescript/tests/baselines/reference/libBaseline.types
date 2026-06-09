@@ -1,0 +1,165 @@
+//// [tests/cases/compiler/libBaseline.ts] ////
+
+=== libBaseline.ts ===
+Intl.supportedValuesOf("currency");
+>Intl.supportedValuesOf("currency") : string[]
+>                                   : ^^^^^^^^
+>Intl.supportedValuesOf : (key: "calendar" | "collation" | "currency" | "numberingSystem" | "timeZone" | "unit") => string[]
+>                       : ^   ^^                                                                               ^^^^^        
+>Intl : typeof Intl
+>     : ^^^^^^^^^^^
+>supportedValuesOf : (key: "calendar" | "collation" | "currency" | "numberingSystem" | "timeZone" | "unit") => string[]
+>                  : ^   ^^                                                                               ^^^^^        
+>"currency" : "currency"
+>           : ^^^^^^^^^^
+
+new Intl.NumberFormat().formatRange(1, 2);
+>new Intl.NumberFormat().formatRange(1, 2) : string
+>                                          : ^^^^^^
+>new Intl.NumberFormat().formatRange : (start: number | bigint | Intl.StringNumericLiteral, end: number | bigint | Intl.StringNumericLiteral) => string
+>                                    : ^     ^^                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^   ^^                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^      
+>new Intl.NumberFormat() : Intl.NumberFormat
+>                        : ^^^^^^^^^^^^^^^^^
+>Intl.NumberFormat : Intl.NumberFormatConstructor
+>                  : ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>Intl : typeof Intl
+>     : ^^^^^^^^^^^
+>NumberFormat : Intl.NumberFormatConstructor
+>             : ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>formatRange : (start: number | bigint | Intl.StringNumericLiteral, end: number | bigint | Intl.StringNumericLiteral) => string
+>            : ^     ^^                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^   ^^                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^      
+>1 : 1
+>  : ^
+>2 : 2
+>  : ^
+
+[1, 2, 3].at(0);
+>[1, 2, 3].at(0) : number | undefined
+>                : ^^^^^^^^^^^^^^^^^^
+>[1, 2, 3].at : (index: number) => number | undefined
+>             : ^     ^^      ^^^^^^^^^^^^^^^^^^^^^^^
+>[1, 2, 3] : number[]
+>          : ^^^^^^^^
+>1 : 1
+>  : ^
+>2 : 2
+>  : ^
+>3 : 3
+>  : ^
+>at : (index: number) => number | undefined
+>   : ^     ^^      ^^^^^^^^^^^^^^^^^^^^^^^
+>0 : 0
+>  : ^
+
+[1, 2, 3].toReversed();
+>[1, 2, 3].toReversed() : number[]
+>                       : ^^^^^^^^
+>[1, 2, 3].toReversed : () => number[]
+>                     : ^^^^^^^^^^^^^^
+>[1, 2, 3] : number[]
+>          : ^^^^^^^^
+>1 : 1
+>  : ^
+>2 : 2
+>  : ^
+>3 : 3
+>  : ^
+>toReversed : () => number[]
+>           : ^^^^^^^^^^^^^^
+
+"baseline".at(0);
+>"baseline".at(0) : string | undefined
+>                 : ^^^^^^^^^^^^^^^^^^
+>"baseline".at : (index: number) => string | undefined
+>              : ^     ^^      ^^^^^                  
+>"baseline" : "baseline"
+>           : ^^^^^^^^^^
+>at : (index: number) => string | undefined
+>   : ^     ^^      ^^^^^                  
+>0 : 0
+>  : ^
+
+Object.hasOwn({ baseline: true }, "baseline");
+>Object.hasOwn({ baseline: true }, "baseline") : boolean
+>                                              : ^^^^^^^
+>Object.hasOwn : (o: object, v: PropertyKey) => boolean
+>              : ^ ^^      ^^ ^^           ^^^^^       
+>Object : ObjectConstructor
+>       : ^^^^^^^^^^^^^^^^^
+>hasOwn : (o: object, v: PropertyKey) => boolean
+>       : ^ ^^      ^^ ^^           ^^^^^       
+>{ baseline: true } : { baseline: boolean; }
+>                   : ^^^^^^^^^^^^^^^^^^^^^^
+>baseline : boolean
+>         : ^^^^^^^
+>true : true
+>     : ^^^^
+>"baseline" : "baseline"
+>           : ^^^^^^^^^^
+
+new Error("problem", { cause: new Error("root") });
+>new Error("problem", { cause: new Error("root") }) : Error
+>                                                   : ^^^^^
+>Error : ErrorConstructor
+>      : ^^^^^^^^^^^^^^^^
+>"problem" : "problem"
+>          : ^^^^^^^^^
+>{ cause: new Error("root") } : { cause: Error; }
+>                             : ^^^^^^^^^^^^^^^^^
+>cause : Error
+>      : ^^^^^
+>new Error("root") : Error
+>                  : ^^^^^
+>Error : ErrorConstructor
+>      : ^^^^^^^^^^^^^^^^
+>"root" : "root"
+>       : ^^^^^^
+
+/baseline/d.hasIndices;
+>/baseline/d.hasIndices : boolean
+>                       : ^^^^^^^
+>/baseline/d : RegExp
+>            : ^^^^^^
+>hasIndices : boolean
+>           : ^^^^^^^
+
+(function probeCaller() {}).caller; // Error
+>(function probeCaller() {}).caller : any
+>                                   : ^^^
+>(function probeCaller() {}) : () => void
+>                            : ^^^^^^^^^^
+>function probeCaller() {} : () => void
+>                          : ^^^^^^^^^^
+>probeCaller : () => void
+>            : ^^^^^^^^^^
+>caller : any
+>       : ^^^
+
+"baseline".substr(1); // Error
+>"baseline".substr(1) : any
+>                     : ^^^
+>"baseline".substr : any
+>                  : ^^^
+>"baseline" : "baseline"
+>           : ^^^^^^^^^^
+>substr : any
+>       : ^^^
+>1 : 1
+>  : ^
+
+new RegExp("baseline").compile("baseline"); // Error
+>new RegExp("baseline").compile("baseline") : any
+>                                           : ^^^
+>new RegExp("baseline").compile : any
+>                               : ^^^
+>new RegExp("baseline") : RegExp
+>                       : ^^^^^^
+>RegExp : RegExpConstructor
+>       : ^^^^^^^^^^^^^^^^^
+>"baseline" : "baseline"
+>           : ^^^^^^^^^^
+>compile : any
+>        : ^^^
+>"baseline" : "baseline"
+>           : ^^^^^^^^^^
+

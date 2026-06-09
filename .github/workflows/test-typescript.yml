@@ -1,0 +1,92 @@
+name: TypeScript Integration
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# On PRs, cancel runs superseded by a newer push; let main / dispatch finish.
+concurrency:
+  group: typescript-integration-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Regenerate baseline
+        run: npm run generate
+
+      # PRs run a gate of blocking checks only; push to main / dispatch runs the
+      # full suite with diagnostics.
+      - name: Select integration mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "mode=gate" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Resolve pinned TypeScript commit
+        id: ts-pin
+        run: echo "commit=$(node -p 'JSON.parse(require("node:fs").readFileSync("manifests/baseline-js.json","utf8")).typescriptSource.commit')" >> "$GITHUB_OUTPUT"
+
+      # Cache the TypeScript checkout (clone / node_modules / built) per pinned
+      # commit. The checkout script reuses it only when HEAD matches the pin, so
+      # a stale cache safely falls back to a fresh clone.
+      - name: Restore pinned TypeScript checkout cache
+        id: ts-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .tmp/TypeScript
+          key: typescript-source-${{ steps.ts-pin.outputs.commit }}-node22-v1
+
+      - name: Reset cached TypeScript working tree
+        if: steps.ts-cache.outputs.cache-hit == 'true'
+        run: |
+          git -C .tmp/TypeScript reset --hard
+          git -C .tmp/TypeScript clean -fd -e node_modules -e built
+
+      - name: Checkout pinned TypeScript source
+        run: npm run checkout:typescript-source -- --out .tmp/TypeScript --force
+
+      - name: Run TypeScript integration checks
+        run: npm run test:typescript:${{ steps.mode.outputs.mode }} -- --typescript-dir ./.tmp/TypeScript --summary-out .tmp/typescript-integration-summary.md --baseline-diff-out .tmp/typescript-baseline-changes.diff --focused-baselines-out .tmp/typescript-focused-artifact --local-baselines-out .tmp/typescript-raw-local-baselines
+
+      - name: Upload integration summary and focused artifacts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: typescript-integration
+          path: |
+            .tmp/typescript-integration-summary.md
+            .tmp/typescript-baseline-changes.diff
+            .tmp/typescript-focused-artifact
+          if-no-files-found: ignore
+
+      - name: Upload raw local baselines
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: typescript-integration-raw-local-baselines
+          path: .tmp/typescript-raw-local-baselines
+          if-no-files-found: ignore

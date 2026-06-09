@@ -1,0 +1,556 @@
+{
+  "snapshot": "baseline-js",
+  "baselineTarget": "high",
+  "compatManagementRegistryPath": "registry/compat-management.json",
+  "compatManagementOutputPath": "derived/current/compat-management-report.json",
+  "classificationOutputPath": "derived/current/classification.json",
+  "registry": {
+    "kind": "typescript-baseline-lib/compat-management-registry",
+    "schemaVersion": 1,
+    "sourcePath": "registry/compat-management.json",
+    "sourceHash": "sha256-efab202483397a0392b09de063e707efaedb4c89284f4dfd674a9b404746d00c",
+    "groupCount": 18,
+    "managedCompatCount": 68
+  },
+  "summary": {
+    "managedCompatCount": 68,
+    "managedCategoryCounts": {
+      "actionable_upstream_gap": 11,
+      "handled_outside_lib": 3,
+      "legacy_excluded": 9,
+      "tracked_by_canonical_lib": 41,
+      "ts_settled_limitation": 4
+    },
+    "managedDeliveryCounts": {
+      "cover-checker": 2,
+      "defer-upstream": 56,
+      "exclude": 10
+    },
+    "managedUpstreamStateCounts": {
+      "actionable": 6,
+      "settled": 16,
+      "tracked": 46
+    },
+    "managedResolutionKindCounts": {
+      "already-excluded-upstream": 1,
+      "member": 1,
+      "not-modeled-upstream": 64,
+      "root-availability": 2
+    }
+  },
+  "groups": [
+    {
+      "id": "generator-function-partial-model",
+      "category": "ts_settled_limitation",
+      "delivery": "defer-upstream",
+      "upstreamState": "settled",
+      "reason": "TypeScript ships GeneratorFunction names in lib files, but actual generator function values are not modeled as GeneratorFunction under the current checker and declaration-emit architecture.",
+      "sourceUrls": [
+        "https://github.com/microsoft/TypeScript/issues/3841",
+        "https://github.com/microsoft/TypeScript/issues/44883",
+        "https://github.com/microsoft/TypeScript/issues/45146",
+        "https://github.com/microsoft/TypeScript/issues/56645",
+        "https://github.com/microsoft/TypeScript/pull/56646"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/45146",
+        "note": "Re-evaluate only if lib/checker connectivity changes or linked issues advance."
+      },
+      "compatKeyCount": 2,
+      "compatKeys": [
+        "javascript.builtins.GeneratorFunction",
+        "javascript.builtins.GeneratorFunction.GeneratorFunction"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream",
+        "root-availability"
+      ]
+    },
+    {
+      "id": "async-generator-function-partial-model",
+      "category": "ts_settled_limitation",
+      "delivery": "defer-upstream",
+      "upstreamState": "settled",
+      "reason": "TypeScript ships AsyncGeneratorFunction names in lib files, but actual async generator function values are not modeled as AsyncGeneratorFunction under the current checker and declaration-emit architecture.",
+      "sourceUrls": [
+        "https://github.com/microsoft/TypeScript/issues/3841",
+        "https://github.com/microsoft/TypeScript/issues/44883",
+        "https://github.com/microsoft/TypeScript/issues/45146",
+        "https://github.com/microsoft/TypeScript/issues/56645",
+        "https://github.com/microsoft/TypeScript/pull/56646"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/45146",
+        "note": "Re-evaluate only if lib/checker connectivity changes or linked issues advance."
+      },
+      "compatKeyCount": 2,
+      "compatKeys": [
+        "javascript.builtins.AsyncGeneratorFunction",
+        "javascript.builtins.AsyncGeneratorFunction.AsyncGeneratorFunction"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream",
+        "root-availability"
+      ]
+    },
+    {
+      "id": "globalthis-checker-covered",
+      "category": "handled_outside_lib",
+      "delivery": "cover-checker",
+      "upstreamState": "settled",
+      "compatRoot": "globalThis",
+      "expectedResolutionKinds": [
+        "not-modeled-upstream"
+      ],
+      "reason": "globalThis is provided by TypeScript's language and checker model rather than a dedicated baseline-lib declaration root.",
+      "sourceUrls": [
+        "https://devblogs.microsoft.com/typescript/announcing-typescript-3-4/",
+        "https://tc39.es/ecma262/2026/multipage/global-object.html"
+      ],
+      "externalAction": {
+        "kind": "none",
+        "note": "No external action. Treat as checker-covered."
+      },
+      "compatKeyCount": 1,
+      "compatKeys": [
+        "javascript.builtins.globalThis"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "undefined-checker-covered",
+      "category": "handled_outside_lib",
+      "delivery": "cover-checker",
+      "upstreamState": "settled",
+      "compatRoot": "undefined",
+      "expectedResolutionKinds": [
+        "not-modeled-upstream"
+      ],
+      "reason": "undefined is a language-global intrinsic and should be treated as checker-covered rather than emitted by the baseline lib generator.",
+      "sourceUrls": [
+        "https://tc39.es/ecma262/2026/multipage/global-object.html"
+      ],
+      "externalAction": {
+        "kind": "none",
+        "note": "No external action. Treat as checker-covered."
+      },
+      "compatKeyCount": 1,
+      "compatKeys": [
+        "javascript.builtins.undefined"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "promise-incumbent-settings-host-behavior",
+      "category": "handled_outside_lib",
+      "delivery": "exclude",
+      "upstreamState": "settled",
+      "reason": "Incumbent settings object tracking is host/runtime behavior defined by HTML, not a dedicated .d.ts surface to emit in baseline.",
+      "sourceUrls": [
+        "https://html.spec.whatwg.org/multipage/webappapis.html"
+      ],
+      "externalAction": {
+        "kind": "none",
+        "note": "No external action. Host semantics only."
+      },
+      "compatKeyCount": 1,
+      "compatKeys": [
+        "javascript.builtins.Promise.incumbent_settings_object_tracking"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "async-disposable-stack-tracked",
+      "category": "tracked_by_canonical_lib",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "compatRoot": "AsyncDisposableStack",
+      "reason": "This surface is already tracked by TypeScript through esnext.disposable and related roadmap issues. The baseline generator should wait for canonical lib progression instead of forking definitions.",
+      "sourceUrls": [
+        "https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/",
+        "https://github.com/microsoft/TypeScript/issues/52955",
+        "https://github.com/tc39/proposal-explicit-resource-management"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/52955",
+        "note": "Watch canonical lib migration and promote only after the standard lib surface is stable."
+      },
+      "compatKeyCount": 9,
+      "compatKeys": [
+        "javascript.builtins.AsyncDisposableStack",
+        "javascript.builtins.AsyncDisposableStack.@@asyncDispose",
+        "javascript.builtins.AsyncDisposableStack.AsyncDisposableStack",
+        "javascript.builtins.AsyncDisposableStack.adopt",
+        "javascript.builtins.AsyncDisposableStack.defer",
+        "javascript.builtins.AsyncDisposableStack.disposeAsync",
+        "javascript.builtins.AsyncDisposableStack.disposed",
+        "javascript.builtins.AsyncDisposableStack.move",
+        "javascript.builtins.AsyncDisposableStack.use"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "async-iterator-dispose-tracked",
+      "category": "tracked_by_canonical_lib",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "compatRoot": "AsyncIterator",
+      "reason": "This surface is already tracked by TypeScript through esnext.disposable and related roadmap issues. The baseline generator should wait for canonical lib progression instead of forking definitions.",
+      "sourceUrls": [
+        "https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/",
+        "https://github.com/microsoft/TypeScript/issues/52955",
+        "https://github.com/tc39/proposal-explicit-resource-management"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/52955",
+        "note": "Watch canonical lib migration and promote only after the standard lib surface is stable."
+      },
+      "compatKeyCount": 1,
+      "compatKeys": [
+        "javascript.builtins.AsyncIterator.@@asyncDispose"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "disposable-stack-tracked",
+      "category": "tracked_by_canonical_lib",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "compatRoot": "DisposableStack",
+      "reason": "This surface is already tracked by TypeScript through esnext.disposable and related roadmap issues. The baseline generator should wait for canonical lib progression instead of forking definitions.",
+      "sourceUrls": [
+        "https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/",
+        "https://github.com/microsoft/TypeScript/issues/52955",
+        "https://github.com/tc39/proposal-explicit-resource-management"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/52955",
+        "note": "Watch canonical lib migration and promote only after the standard lib surface is stable."
+      },
+      "compatKeyCount": 9,
+      "compatKeys": [
+        "javascript.builtins.DisposableStack",
+        "javascript.builtins.DisposableStack.@@dispose",
+        "javascript.builtins.DisposableStack.DisposableStack",
+        "javascript.builtins.DisposableStack.adopt",
+        "javascript.builtins.DisposableStack.defer",
+        "javascript.builtins.DisposableStack.dispose",
+        "javascript.builtins.DisposableStack.disposed",
+        "javascript.builtins.DisposableStack.move",
+        "javascript.builtins.DisposableStack.use"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "suppressed-error-tracked",
+      "category": "tracked_by_canonical_lib",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "compatRoot": "SuppressedError",
+      "reason": "This surface is already tracked by TypeScript through esnext.disposable and related roadmap issues. The baseline generator should wait for canonical lib progression instead of forking definitions.",
+      "sourceUrls": [
+        "https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/",
+        "https://github.com/microsoft/TypeScript/issues/52955",
+        "https://github.com/tc39/proposal-explicit-resource-management"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/52955",
+        "note": "Watch canonical lib migration and promote only after the standard lib surface is stable."
+      },
+      "compatKeyCount": 4,
+      "compatKeys": [
+        "javascript.builtins.SuppressedError",
+        "javascript.builtins.SuppressedError.SuppressedError",
+        "javascript.builtins.SuppressedError.error",
+        "javascript.builtins.SuppressedError.suppressed"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "dispose-symbols-tracked",
+      "category": "tracked_by_canonical_lib",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "compatRoot": "Symbol",
+      "reason": "This surface is already tracked by TypeScript through esnext.disposable and related roadmap issues. The baseline generator should wait for canonical lib progression instead of forking definitions.",
+      "sourceUrls": [
+        "https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/",
+        "https://github.com/microsoft/TypeScript/issues/52955",
+        "https://github.com/tc39/proposal-explicit-resource-management"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/52955",
+        "note": "Watch canonical lib migration and promote only after the standard lib surface is stable."
+      },
+      "compatKeyCount": 2,
+      "compatKeys": [
+        "javascript.builtins.Symbol.asyncDispose",
+        "javascript.builtins.Symbol.dispose"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "iterator-dispose-tracked",
+      "category": "tracked_by_canonical_lib",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "compatRoot": "Iterator",
+      "reason": "Iterator dispose is tracked with the same canonical library and proposal flow as the rest of explicit resource management and should be promoted through the standard library path.",
+      "sourceUrls": [
+        "https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/",
+        "https://github.com/microsoft/TypeScript/issues/52955",
+        "https://github.com/tc39/proposal-explicit-resource-management"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/52955",
+        "note": "Watch canonical lib migration and promote only after the standard lib surface is stable."
+      },
+      "compatKeyCount": 1,
+      "compatKeys": [
+        "javascript.builtins.Iterator.@@dispose"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "iterator-helpers-tracked",
+      "category": "tracked_by_canonical_lib",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "compatRoot": "Iterator",
+      "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
+      "sourceUrls": [
+        "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
+        "https://github.com/microsoft/TypeScript/issues/61735",
+        "https://github.com/tc39/proposal-iterator-helpers"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
+        "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
+      },
+      "compatKeyCount": 14,
+      "compatKeys": [
+        "javascript.builtins.Iterator.Iterator",
+        "javascript.builtins.Iterator.concat",
+        "javascript.builtins.Iterator.drop",
+        "javascript.builtins.Iterator.every",
+        "javascript.builtins.Iterator.filter",
+        "javascript.builtins.Iterator.find",
+        "javascript.builtins.Iterator.flatMap",
+        "javascript.builtins.Iterator.forEach",
+        "javascript.builtins.Iterator.from",
+        "javascript.builtins.Iterator.map",
+        "javascript.builtins.Iterator.reduce",
+        "javascript.builtins.Iterator.some",
+        "javascript.builtins.Iterator.take",
+        "javascript.builtins.Iterator.toArray"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "math-sum-precise-tracked",
+      "category": "tracked_by_canonical_lib",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "reason": "Math.sumPrecise is still proposal-driven surface. The baseline generator should watch the proposal and eventual canonical lib adoption instead of defining it locally.",
+      "sourceUrls": [
+        "https://github.com/tc39/proposal-math-sum"
+      ],
+      "externalAction": {
+        "kind": "watch-proposal",
+        "targetUrl": "https://github.com/tc39/proposal-math-sum",
+        "note": "Revisit once the proposal advances and TypeScript adopts a canonical lib surface."
+      },
+      "compatKeyCount": 1,
+      "compatKeys": [
+        "javascript.builtins.Math.sumPrecise"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "async-function-upstream-gap",
+      "category": "actionable_upstream_gap",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "compatRoot": "AsyncFunction",
+      "expectedResolutionKinds": [
+        "not-modeled-upstream"
+      ],
+      "reason": "TypeScript does not expose a first-class AsyncFunction / AsyncFunctionConstructor surface today. Existing discussion is adjacent, but the canonical lib gap remains unresolved.",
+      "sourceUrls": [
+        "https://github.com/microsoft/TypeScript/issues/36177",
+        "https://tc39.es/ecma262/multipage/control-abstraction-objects.html"
+      ],
+      "externalAction": {
+        "kind": "consider-focused-issue",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/36177",
+        "note": "Existing issue is adjacent. A focused lib/checker issue may still be needed after TS7 stabilization."
+      },
+      "compatKeyCount": 2,
+      "compatKeys": [
+        "javascript.builtins.AsyncFunction",
+        "javascript.builtins.AsyncFunction.AsyncFunction"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "intl-plural-rules-upstream-gap",
+      "category": "actionable_upstream_gap",
+      "delivery": "defer-upstream",
+      "upstreamState": "actionable",
+      "expectedResolutionKinds": [
+        "not-modeled-upstream"
+      ],
+      "reason": "The current TypeScript lib does not model Intl.PluralRules selectRange and related rounding option fields that web-features tracks, and no direct upstream issue was confirmed in this audit.",
+      "sourceUrls": [
+        "https://tc39.es/ecma402/2025/"
+      ],
+      "externalAction": {
+        "kind": "file-issue",
+        "repo": "microsoft/TypeScript",
+        "note": "No direct TypeScript issue confirmed as of 2026-04-25. File a focused Domain: lib.d.ts issue after TS7 stabilization."
+      },
+      "compatKeyCount": 5,
+      "compatKeys": [
+        "javascript.builtins.Intl.PluralRules.PluralRules.options_parameter.options_roundingIncrement_parameter",
+        "javascript.builtins.Intl.PluralRules.PluralRules.options_parameter.options_roundingMode_parameter",
+        "javascript.builtins.Intl.PluralRules.PluralRules.options_parameter.options_roundingPriority_parameter",
+        "javascript.builtins.Intl.PluralRules.PluralRules.options_parameter.options_trailingZeroDisplay_parameter",
+        "javascript.builtins.Intl.PluralRules.selectRange"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "typed-array-species-upstream-gap",
+      "category": "actionable_upstream_gap",
+      "delivery": "defer-upstream",
+      "upstreamState": "actionable",
+      "expectedResolutionKinds": [
+        "not-modeled-upstream"
+      ],
+      "reason": "TypeScript models several Symbol.species surfaces but not the TypedArray constructor family tracked by web-features. A related Symbol.species issue exists, but no direct TypedArray species issue was confirmed in this audit.",
+      "sourceUrls": [
+        "https://github.com/microsoft/TypeScript/issues/50168",
+        "https://tc39.es/ecma262/2026/multipage/global-object.html"
+      ],
+      "externalAction": {
+        "kind": "file-issue",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/50168",
+        "note": "Use #50168 as related context, but file a focused TypedArray Symbol.species issue if the gap remains after TS7 stabilization."
+      },
+      "compatKeyCount": 1,
+      "compatKeys": [
+        "javascript.builtins.TypedArray.@@species"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "json-parse-with-source-gap",
+      "category": "actionable_upstream_gap",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "expectedResolutionKinds": [
+        "not-modeled-upstream",
+        "already-excluded-upstream"
+      ],
+      "reason": "proposal-json-parse-with-source is tracked upstream, but the current TypeScript lib still lacks JSON.rawJSON, JSON.isRawJSON, and the reviver context parameter surface required by web-features.",
+      "sourceUrls": [
+        "https://github.com/microsoft/TypeScript/issues/61330",
+        "https://github.com/tc39/proposal-json-parse-with-source"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/61330",
+        "note": "Watch the existing Domain: lib.d.ts issue and promote once the canonical lib surface lands."
+      },
+      "compatKeyCount": 3,
+      "compatKeys": [
+        "javascript.builtins.JSON.isRawJSON",
+        "javascript.builtins.JSON.parse.reviver_parameter_context_argument",
+        "javascript.builtins.JSON.rawJSON"
+      ],
+      "actualResolutionKinds": [
+        "already-excluded-upstream",
+        "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "legacy-annex-b-excluded",
+      "category": "legacy_excluded",
+      "delivery": "exclude",
+      "upstreamState": "settled",
+      "reason": "These are legacy or Annex B-style web compatibility surfaces that should not become first-class baseline declarations.",
+      "sourceUrls": [
+        "https://tc39.es/ecma262/2026/multipage/additional-ecmascript-features-for-web-browsers.html"
+      ],
+      "externalAction": {
+        "kind": "none",
+        "note": "No external action. Keep excluded unless the spec position changes."
+      },
+      "compatKeyCount": 9,
+      "compatKeys": [
+        "javascript.builtins.Date.getYear",
+        "javascript.builtins.Date.setYear",
+        "javascript.builtins.Date.toGMTString",
+        "javascript.builtins.Object.defineGetter",
+        "javascript.builtins.Object.defineSetter",
+        "javascript.builtins.Object.lookupGetter",
+        "javascript.builtins.Object.lookupSetter",
+        "javascript.builtins.Object.proto",
+        "javascript.builtins.RegExp.n"
+      ],
+      "actualResolutionKinds": [
+        "member",
+        "not-modeled-upstream"
+      ]
+    }
+  ]
+}
