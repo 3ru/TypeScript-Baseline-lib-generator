@@ -36,6 +36,11 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
+
+      # OIDC publishing needs npm >= 11.5.1; Node 22 bundles npm 10.
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
       - run: npm ci
 
       - name: Run static JS checks
@@ -83,13 +88,7 @@ jobs:
           path: .tmp/typescript-raw-local-baselines
           if-no-files-found: ignore
 
-      - name: Configure npm auth
-        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-
-      # npm provenance is only verifiable on public repositories, so attach it
-      # only when the repo is public.
+      # Tokenless publish via OIDC trusted publishing; provenance only on public repos.
       - name: Publish changed package and create GitHub release
         run: npm run release:publish -- ${{ !github.event.repository.private && '--provenance' || '' }}
         env:
