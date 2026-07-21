@@ -1,10 +1,10 @@
 {
   "snapshot": {
     "name": "baseline-js",
-    "baselineDate": "2026-07-07",
-    "extractedDate": "2026-07-07",
+    "baselineDate": "2026-07-21",
+    "extractedDate": "2026-07-21",
     "webFeaturesPackageName": "web-features",
-    "webFeaturesPackageVersion": "3.32.0"
+    "webFeaturesPackageVersion": "3.34.1"
   },
   "featureRows": [
     {
