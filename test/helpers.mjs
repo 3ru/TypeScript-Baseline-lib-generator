@@ -103,6 +103,8 @@ export function createManifest(tempDirectory, options = {}) {
         libName: "baseline",
         outputFile: path.join(outputRoot, "generated", "baseline.d.ts"),
         allowDirectory: path.join(outputRoot, "generated", "allow"),
+        yearDirectory: path.join(outputRoot, "generated", "year"),
+        firstYear: repoManifest.firstClassLib.firstYear,
     };
     if (options.generatedOutputPath) {
         manifest.firstClassLib.outputFile = toPosixRelativePath(manifestDirectory, options.generatedOutputPath);

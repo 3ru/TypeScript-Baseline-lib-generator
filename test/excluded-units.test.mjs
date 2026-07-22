@@ -125,8 +125,8 @@ test("whole-file preserved libs fail closed when they contain excluded units", a
 
     const fileRecord = inventory.fileByLibFileName.get("lib.esnext.widget.d.ts");
     assert.ok(fileRecord?.preserveWholeFile, "fixture file must be whole-file preserved");
-    const safeMember = requireMemberUnit(inventory, "global.GlobalWidget::safe");
-    const riskyMember = requireMemberUnit(inventory, "global.GlobalWidget::risky");
+    const safeMember = requireMemberUnit(inventory, "GlobalWidget::safe");
+    const riskyMember = requireMemberUnit(inventory, "GlobalWidget::risky");
 
     assert.throws(
         () =>

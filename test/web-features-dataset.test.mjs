@@ -59,6 +59,16 @@ test("resolveSnapshotDate advances the date when the content actually changed", 
     );
 });
 
+test("resolveSnapshotDate advances at a year boundary even when content is unchanged", () => {
+    const existing = datasetFixture("2026-12-29");
+    const rebuilt = datasetFixture("2027-01-05");
+    assert.ok(datasetsEqualIgnoringDate(existing, rebuilt));
+    assert.equal(
+        resolveSnapshotDate({ existingDataset: existing, newDataset: rebuilt, candidateDate: "2027-01-05" }),
+        "2027-01-05",
+    );
+});
+
 test("resolveSnapshotDate uses the candidate date on first extraction (no existing dataset)", () => {
     assert.equal(
         resolveSnapshotDate({ existingDataset: undefined, newDataset: datasetFixture("2026-12-31"), candidateDate: "2026-12-31" }),
@@ -192,5 +202,48 @@ test("dataset loader rejects checked-in rows with unsupported baseline statuses"
     await assert.rejects(
         loadBaselineDataset(datasetPath, "web-features-test"),
         /unsupported baselineStatus "widely"/,
+    );
+});
+
+test("dataset loader validates Baseline dates against the snapshot", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const datasetPath = path.join(tempDirectory, "dataset.json");
+
+    /** @type {Array<[string | undefined, RegExp]>} */
+    const invalidDates = [
+        ["2024-99-99", /not a valid ISO date/],
+        ["2027-01-01", /is after snapshot 2026-07-07/],
+        [undefined, /is not a valid Baseline date/],
+    ];
+    for (const [baselineLowDate, expectedError] of invalidDates) {
+        writeJsonFile(datasetPath, {
+            snapshot: { name: "web-features-test", baselineDate: "2026-07-07" },
+            featureRows: [{ featureId: "widget-helpers" }],
+            compatRows: [{
+                compatKey: "javascript.builtins.Widget.good",
+                featureId: "widget-helpers",
+                baselineStatus: "high",
+                ...(baselineLowDate ? { baselineLowDate } : {}),
+            }],
+        });
+        await assert.rejects(
+            loadBaselineDataset(datasetPath, "web-features-test", "2026-07-07"),
+            expectedError,
+        );
+    }
+});
+
+test("dataset loader requires the manifest and dataset Baseline dates to match", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const datasetPath = path.join(tempDirectory, "dataset.json");
+    writeJsonFile(datasetPath, {
+        snapshot: { name: "web-features-test", baselineDate: "2025-12-31" },
+        featureRows: [],
+        compatRows: [],
+    });
+
+    await assert.rejects(
+        loadBaselineDataset(datasetPath, "web-features-test", "2026-07-07"),
+        /Dataset baselineDate 2025-12-31 does not match expected 2026-07-07/,
     );
 });

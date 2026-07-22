@@ -8,6 +8,7 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { compareYearContracts } from "../lib/year-contracts.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const scriptDirectory = path.dirname(scriptPath);
@@ -15,19 +16,24 @@ const repoRoot = path.resolve(scriptDirectory, "..");
 const defaultManifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
 const defaultOutputPath = path.join(repoRoot, ".tmp", "baseline-lib-update-pr.md");
 
-const args = parseArgs(process.argv.slice(2));
-const manifestPath = path.resolve(args.manifest ?? defaultManifestPath);
-const outputPath = path.resolve(args.out ?? defaultOutputPath);
-const summaryOutputPath = args.summaryOut ? path.resolve(args.summaryOut) : undefined;
-const baseRef = args.baseRef ?? "HEAD";
+if (process.argv[1] && path.resolve(process.argv[1]) === scriptPath) {
+    await main(parseArgs(process.argv.slice(2)));
+}
 
-await main();
-
-async function main() {
+/**
+ * @param {{ manifest?: string; out?: string; summaryOut?: string; baseRef?: string; }} args
+ */
+async function main(args) {
+    const manifestPath = path.resolve(args.manifest ?? defaultManifestPath);
+    const outputPath = path.resolve(args.out ?? defaultOutputPath);
+    const summaryOutputPath = args.summaryOut ? path.resolve(args.summaryOut) : undefined;
+    const baseRef = args.baseRef ?? "HEAD";
     const currentManifest = await readJsonFile(manifestPath);
-    const currentState = await readCurrentState(currentManifest);
+    const currentState = await readCurrentState(currentManifest, manifestPath);
     const previousManifest = readJsonFileFromGit(baseRef, path.relative(repoRoot, manifestPath));
-    const previousState = previousManifest ? readStateFromGit(previousManifest) : undefined;
+    const previousState = previousManifest
+        ? readStateFromGit(previousManifest, manifestPath, baseRef)
+        : undefined;
 
     const summary = buildUpdateSummary({
         currentManifest,
@@ -37,7 +43,7 @@ async function main() {
     });
 
     await mkdir(path.dirname(outputPath), { recursive: true });
-    await writeFile(outputPath, `${renderMarkdown(summary)}\n`);
+    await writeFile(outputPath, `${renderUpdateMarkdown(summary)}\n`);
 
     if (summaryOutputPath) {
         await mkdir(path.dirname(summaryOutputPath), { recursive: true });
@@ -105,8 +111,9 @@ Examples:
 
 /**
  * @param {any} manifest
+ * @param {string} manifestPath
  */
-async function readCurrentState(manifest) {
+async function readCurrentState(manifest, manifestPath) {
     return {
         classification: await readJsonFile(resolveManifestRelativePath(manifestPath, manifest.classificationOutput)),
         generation: await readJsonFile(resolveManifestRelativePath(manifestPath, manifest.generationOutput)),
@@ -116,8 +123,10 @@ async function readCurrentState(manifest) {
 
 /**
  * @param {any} manifest
+ * @param {string} manifestPath
+ * @param {string} baseRef
  */
-function readStateFromGit(manifest) {
+function readStateFromGit(manifest, manifestPath, baseRef) {
     return {
         classification: readJsonFileFromGit(baseRef, path.relative(repoRoot, resolveManifestRelativePath(manifestPath, manifest.classificationOutput))),
         generation: readJsonFileFromGit(baseRef, path.relative(repoRoot, resolveManifestRelativePath(manifestPath, manifest.generationOutput))),
@@ -133,7 +142,7 @@ function readStateFromGit(manifest) {
  *   previousState?: { classification?: any; generation?: any; compatManagement?: any; };
  * }} options
  */
-function buildUpdateSummary(options) {
+export function buildUpdateSummary(options) {
     const {
         currentManifest,
         currentState,
@@ -150,6 +159,10 @@ function buildUpdateSummary(options) {
     const currentAllowEntries = currentState.generation.allowEntries ?? [];
     const previousAllowEntries = previousState?.generation?.allowEntries ?? [];
     const allowEntryChanges = compareAllowEntries(previousAllowEntries, currentAllowEntries);
+    const yearContractComparison = compareYearContracts(
+        JSON.stringify(previousState?.generation ?? {}),
+        JSON.stringify(currentState.generation),
+    );
 
     /** @type {string[]} */
     const reviewFlags = [];
@@ -164,6 +177,11 @@ function buildUpdateSummary(options) {
     }
     if (allowEntryChanges.length) {
         reviewFlags.push("Allow entry state or compat contract changed. Verify the polyfill contract and generated declaration diff before merging.");
+    }
+    if (yearContractComparison.changes.length) {
+        reviewFlags.push(
+            `Baseline year contract changed. Inspect every year declaration diff and use at least a ${yearContractComparison.requiredVersionBump} package version bump.`,
+        );
     }
     if (!reviewFlags.length) {
         reviewFlags.push("No special review flags beyond the normal generated diff review.");
@@ -199,6 +217,11 @@ function buildUpdateSummary(options) {
             ).length,
             changes: allowEntryChanges,
         },
+        yearEntries: {
+            count: (currentState.generation.yearEntries ?? []).length,
+            changes: yearContractComparison.changes.map(formatYearContractChange),
+            requiredVersionBump: yearContractComparison.requiredVersionBump,
+        },
         reviewFlags,
     };
 }
@@ -206,7 +229,7 @@ function buildUpdateSummary(options) {
 /**
  * @param {ReturnType<typeof buildUpdateSummary>} summary
  */
-function renderMarkdown(summary) {
+export function renderUpdateMarkdown(summary) {
     const currentClassificationSummary = summary.currentState.classification.summary;
     const currentGenerationSummary = summary.currentState.generation.summary;
     const currentCompatSummary = summary.currentState.compatManagement.summary;
@@ -236,6 +259,9 @@ function renderMarkdown(summary) {
         `- Transformed units: ${formatCountWithDelta(currentGenerationSummary.transformedUnitCount, summary.deltas.transformedUnitCount)}`,
         `- Allow entries: ${summary.allowEntries.activeCount} active, ${summary.allowEntries.aliasCount} aliases`,
         `- Allow entry changes: ${summary.allowEntries.changes.length ? summary.allowEntries.changes.join("; ") : "none"}`,
+        `- Baseline year entries: ${summary.yearEntries.count}`,
+        `- Year contract changes: ${summary.yearEntries.changes.length ? summary.yearEntries.changes.join("; ") : "none"}`,
+        `- Required package version bump: ${summary.yearEntries.requiredVersionBump ?? "none"}`,
         "",
         "## Compat Management",
         `- Registry hash: \`${summary.currentState.compatManagement.registry.sourceHash}\``,
@@ -256,6 +282,22 @@ function renderMarkdown(summary) {
         "## Review Notes",
         ...summary.reviewFlags.map(flag => `- ${flag}`),
     ].join("\n");
+}
+
+/**
+ * @param {{ year: number; kind: "added" | "removed" | "expanded" | "changed"; requiredVersionBump: "major" | "minor"; }} change
+ */
+function formatYearContractChange(change) {
+    switch (change.kind) {
+        case "added":
+            return `added year/${change.year}`;
+        case "removed":
+            return `removed year/${change.year}`;
+        case "expanded":
+            return `year/${change.year} compat contract expanded`;
+        case "changed":
+            return `year/${change.year} declaration contract changed`;
+    }
 }
 
 /**

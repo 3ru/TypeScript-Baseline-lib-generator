@@ -29,7 +29,9 @@
     "firstClassLib": {
         "libName": "baseline",
         "outputFile": "../generated/current/baseline.d.ts",
-        "allowDirectory": "../generated/current/allow"
+        "allowDirectory": "../generated/current/allow",
+        "yearDirectory": "../generated/current/year",
+        "firstYear": 2020
     },
     "libSource": {
         "basePackage": "typescript",

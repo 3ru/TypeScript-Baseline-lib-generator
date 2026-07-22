@@ -13,36 +13,36 @@
     "falseCompatCount": 323,
     "includedCompatCount": 750,
     "emitCompatCount": 997,
-    "notModeledUpstreamCount": 64,
+    "notModeledUpstreamCount": 51,
     "alreadyExcludedUpstreamCount": 1,
-    "managedCompatCount": 68,
+    "managedCompatCount": 55,
     "managedCategoryCounts": {
-      "actionable_upstream_gap": 11,
+      "actionable_upstream_gap": 12,
       "handled_outside_lib": 3,
       "legacy_excluded": 9,
-      "tracked_by_canonical_lib": 41,
+      "tracked_by_canonical_lib": 27,
       "ts_settled_limitation": 4
     },
     "managedDeliveryCounts": {
       "cover-checker": 2,
-      "defer-upstream": 56,
+      "defer-upstream": 43,
       "exclude": 10
     },
     "managedUpstreamStateCounts": {
-      "actionable": 6,
+      "actionable": 7,
       "settled": 16,
-      "tracked": 46
+      "tracked": 32
     },
-    "selectedUnitCount": 1407,
+    "selectedUnitCount": 1444,
     "transformedUnitCount": 2
   },
   "compatManagementRegistryPath": "registry/compat-management.json",
   "compatManagementRegistrySummary": {
     "kind": "typescript-baseline-lib/compat-management-registry",
     "schemaVersion": 1,
-    "sourceHash": "sha256-efab202483397a0392b09de063e707efaedb4c89284f4dfd674a9b404746d00c",
+    "sourceHash": "sha256-499ed0fef28ff4f9a9757e19996b9e498ba8ee658fab3659be1e81cfb73c70ed",
     "groupCount": 18,
-    "managedCompatCount": 68
+    "managedCompatCount": 55
   },
   "classifiedCompatRows": [
     {
@@ -86,6 +86,8 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2021.promise.d.ts::AggregateError::8",
+        "lib.es2021.promise.d.ts::AggregateErrorConstructor.prototype::7",
         "lib.es2022.error.d.ts::AggregateErrorConstructor.<call>::37",
         "lib.es2022.error.d.ts::AggregateErrorConstructor.<construct>::36"
       ],
@@ -240,12 +242,14 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::Array::443",
         "lib.es5.d.ts::ArrayConstructor.<call>::438",
         "lib.es5.d.ts::ArrayConstructor.<call>::439",
         "lib.es5.d.ts::ArrayConstructor.<call>::440",
         "lib.es5.d.ts::ArrayConstructor.<construct>::435",
         "lib.es5.d.ts::ArrayConstructor.<construct>::436",
-        "lib.es5.d.ts::ArrayConstructor.<construct>::437"
+        "lib.es5.d.ts::ArrayConstructor.<construct>::437",
+        "lib.es5.d.ts::ArrayConstructor.prototype::442"
       ],
       "transforms": [],
       "notes": "constructor surface for Array"
@@ -1371,7 +1375,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2024.arraybuffer.d.ts::ArrayBufferConstructor.<construct>::10"
+        "lib.es2024.arraybuffer.d.ts::ArrayBufferConstructor.<construct>::10",
+        "lib.es5.d.ts::ArrayBuffer::502",
+        "lib.es5.d.ts::ArrayBufferConstructor.prototype::499"
       ],
       "transforms": [],
       "notes": "constructor surface for ArrayBuffer"
@@ -2573,7 +2579,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2020.bigint.d.ts::BigIntConstructor.<call>::25"
+        "lib.es2020.bigint.d.ts::BigInt::29",
+        "lib.es2020.bigint.d.ts::BigIntConstructor.<call>::25",
+        "lib.es2020.bigint.d.ts::BigIntConstructor.prototype::26"
       ],
       "transforms": [],
       "notes": "constructor surface for BigInt"
@@ -2767,11 +2775,13 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2020.bigint.d.ts::BigInt64Array::82",
         "lib.es2020.bigint.d.ts::BigInt64ArrayConstructor.<construct>::71",
         "lib.es2020.bigint.d.ts::BigInt64ArrayConstructor.<construct>::72",
         "lib.es2020.bigint.d.ts::BigInt64ArrayConstructor.<construct>::73",
         "lib.es2020.bigint.d.ts::BigInt64ArrayConstructor.<construct>::74",
-        "lib.es2020.bigint.d.ts::BigInt64ArrayConstructor.<construct>::75"
+        "lib.es2020.bigint.d.ts::BigInt64ArrayConstructor.<construct>::75",
+        "lib.es2020.bigint.d.ts::BigInt64ArrayConstructor.prototype::70"
       ],
       "transforms": [],
       "notes": "constructor surface for BigInt64Array"
@@ -2817,11 +2827,13 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2020.bigint.d.ts::BigUint64Array::135",
         "lib.es2020.bigint.d.ts::BigUint64ArrayConstructor.<construct>::124",
         "lib.es2020.bigint.d.ts::BigUint64ArrayConstructor.<construct>::125",
         "lib.es2020.bigint.d.ts::BigUint64ArrayConstructor.<construct>::126",
         "lib.es2020.bigint.d.ts::BigUint64ArrayConstructor.<construct>::127",
-        "lib.es2020.bigint.d.ts::BigUint64ArrayConstructor.<construct>::128"
+        "lib.es2020.bigint.d.ts::BigUint64ArrayConstructor.<construct>::128",
+        "lib.es2020.bigint.d.ts::BigUint64ArrayConstructor.prototype::123"
       ],
       "transforms": [],
       "notes": "constructor surface for BigUint64Array"
@@ -2863,8 +2875,10 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::Boolean::138",
         "lib.es5.d.ts::BooleanConstructor.<call>::136",
-        "lib.es5.d.ts::BooleanConstructor.<construct>::135"
+        "lib.es5.d.ts::BooleanConstructor.<construct>::135",
+        "lib.es5.d.ts::BooleanConstructor.prototype::137"
       ],
       "transforms": [],
       "notes": "constructor surface for Boolean"
@@ -2948,7 +2962,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::DataViewConstructor.<construct>::532"
+        "lib.es5.d.ts::DataView::533",
+        "lib.es5.d.ts::DataViewConstructor.<construct>::532",
+        "lib.es5.d.ts::DataViewConstructor.prototype::531"
       ],
       "transforms": [],
       "notes": "constructor surface for DataView"
@@ -3577,7 +3593,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2015.core.d.ts::DateConstructor.<construct>::15",
-        "lib.es5.d.ts::DateConstructor.<call>::251"
+        "lib.es5.d.ts::Date::256",
+        "lib.es5.d.ts::DateConstructor.<call>::251",
+        "lib.es5.d.ts::DateConstructor.prototype::252"
       ],
       "transforms": [],
       "notes": "constructor surface for Date"
@@ -5166,7 +5184,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2022.error.d.ts::ErrorConstructor.<call>::9",
-        "lib.es2022.error.d.ts::ErrorConstructor.<construct>::8"
+        "lib.es2022.error.d.ts::ErrorConstructor.<construct>::8",
+        "lib.es5.d.ts::Error::314",
+        "lib.es5.d.ts::ErrorConstructor.prototype::313"
       ],
       "transforms": [],
       "notes": "constructor surface for Error"
@@ -5341,7 +5361,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2022.error.d.ts::EvalErrorConstructor.<call>::13",
-        "lib.es2022.error.d.ts::EvalErrorConstructor.<construct>::12"
+        "lib.es2022.error.d.ts::EvalErrorConstructor.<construct>::12",
+        "lib.es5.d.ts::EvalError::322",
+        "lib.es5.d.ts::EvalErrorConstructor.prototype::321"
       ],
       "transforms": [],
       "notes": "constructor surface for EvalError"
@@ -5403,7 +5425,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2021.weakref.d.ts::FinalizationRegistryConstructor.<construct>::17"
+        "lib.es2021.weakref.d.ts::FinalizationRegistry::18",
+        "lib.es2021.weakref.d.ts::FinalizationRegistryConstructor.<construct>::17",
+        "lib.es2021.weakref.d.ts::FinalizationRegistryConstructor.prototype::16"
       ],
       "transforms": [],
       "notes": "constructor surface for FinalizationRegistry"
@@ -5528,11 +5552,13 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2025.float16.d.ts::Float16Array::61",
         "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::50",
         "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::51",
         "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::52",
         "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::53",
-        "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::54"
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::54",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.prototype::49"
       ],
       "transforms": [],
       "notes": "constructor surface for Float16Array"
@@ -5578,7 +5604,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2017.typedarrays.d.ts::Float32ArrayConstructor.<construct>::23"
+        "lib.es2017.typedarrays.d.ts::Float32ArrayConstructor.<construct>::23",
+        "lib.es5.d.ts::Float32Array::909",
+        "lib.es5.d.ts::Float32ArrayConstructor.prototype::899"
       ],
       "transforms": [],
       "notes": "constructor surface for Float32Array"
@@ -5668,7 +5696,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2017.typedarrays.d.ts::Float64ArrayConstructor.<construct>::26"
+        "lib.es2017.typedarrays.d.ts::Float64ArrayConstructor.<construct>::26",
+        "lib.es5.d.ts::Float64Array::956",
+        "lib.es5.d.ts::Float64ArrayConstructor.prototype::946"
       ],
       "transforms": [],
       "notes": "constructor surface for Float64Array"
@@ -5774,8 +5804,10 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::Function::76",
         "lib.es5.d.ts::FunctionConstructor.<call>::74",
-        "lib.es5.d.ts::FunctionConstructor.<construct>::73"
+        "lib.es5.d.ts::FunctionConstructor.<construct>::73",
+        "lib.es5.d.ts::FunctionConstructor.prototype::75"
       ],
       "transforms": [],
       "notes": "constructor surface for Function"
@@ -6258,7 +6290,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2017.typedarrays.d.ts::Int16ArrayConstructor.<construct>::11"
+        "lib.es2017.typedarrays.d.ts::Int16ArrayConstructor.<construct>::11",
+        "lib.es5.d.ts::Int16Array::721",
+        "lib.es5.d.ts::Int16ArrayConstructor.prototype::711"
       ],
       "transforms": [],
       "notes": "constructor surface for Int16Array"
@@ -6348,7 +6382,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2017.typedarrays.d.ts::Int32ArrayConstructor.<construct>::17"
+        "lib.es2017.typedarrays.d.ts::Int32ArrayConstructor.<construct>::17",
+        "lib.es5.d.ts::Int32Array::815",
+        "lib.es5.d.ts::Int32ArrayConstructor.prototype::805"
       ],
       "transforms": [],
       "notes": "constructor surface for Int32Array"
@@ -6438,7 +6474,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2017.typedarrays.d.ts::Int8ArrayConstructor.<construct>::2"
+        "lib.es2017.typedarrays.d.ts::Int8ArrayConstructor.<construct>::2",
+        "lib.es5.d.ts::Int8Array::580",
+        "lib.es5.d.ts::Int8ArrayConstructor.prototype::570"
       ],
       "transforms": [],
       "notes": "constructor surface for Int8Array"
@@ -6545,7 +6583,8 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2020.intl.d.ts::Intl.CollatorConstructor.<call>::129",
-        "lib.es2020.intl.d.ts::Intl.CollatorConstructor.<construct>::128"
+        "lib.es2020.intl.d.ts::Intl.CollatorConstructor.<construct>::128",
+        "lib.es5.d.ts::Intl.Collator::986"
       ],
       "transforms": [],
       "notes": "constructor surface for Intl.Collator"
@@ -6794,7 +6833,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2020.intl.d.ts::Intl.DateTimeFormatConstructor.<call>::134",
-        "lib.es2020.intl.d.ts::Intl.DateTimeFormatConstructor.<construct>::133"
+        "lib.es2020.intl.d.ts::Intl.DateTimeFormatConstructor.<construct>::133",
+        "lib.es5.d.ts::Intl.DateTimeFormat::1080",
+        "lib.es5.d.ts::Intl.DateTimeFormatConstructor.prototype::1079"
       ],
       "transforms": [],
       "notes": "constructor surface for Intl.DateTimeFormat"
@@ -7264,7 +7305,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2020.intl.d.ts::Intl.DisplayNames.<construct>::124"
+        "lib.es2020.intl.d.ts::Intl.DisplayNames.<construct>::124",
+        "lib.es2020.intl.d.ts::Intl.DisplayNames.prototype::123",
+        "lib.es2020.intl.d.ts::Intl.DisplayNames::122"
       ],
       "transforms": [],
       "notes": "constructor surface for Intl.DisplayNames"
@@ -7363,7 +7406,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2025.intl.d.ts::Intl.DurationFormat.<construct>::68"
+        "lib.es2025.intl.d.ts::Intl.DurationFormat.<construct>::68",
+        "lib.es2025.intl.d.ts::Intl.DurationFormat.prototype::67",
+        "lib.es2025.intl.d.ts::Intl.DurationFormat::66"
       ],
       "transforms": [],
       "notes": "constructor surface for Intl.DurationFormat"
@@ -7480,7 +7525,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2021.intl.d.ts::Intl.ListFormat.<construct>::48"
+        "lib.es2021.intl.d.ts::Intl.ListFormat.<construct>::48",
+        "lib.es2021.intl.d.ts::Intl.ListFormat.prototype::47",
+        "lib.es2021.intl.d.ts::Intl.ListFormat::46"
       ],
       "transforms": [],
       "notes": "constructor surface for Intl.ListFormat"
@@ -7601,7 +7648,8 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2020.intl.d.ts::Intl.Locale.<construct>::99"
+        "lib.es2020.intl.d.ts::Intl.Locale.<construct>::99",
+        "lib.es2020.intl.d.ts::Intl.Locale::98"
       ],
       "transforms": [],
       "notes": "constructor surface for Intl.Locale"
@@ -8030,7 +8078,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2020.intl.d.ts::Intl.NumberFormatConstructor.<call>::139",
-        "lib.es2020.intl.d.ts::Intl.NumberFormatConstructor.<construct>::138"
+        "lib.es2020.intl.d.ts::Intl.NumberFormatConstructor.<construct>::138",
+        "lib.es5.d.ts::Intl.NumberFormat::1038",
+        "lib.es5.d.ts::Intl.NumberFormatConstructor.prototype::1037"
       ],
       "transforms": [],
       "notes": "constructor surface for Intl.NumberFormat"
@@ -8752,6 +8802,7 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2018.intl.d.ts::Intl.PluralRules::32",
         "lib.es2020.intl.d.ts::Intl.PluralRulesConstructor.<call>::144",
         "lib.es2020.intl.d.ts::Intl.PluralRulesConstructor.<construct>::143"
       ],
@@ -9051,7 +9102,8 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2020.intl.d.ts::Intl.RelativeTimeFormat.<construct>::28"
+        "lib.es2020.intl.d.ts::Intl.RelativeTimeFormat.<construct>::28",
+        "lib.es2020.intl.d.ts::Intl.RelativeTimeFormat::27"
       ],
       "transforms": [],
       "notes": "constructor surface for Intl.RelativeTimeFormat"
@@ -9251,7 +9303,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2022.intl.d.ts::Intl.Segmenter.<construct>::30"
+        "lib.es2022.intl.d.ts::Intl.Segmenter.<construct>::30",
+        "lib.es2022.intl.d.ts::Intl.Segmenter.prototype::29",
+        "lib.es2022.intl.d.ts::Intl.Segmenter::28"
       ],
       "transforms": [],
       "notes": "constructor surface for Intl.Segmenter"
@@ -9501,28 +9555,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "constructor",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::Iterator::31"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.Iterator is not currently modeled as a dedicated constructor surface in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "constructor surface for Iterator"
     },
     {
       "compatKey": "javascript.builtins.Iterator.concat",
@@ -9541,21 +9579,19 @@
       "transforms": [],
       "notes": "javascript.builtins.Iterator.concat is not currently modeled as a dedicated member in TypeScript's lib declarations",
       "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
+        "groupId": "iterator-concat-upstream-gap",
+        "category": "actionable_upstream_gap",
         "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
+        "upstreamState": "actionable",
+        "reason": "Iterator.concat is standardized but the pinned TypeScript libraries do not yet expose its static constructor surface.",
         "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
+          "https://github.com/microsoft/TypeScript/blob/v6.0.3/src/lib/es2025.iterator.d.ts",
+          "https://github.com/tc39/proposal-iterator-sequencing"
         ],
         "externalAction": {
-          "kind": "watch-existing",
+          "kind": "file-issue",
           "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
+          "note": "Propose the canonical Iterator.concat declaration instead of defining a generator-owned substitute."
         }
       }
     },
@@ -9571,28 +9607,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.drop::16"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.drop is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.drop"
     },
     {
       "compatKey": "javascript.builtins.Iterator.every",
@@ -9606,28 +9626,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.every::24"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.every is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.every"
     },
     {
       "compatKey": "javascript.builtins.Iterator.filter",
@@ -9641,28 +9645,13 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.filter::13",
+        "lib.es2025.iterator.d.ts::IteratorObject.filter::14"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.filter is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.filter"
     },
     {
       "compatKey": "javascript.builtins.Iterator.find",
@@ -9676,28 +9665,13 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.find::25",
+        "lib.es2025.iterator.d.ts::IteratorObject.find::26"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.find is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.find"
     },
     {
       "compatKey": "javascript.builtins.Iterator.flatMap",
@@ -9711,28 +9685,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.flatMap::17"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.flatMap is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.flatMap"
     },
     {
       "compatKey": "javascript.builtins.Iterator.forEach",
@@ -9746,28 +9704,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.forEach::22"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.forEach is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.forEach"
     },
     {
       "compatKey": "javascript.builtins.Iterator.from",
@@ -9781,28 +9723,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorConstructor.from::30"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.from is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.from"
     },
     {
       "compatKey": "javascript.builtins.Iterator.map",
@@ -9816,28 +9742,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.map::12"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.map is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.map"
     },
     {
       "compatKey": "javascript.builtins.Iterator.reduce",
@@ -9851,28 +9761,14 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.reduce::18",
+        "lib.es2025.iterator.d.ts::IteratorObject.reduce::19",
+        "lib.es2025.iterator.d.ts::IteratorObject.reduce::20"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.reduce is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.reduce"
     },
     {
       "compatKey": "javascript.builtins.Iterator.some",
@@ -9886,28 +9782,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.some::23"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.some is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.some"
     },
     {
       "compatKey": "javascript.builtins.Iterator.take",
@@ -9921,28 +9801,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.take::15"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.take is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.take"
     },
     {
       "compatKey": "javascript.builtins.Iterator.toArray",
@@ -9956,28 +9820,12 @@
       "snapshot": [],
       "compatRoot": "Iterator",
       "includeInTarget": false,
-      "resolutionKind": "not-modeled-upstream",
-      "resolvedUnitIds": [],
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2025.iterator.d.ts::IteratorObject.toArray::21"
+      ],
       "transforms": [],
-      "notes": "javascript.builtins.Iterator.toArray is not currently modeled as a dedicated member in TypeScript's lib declarations",
-      "management": {
-        "groupId": "iterator-helpers-tracked",
-        "category": "tracked_by_canonical_lib",
-        "delivery": "defer-upstream",
-        "upstreamState": "tracked",
-        "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
-        "sourceUrls": [
-          "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-          "https://github.com/microsoft/TypeScript/issues/61735",
-          "https://github.com/tc39/proposal-iterator-helpers"
-        ],
-        "externalAction": {
-          "kind": "watch-existing",
-          "repo": "microsoft/TypeScript",
-          "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-          "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
-        }
-      }
+      "notes": "member surface Iterator.toArray"
     },
     {
       "compatKey": "javascript.builtins.JSON",
@@ -10283,8 +10131,10 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2015.collection.d.ts::Map::14",
         "lib.es2015.collection.d.ts::MapConstructor.<construct>::11",
         "lib.es2015.collection.d.ts::MapConstructor.<construct>::12",
+        "lib.es2015.collection.d.ts::MapConstructor.prototype::13",
         "lib.es2015.iterable.d.ts::MapConstructor.<construct>::66",
         "lib.es2015.iterable.d.ts::MapConstructor.<construct>::67"
       ],
@@ -11775,8 +11625,10 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::Number::156",
         "lib.es5.d.ts::NumberConstructor.<call>::149",
-        "lib.es5.d.ts::NumberConstructor.<construct>::148"
+        "lib.es5.d.ts::NumberConstructor.<construct>::148",
+        "lib.es5.d.ts::NumberConstructor.prototype::150"
       ],
       "transforms": [],
       "notes": "constructor surface for Number"
@@ -12118,9 +11970,11 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::Object::60",
         "lib.es5.d.ts::ObjectConstructor.<call>::41",
         "lib.es5.d.ts::ObjectConstructor.<call>::42",
-        "lib.es5.d.ts::ObjectConstructor.<construct>::40"
+        "lib.es5.d.ts::ObjectConstructor.<construct>::40",
+        "lib.es5.d.ts::ObjectConstructor.prototype::43"
       ],
       "transforms": [],
       "notes": "constructor surface for Object"
@@ -12918,10 +12772,6 @@
       "includeInTarget": true,
       "resolutionKind": "root-availability",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::PromiseConstructor::99",
-        "lib.es2015.promise.d.ts::Promise::10",
-        "lib.es2015.promise.d.ts::PromiseConstructor::1",
-        "lib.es2015.symbol.wellknown.d.ts::PromiseConstructor::56",
         "lib.es5.d.ts::Promise::457"
       ],
       "transforms": [],
@@ -12966,7 +12816,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2015.promise.d.ts::PromiseConstructor.<construct>::3"
+        "lib.es2015.promise.d.ts::Promise::10",
+        "lib.es2015.promise.d.ts::PromiseConstructor.<construct>::3",
+        "lib.es2015.promise.d.ts::PromiseConstructor.prototype::2"
       ],
       "transforms": [],
       "notes": "constructor surface for Promise"
@@ -13285,6 +13137,7 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2015.proxy.d.ts::Proxy::19",
         "lib.es2015.proxy.d.ts::ProxyConstructor.<construct>::18"
       ],
       "transforms": [],
@@ -13636,7 +13489,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2022.error.d.ts::RangeErrorConstructor.<call>::17",
-        "lib.es2022.error.d.ts::RangeErrorConstructor.<construct>::16"
+        "lib.es2022.error.d.ts::RangeErrorConstructor.<construct>::16",
+        "lib.es5.d.ts::RangeError::330",
+        "lib.es5.d.ts::RangeErrorConstructor.prototype::329"
       ],
       "transforms": [],
       "notes": "constructor surface for RangeError"
@@ -13695,7 +13550,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2022.error.d.ts::ReferenceErrorConstructor.<call>::21",
-        "lib.es2022.error.d.ts::ReferenceErrorConstructor.<construct>::20"
+        "lib.es2022.error.d.ts::ReferenceErrorConstructor.<construct>::20",
+        "lib.es5.d.ts::ReferenceError::338",
+        "lib.es5.d.ts::ReferenceErrorConstructor.prototype::337"
       ],
       "transforms": [],
       "notes": "constructor surface for ReferenceError"
@@ -14186,7 +14043,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2015.core.d.ts::RegExpConstructor.<call>::73",
-        "lib.es2015.core.d.ts::RegExpConstructor.<construct>::72"
+        "lib.es2015.core.d.ts::RegExpConstructor.<construct>::72",
+        "lib.es5.d.ts::RegExp::303",
+        "lib.es5.d.ts::RegExpConstructor.prototype::283"
       ],
       "transforms": [],
       "notes": "constructor surface for RegExp"
@@ -14890,7 +14749,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2015.collection.d.ts::Set::44",
         "lib.es2015.collection.d.ts::SetConstructor.<construct>::42",
+        "lib.es2015.collection.d.ts::SetConstructor.prototype::43",
         "lib.es2015.iterable.d.ts::SetConstructor.<construct>::90"
       ],
       "transforms": [],
@@ -15363,6 +15224,8 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2017.sharedmemory.d.ts::SharedArrayBuffer::10",
+        "lib.es2017.sharedmemory.d.ts::SharedArrayBufferConstructor.prototype::7",
         "lib.es2024.sharedmemory.d.ts::SharedArrayBufferConstructor.<construct>::11"
       ],
       "transforms": [],
@@ -15548,8 +15411,10 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::String::129",
         "lib.es5.d.ts::StringConstructor.<call>::126",
-        "lib.es5.d.ts::StringConstructor.<construct>::125"
+        "lib.es5.d.ts::StringConstructor.<construct>::125",
+        "lib.es5.d.ts::StringConstructor.prototype::127"
       ],
       "transforms": [],
       "notes": "constructor surface for String"
@@ -16819,10 +16684,6 @@
       "includeInTarget": true,
       "resolutionKind": "root-availability",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::SymbolConstructor::1",
-        "lib.es2015.symbol.d.ts::Symbol::6",
-        "lib.es2015.symbol.d.ts::SymbolConstructor::1",
-        "lib.es2015.symbol.wellknown.d.ts::SymbolConstructor::1",
         "lib.es5.d.ts::Symbol::14"
       ],
       "transforms": [],
@@ -16863,7 +16724,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2015.symbol.d.ts::SymbolConstructor.<call>::3"
+        "lib.es2015.symbol.d.ts::Symbol::6",
+        "lib.es2015.symbol.d.ts::SymbolConstructor.<call>::3",
+        "lib.es2015.symbol.d.ts::SymbolConstructor.prototype::2"
       ],
       "transforms": [],
       "notes": "constructor surface for Symbol"
@@ -17354,7 +17217,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2022.error.d.ts::SyntaxErrorConstructor.<call>::25",
-        "lib.es2022.error.d.ts::SyntaxErrorConstructor.<construct>::24"
+        "lib.es2022.error.d.ts::SyntaxErrorConstructor.<construct>::24",
+        "lib.es5.d.ts::SyntaxError::346",
+        "lib.es5.d.ts::SyntaxErrorConstructor.prototype::345"
       ],
       "transforms": [],
       "notes": "constructor surface for SyntaxError"
@@ -17426,7 +17291,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.esnext.temporal.d.ts::Temporal.DurationConstructor.<construct>::320"
+        "lib.esnext.temporal.d.ts::Temporal.Duration::324",
+        "lib.esnext.temporal.d.ts::Temporal.DurationConstructor.<construct>::320",
+        "lib.esnext.temporal.d.ts::Temporal.DurationConstructor.prototype::321"
       ],
       "transforms": [],
       "notes": "constructor surface for Temporal.Duration"
@@ -17916,7 +17783,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.esnext.temporal.d.ts::Temporal.InstantConstructor.<construct>::347"
+        "lib.esnext.temporal.d.ts::Temporal.Instant::353",
+        "lib.esnext.temporal.d.ts::Temporal.InstantConstructor.<construct>::347",
+        "lib.esnext.temporal.d.ts::Temporal.InstantConstructor.prototype::348"
       ],
       "transforms": [],
       "notes": "constructor surface for Temporal.Instant"
@@ -18387,7 +18256,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.esnext.temporal.d.ts::Temporal.PlainDateConstructor.<construct>::127"
+        "lib.esnext.temporal.d.ts::Temporal.PlainDate::131",
+        "lib.esnext.temporal.d.ts::Temporal.PlainDateConstructor.<construct>::127",
+        "lib.esnext.temporal.d.ts::Temporal.PlainDateConstructor.prototype::128"
       ],
       "transforms": [],
       "notes": "constructor surface for Temporal.PlainDate"
@@ -19020,7 +18891,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.esnext.temporal.d.ts::Temporal.PlainDateTimeConstructor.<construct>::208"
+        "lib.esnext.temporal.d.ts::Temporal.PlainDateTime::212",
+        "lib.esnext.temporal.d.ts::Temporal.PlainDateTimeConstructor.<construct>::208",
+        "lib.esnext.temporal.d.ts::Temporal.PlainDateTimeConstructor.prototype::209"
       ],
       "transforms": [],
       "notes": "constructor surface for Temporal.PlainDateTime"
@@ -19779,7 +19652,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.esnext.temporal.d.ts::Temporal.PlainMonthDayConstructor.<construct>::408"
+        "lib.esnext.temporal.d.ts::Temporal.PlainMonthDay::411",
+        "lib.esnext.temporal.d.ts::Temporal.PlainMonthDayConstructor.<construct>::408",
+        "lib.esnext.temporal.d.ts::Temporal.PlainMonthDayConstructor.prototype::409"
       ],
       "transforms": [],
       "notes": "constructor surface for Temporal.PlainMonthDay"
@@ -20015,7 +19890,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.esnext.temporal.d.ts::Temporal.PlainTimeConstructor.<construct>::157"
+        "lib.esnext.temporal.d.ts::Temporal.PlainTime::161",
+        "lib.esnext.temporal.d.ts::Temporal.PlainTimeConstructor.<construct>::157",
+        "lib.esnext.temporal.d.ts::Temporal.PlainTimeConstructor.prototype::158"
       ],
       "transforms": [],
       "notes": "constructor surface for Temporal.PlainTime"
@@ -20396,7 +20273,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.esnext.temporal.d.ts::Temporal.PlainYearMonthConstructor.<construct>::383"
+        "lib.esnext.temporal.d.ts::Temporal.PlainYearMonth::387",
+        "lib.esnext.temporal.d.ts::Temporal.PlainYearMonthConstructor.<construct>::383",
+        "lib.esnext.temporal.d.ts::Temporal.PlainYearMonthConstructor.prototype::384"
       ],
       "transforms": [],
       "notes": "constructor surface for Temporal.PlainYearMonth"
@@ -20848,7 +20727,9 @@
       "includeInTarget": false,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.esnext.temporal.d.ts::Temporal.ZonedDateTimeConstructor.<construct>::275"
+        "lib.esnext.temporal.d.ts::Temporal.ZonedDateTime::279",
+        "lib.esnext.temporal.d.ts::Temporal.ZonedDateTimeConstructor.<construct>::275",
+        "lib.esnext.temporal.d.ts::Temporal.ZonedDateTimeConstructor.prototype::276"
       ],
       "transforms": [],
       "notes": "constructor surface for Temporal.ZonedDateTime"
@@ -21793,7 +21674,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2022.error.d.ts::TypeErrorConstructor.<call>::29",
-        "lib.es2022.error.d.ts::TypeErrorConstructor.<construct>::28"
+        "lib.es2022.error.d.ts::TypeErrorConstructor.<construct>::28",
+        "lib.es5.d.ts::TypeError::354",
+        "lib.es5.d.ts::TypeErrorConstructor.prototype::353"
       ],
       "transforms": [],
       "notes": "constructor surface for TypeError"
@@ -21833,37 +21716,26 @@
       "resolvedUnitIds": [
         "lib.es2020.bigint.d.ts::BigInt64Array::31",
         "lib.es2020.bigint.d.ts::BigInt64Array::82",
-        "lib.es2020.bigint.d.ts::BigInt64ArrayConstructor::69",
         "lib.es2020.bigint.d.ts::BigUint64Array::135",
         "lib.es2020.bigint.d.ts::BigUint64Array::84",
-        "lib.es2020.bigint.d.ts::BigUint64ArrayConstructor::122",
         "lib.es5.d.ts::Float32Array::864",
         "lib.es5.d.ts::Float32Array::909",
-        "lib.es5.d.ts::Float32ArrayConstructor::898",
         "lib.es5.d.ts::Float64Array::911",
         "lib.es5.d.ts::Float64Array::956",
-        "lib.es5.d.ts::Float64ArrayConstructor::945",
         "lib.es5.d.ts::Int16Array::676",
         "lib.es5.d.ts::Int16Array::721",
-        "lib.es5.d.ts::Int16ArrayConstructor::710",
         "lib.es5.d.ts::Int32Array::770",
         "lib.es5.d.ts::Int32Array::815",
-        "lib.es5.d.ts::Int32ArrayConstructor::804",
         "lib.es5.d.ts::Int8Array::535",
         "lib.es5.d.ts::Int8Array::580",
-        "lib.es5.d.ts::Int8ArrayConstructor::569",
         "lib.es5.d.ts::Uint16Array::723",
         "lib.es5.d.ts::Uint16Array::768",
-        "lib.es5.d.ts::Uint16ArrayConstructor::757",
         "lib.es5.d.ts::Uint32Array::817",
         "lib.es5.d.ts::Uint32Array::862",
-        "lib.es5.d.ts::Uint32ArrayConstructor::851",
         "lib.es5.d.ts::Uint8Array::582",
         "lib.es5.d.ts::Uint8Array::627",
-        "lib.es5.d.ts::Uint8ArrayConstructor::616",
         "lib.es5.d.ts::Uint8ClampedArray::629",
-        "lib.es5.d.ts::Uint8ClampedArray::674",
-        "lib.es5.d.ts::Uint8ClampedArrayConstructor::663"
+        "lib.es5.d.ts::Uint8ClampedArray::674"
       ],
       "transforms": [],
       "notes": "compat root TypedArray selects standalone declaration units"
@@ -23411,7 +23283,9 @@
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
         "lib.es2022.error.d.ts::URIErrorConstructor.<call>::33",
-        "lib.es2022.error.d.ts::URIErrorConstructor.<construct>::32"
+        "lib.es2022.error.d.ts::URIErrorConstructor.<construct>::32",
+        "lib.es5.d.ts::URIError::362",
+        "lib.es5.d.ts::URIErrorConstructor.prototype::361"
       ],
       "transforms": [],
       "notes": "constructor surface for URIError"
@@ -23473,7 +23347,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2017.typedarrays.d.ts::Uint16ArrayConstructor.<construct>::14"
+        "lib.es2017.typedarrays.d.ts::Uint16ArrayConstructor.<construct>::14",
+        "lib.es5.d.ts::Uint16Array::768",
+        "lib.es5.d.ts::Uint16ArrayConstructor.prototype::758"
       ],
       "transforms": [],
       "notes": "constructor surface for Uint16Array"
@@ -23563,7 +23439,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2017.typedarrays.d.ts::Uint32ArrayConstructor.<construct>::20"
+        "lib.es2017.typedarrays.d.ts::Uint32ArrayConstructor.<construct>::20",
+        "lib.es5.d.ts::Uint32Array::862",
+        "lib.es5.d.ts::Uint32ArrayConstructor.prototype::852"
       ],
       "transforms": [],
       "notes": "constructor surface for Uint32Array"
@@ -23653,7 +23531,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2017.typedarrays.d.ts::Uint8ArrayConstructor.<construct>::5"
+        "lib.es2017.typedarrays.d.ts::Uint8ArrayConstructor.<construct>::5",
+        "lib.es5.d.ts::Uint8Array::627",
+        "lib.es5.d.ts::Uint8ArrayConstructor.prototype::617"
       ],
       "transforms": [],
       "notes": "constructor surface for Uint8Array"
@@ -23857,7 +23737,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2017.typedarrays.d.ts::Uint8ClampedArrayConstructor.<construct>::8"
+        "lib.es2017.typedarrays.d.ts::Uint8ClampedArrayConstructor.<construct>::8",
+        "lib.es5.d.ts::Uint8ClampedArray::674",
+        "lib.es5.d.ts::Uint8ClampedArrayConstructor.prototype::664"
       ],
       "transforms": [],
       "notes": "constructor surface for Uint8ClampedArray"
@@ -23946,7 +23828,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2015.collection.d.ts::WeakMap::31",
         "lib.es2015.collection.d.ts::WeakMapConstructor.<construct>::29",
+        "lib.es2015.collection.d.ts::WeakMapConstructor.prototype::30",
         "lib.es2015.iterable.d.ts::WeakMapConstructor.<construct>::72"
       ],
       "transforms": [],
@@ -24172,7 +24056,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
-        "lib.es2021.weakref.d.ts::WeakRefConstructor.<construct>::7"
+        "lib.es2021.weakref.d.ts::WeakRef::8",
+        "lib.es2021.weakref.d.ts::WeakRefConstructor.<construct>::7",
+        "lib.es2021.weakref.d.ts::WeakRefConstructor.prototype::6"
       ],
       "transforms": [],
       "notes": "constructor surface for WeakRef"
@@ -24260,7 +24146,9 @@
       "includeInTarget": true,
       "resolutionKind": "constructor",
       "resolvedUnitIds": [
+        "lib.es2015.collection.d.ts::WeakSet::59",
         "lib.es2015.collection.d.ts::WeakSetConstructor.<construct>::57",
+        "lib.es2015.collection.d.ts::WeakSetConstructor.prototype::58",
         "lib.es2015.iterable.d.ts::WeakSetConstructor.<construct>::95"
       ],
       "transforms": [],

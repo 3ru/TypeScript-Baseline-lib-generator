@@ -14,6 +14,7 @@ import {
 import os from "node:os";
 import path from "node:path";
 import { retryAsync, retrySync } from "../lib/net-retry.mjs";
+import { compareYearContracts } from "../lib/year-contracts.mjs";
 import { packages, repoRoot } from "./package-registry.mjs";
 
 /**
@@ -114,6 +115,7 @@ export function assertTypeScriptPeerRange(range, versions) {
  *   packageId?: string;
  *   versionOverride?: string;
  *   stageDirectoryRoot?: string;
+ *   preview?: boolean;
  * }} [options]
  */
 export async function collectReleasePlans(options = {}) {
@@ -122,7 +124,11 @@ export async function collectReleasePlans(options = {}) {
     /** @type {ReleasePlan[]} */
     const releasePlans = [];
     for (const stageSummary of stageSummaries) {
-        releasePlans.push(await buildReleasePlan(stageSummary));
+        releasePlans.push(await buildReleasePlan(
+            stageSummary,
+            options.versionOverride !== undefined,
+            options.preview === true,
+        ));
     }
 
     return releasePlans;
@@ -234,6 +240,7 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
         typesVersions: {
             "*": {
                 "allow/*": ["allow/*/index.d.ts"],
+                "year/*": ["year/*/index.d.ts"],
             },
         },
         files: [
@@ -241,6 +248,7 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
             "baseline.d.ts",
             "snapshot.json",
             "allow/",
+            "year/",
             "reports/",
             "README.md",
             "LICENSE",
@@ -291,8 +299,10 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
 
 /**
  * @param {PackageStageSummary} stageSummary
+ * @param {boolean} reviewedVersion
+ * @param {boolean} preview
  */
-async function buildReleasePlan(stageSummary) {
+async function buildReleasePlan(stageSummary, reviewedVersion, preview) {
     const published = await getPublishedPackageState(stageSummary.packageConfig);
     const stagedSnapshot = await readComparablePackageSnapshot(stageSummary.stageDirectory);
 
@@ -312,10 +322,24 @@ async function buildReleasePlan(stageSummary) {
     }
 
     const removedFiles = [...publishedPaths].sort(compareStrings);
+    if (reviewedVersion) {
+        assertExplicitVersionIncrease(published.version, stageSummary.packageVersion);
+    }
     assertNoRemovedAllowEntries(removedFiles);
     assertAllowEntryContractsPreserved(
         published.snapshot.get("reports/generation.json"),
         stagedSnapshot.get("reports/generation.json"),
+    );
+    assertNoRemovedYearEntryPoints(removedFiles);
+    const requiredVersionBump = assertYearContractsPreserved(
+        published.snapshot.get("reports/generation.json"),
+        stagedSnapshot.get("reports/generation.json"),
+        {
+            reviewedVersion,
+            preview,
+            publishedVersion: published.version,
+            stagedVersion: stageSummary.packageVersion,
+        },
     );
     const changed = !published.version || changedFiles.length > 0 || removedFiles.length > 0;
 
@@ -328,6 +352,7 @@ async function buildReleasePlan(stageSummary) {
         changedFiles,
         unchangedFiles,
         removedFiles,
+        requiredVersionBump,
         notesMarkdown: renderReleaseNotes({
             stageSummary,
             publishedVersion: published.version,
@@ -345,6 +370,16 @@ export function assertNoRemovedAllowEntries(removedFiles) {
     const removedEntries = removedFiles.filter(relativePath => /^allow\/[^/]+\/index\.d\.ts$/.test(relativePath));
     if (removedEntries.length) {
         throw new Error(`Published allow entry paths cannot be removed: ${removedEntries.join(", ")}`);
+    }
+}
+
+/**
+ * @param {string[]} removedFiles
+ */
+export function assertNoRemovedYearEntryPoints(removedFiles) {
+    const removedEntryPoints = removedFiles.filter(relativePath => /^year\/\d{4}\/index\.d\.ts$/.test(relativePath));
+    if (removedEntryPoints.length) {
+        throw new Error(`Published Baseline year entrypoints cannot be removed: ${removedEntryPoints.join(", ")}`);
     }
 }
 
@@ -368,6 +403,163 @@ export function assertAllowEntryContractsPreserved(publishedReportText, stagedRe
             throw new Error(`Published allow entry contract changed: allow/${entryName}`);
         }
     }
+}
+
+/**
+ * @param {string | undefined} publishedReportText
+ * @param {string | undefined} stagedReportText
+ * @param {{ reviewedVersion?: boolean; preview?: boolean; publishedVersion?: string; stagedVersion?: string; }} [options]
+ */
+export function assertYearContractsPreserved(publishedReportText, stagedReportText, options = {}) {
+    if (!publishedReportText) {
+        return undefined;
+    }
+    if (!stagedReportText) {
+        throw new Error("The staged package is missing reports/generation.json");
+    }
+
+    const comparison = compareYearContracts(publishedReportText, stagedReportText);
+    const removedYear = comparison.changes.find(change => change.kind === "removed");
+    if (removedYear) {
+        throw new Error(`Published Baseline year contract is missing: year/${removedYear.year}`);
+    }
+    if (!comparison.requiredVersionBump) {
+        return undefined;
+    }
+    if (!options.reviewedVersion) {
+        if (options.preview) {
+            return comparison.requiredVersionBump;
+        }
+        throw new Error(
+            `Baseline year contracts require review (${comparison.changes.map(change => change.year).join(", ")}); `
+                + "pass an explicit --version after inspecting the generated diff",
+        );
+    }
+    assertVersionBump(
+        options.publishedVersion,
+        options.stagedVersion,
+        comparison.requiredVersionBump,
+    );
+    return comparison.requiredVersionBump;
+}
+
+/**
+ * @param {string | undefined} publishedVersion
+ * @param {string | undefined} stagedVersion
+ * @param {"major" | "minor"} requiredBump
+ */
+function assertVersionBump(publishedVersion, stagedVersion, requiredBump) {
+    if (!publishedVersion || !stagedVersion) {
+        throw new Error("Reviewed Baseline year changes require published and staged package versions");
+    }
+    const published = parseVersion(publishedVersion);
+    const staged = parseVersion(stagedVersion);
+    const sufficient = requiredBump === "major"
+        ? staged.major > published.major
+        : staged.major > published.major
+            || (staged.major === published.major && staged.minor > published.minor);
+    if (!sufficient) {
+        throw new Error(
+            `Baseline year contract changes require a ${requiredBump} version increase from ${publishedVersion}; got ${stagedVersion}`,
+        );
+    }
+}
+
+/**
+ * @param {string | undefined} publishedVersion
+ * @param {string | undefined} stagedVersion
+ */
+export function assertExplicitVersionIncrease(publishedVersion, stagedVersion) {
+    if (!stagedVersion) {
+        throw new Error("Explicit package version is missing");
+    }
+    const staged = parseVersion(stagedVersion);
+    if (!publishedVersion) {
+        return;
+    }
+    if (compareVersion(staged, parseVersion(publishedVersion)) <= 0) {
+        throw new Error(
+            `Explicit package version must be greater than ${publishedVersion}; got ${stagedVersion}`,
+        );
+    }
+}
+
+/**
+ * @param {string} value
+ */
+function parseVersion(value) {
+    const numericIdentifier = "(?:0|[1-9]\\d*)";
+    const dotSeparatedIdentifiers = "[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*";
+    const match = new RegExp(
+        `^(${numericIdentifier})\\.(${numericIdentifier})\\.(${numericIdentifier})`
+            + `(?:-(${dotSeparatedIdentifiers}))?(?:\\+${dotSeparatedIdentifiers})?$`,
+    ).exec(value);
+    if (
+        !match
+        || match[4]?.split(".").some(identifier => /^\d+$/.test(identifier) && identifier.length > 1 && identifier[0] === "0")
+    ) {
+        throw new Error(`Unsupported package version format: ${value}`);
+    }
+    const parsed = {
+        major: Number(match[1]),
+        minor: Number(match[2]),
+        patch: Number(match[3]),
+        prerelease: match[4],
+    };
+    if (![parsed.major, parsed.minor, parsed.patch].every(Number.isSafeInteger)) {
+        throw new Error(`Unsupported package version format: ${value}`);
+    }
+    return parsed;
+}
+
+/**
+ * @param {ReturnType<typeof parseVersion>} left
+ * @param {ReturnType<typeof parseVersion>} right
+ */
+function compareVersion(left, right) {
+    const coreDifference = left.major - right.major
+        || left.minor - right.minor
+        || left.patch - right.patch;
+    if (coreDifference) {
+        return coreDifference;
+    }
+    if (left.prerelease === right.prerelease) {
+        return 0;
+    }
+    if (!left.prerelease) {
+        return 1;
+    }
+    if (!right.prerelease) {
+        return -1;
+    }
+    const leftParts = left.prerelease.split(".");
+    const rightParts = right.prerelease.split(".");
+    for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index++) {
+        const leftPart = leftParts[index];
+        const rightPart = rightParts[index];
+        if (leftPart === undefined) {
+            return -1;
+        }
+        if (rightPart === undefined) {
+            return 1;
+        }
+        if (leftPart === rightPart) {
+            continue;
+        }
+        const leftNumeric = /^\d+$/.test(leftPart);
+        const rightNumeric = /^\d+$/.test(rightPart);
+        if (leftNumeric && rightNumeric) {
+            if (leftPart.length !== rightPart.length) {
+                return leftPart.length - rightPart.length;
+            }
+            return leftPart < rightPart ? -1 : 1;
+        }
+        if (leftNumeric !== rightNumeric) {
+            return leftNumeric ? -1 : 1;
+        }
+        return leftPart < rightPart ? -1 : 1;
+    }
+    return 0;
 }
 
 /**
@@ -576,7 +768,7 @@ function renderNotice(packageConfig, snapshot) {
         "",
         "Contents:",
         "- `LICENSE` contains the Apache License 2.0 text for this package.",
-        "- `baseline.d.ts` is derived from the npm `typescript` package and retains the upstream Microsoft license notice at file header.",
+        "- Generated declaration files under `baseline.d.ts`, `allow/`, and `year/` are derived from the npm `typescript` package and retain the upstream Microsoft license notice.",
         "- `reports/` contains generator audit artifacts for the exact packaged snapshot.",
         "",
         "Snapshot:",
@@ -795,6 +987,7 @@ function compareStrings(left, right) {
  *   changedFiles: string[];
  *   unchangedFiles: string[];
  *   removedFiles: string[];
+ *   requiredVersionBump?: "major" | "minor";
  *   notesMarkdown: string;
  * }} ReleasePlan
  */

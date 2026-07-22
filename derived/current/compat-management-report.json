@@ -8,33 +8,33 @@
     "kind": "typescript-baseline-lib/compat-management-registry",
     "schemaVersion": 1,
     "sourcePath": "registry/compat-management.json",
-    "sourceHash": "sha256-efab202483397a0392b09de063e707efaedb4c89284f4dfd674a9b404746d00c",
+    "sourceHash": "sha256-499ed0fef28ff4f9a9757e19996b9e498ba8ee658fab3659be1e81cfb73c70ed",
     "groupCount": 18,
-    "managedCompatCount": 68
+    "managedCompatCount": 55
   },
   "summary": {
-    "managedCompatCount": 68,
+    "managedCompatCount": 55,
     "managedCategoryCounts": {
-      "actionable_upstream_gap": 11,
+      "actionable_upstream_gap": 12,
       "handled_outside_lib": 3,
       "legacy_excluded": 9,
-      "tracked_by_canonical_lib": 41,
+      "tracked_by_canonical_lib": 27,
       "ts_settled_limitation": 4
     },
     "managedDeliveryCounts": {
       "cover-checker": 2,
-      "defer-upstream": 56,
+      "defer-upstream": 43,
       "exclude": 10
     },
     "managedUpstreamStateCounts": {
-      "actionable": 6,
+      "actionable": 7,
       "settled": 16,
-      "tracked": 46
+      "tracked": 32
     },
     "managedResolutionKindCounts": {
       "already-excluded-upstream": 1,
       "member": 1,
-      "not-modeled-upstream": 64,
+      "not-modeled-upstream": 51,
       "root-availability": 2
     }
   },
@@ -346,39 +346,24 @@
       ]
     },
     {
-      "id": "iterator-helpers-tracked",
-      "category": "tracked_by_canonical_lib",
+      "id": "iterator-concat-upstream-gap",
+      "category": "actionable_upstream_gap",
       "delivery": "defer-upstream",
-      "upstreamState": "tracked",
+      "upstreamState": "actionable",
       "compatRoot": "Iterator",
-      "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
+      "reason": "Iterator.concat is standardized but the pinned TypeScript libraries do not yet expose its static constructor surface.",
       "sourceUrls": [
-        "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-        "https://github.com/microsoft/TypeScript/issues/61735",
-        "https://github.com/tc39/proposal-iterator-helpers"
+        "https://github.com/microsoft/TypeScript/blob/v6.0.3/src/lib/es2025.iterator.d.ts",
+        "https://github.com/tc39/proposal-iterator-sequencing"
       ],
       "externalAction": {
-        "kind": "watch-existing",
+        "kind": "file-issue",
         "repo": "microsoft/TypeScript",
-        "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-        "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
+        "note": "Propose the canonical Iterator.concat declaration instead of defining a generator-owned substitute."
       },
-      "compatKeyCount": 14,
+      "compatKeyCount": 1,
       "compatKeys": [
-        "javascript.builtins.Iterator.Iterator",
-        "javascript.builtins.Iterator.concat",
-        "javascript.builtins.Iterator.drop",
-        "javascript.builtins.Iterator.every",
-        "javascript.builtins.Iterator.filter",
-        "javascript.builtins.Iterator.find",
-        "javascript.builtins.Iterator.flatMap",
-        "javascript.builtins.Iterator.forEach",
-        "javascript.builtins.Iterator.from",
-        "javascript.builtins.Iterator.map",
-        "javascript.builtins.Iterator.reduce",
-        "javascript.builtins.Iterator.some",
-        "javascript.builtins.Iterator.take",
-        "javascript.builtins.Iterator.toArray"
+        "javascript.builtins.Iterator.concat"
       ],
       "actualResolutionKinds": [
         "not-modeled-upstream"
