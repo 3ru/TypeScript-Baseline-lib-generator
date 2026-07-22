@@ -19,6 +19,7 @@ export const repoManifestPath = path.join(repoRoot, "manifests", "baseline-js.js
 export const repoManifest = JSON.parse(fs.readFileSync(repoManifestPath, "utf8"));
 export const repoDatasetPath = path.join(repoRoot, "datasets", "web-features-js-compat.json");
 export const repoRegistryPath = path.join(repoRoot, "registry", "compat-management.json");
+export const repoAllowlistRegistryPath = path.join(repoRoot, "registry", "allowlist.json");
 export const repoGeneratedLibPath = path.join(repoRoot, "generated", "current", "baseline.d.ts");
 export const repoClassificationPath = path.join(repoRoot, "derived", "current", "classification.json");
 
@@ -80,7 +81,7 @@ export function readJsonFile(filePath) {
 
 /**
  * @param {string} tempDirectory
- * @param {{ registryPath?: string; datasetPath?: string; generatedOutputPath?: string; }} [options]
+ * @param {{ registryPath?: string; allowlistRegistryPath?: string; datasetPath?: string; generatedOutputPath?: string; }} [options]
  */
 export function createManifest(tempDirectory, options = {}) {
     const outputRoot = path.join(tempDirectory, "out");
@@ -90,6 +91,10 @@ export function createManifest(tempDirectory, options = {}) {
 
     manifest.dataset = toPosixRelativePath(manifestDirectory, options.datasetPath ?? repoDatasetPath);
     manifest.compatManagementRegistry = toPosixRelativePath(manifestDirectory, options.registryPath ?? repoRegistryPath);
+    manifest.allowlistRegistry = toPosixRelativePath(
+        manifestDirectory,
+        options.allowlistRegistryPath ?? repoAllowlistRegistryPath,
+    );
     manifest.classificationOutput = path.join(outputRoot, "derived", "classification.json");
     manifest.compatManagementOutput = path.join(outputRoot, "derived", "compat-management-report.json");
     manifest.inventoryOutput = path.join(outputRoot, "derived", "inventory.json");
@@ -97,6 +102,7 @@ export function createManifest(tempDirectory, options = {}) {
     manifest.firstClassLib = {
         libName: "baseline",
         outputFile: path.join(outputRoot, "generated", "baseline.d.ts"),
+        allowDirectory: path.join(outputRoot, "generated", "allow"),
     };
     if (options.generatedOutputPath) {
         manifest.firstClassLib.outputFile = toPosixRelativePath(manifestDirectory, options.generatedOutputPath);
@@ -236,6 +242,7 @@ export async function stageBaselinePackage(options = {}) {
 export async function createBaselinePackageTarball(options = {}) {
     const summary = await stageBaselinePackage(options);
     const tarballPath = await createPackageTarball(summary.stageDirectory);
+    options.tempDirectories?.push(path.dirname(tarballPath));
     return {
         ...summary,
         tarballPath,

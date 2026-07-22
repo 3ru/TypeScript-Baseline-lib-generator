@@ -1,0 +1,135 @@
+{
+    "schemaVersion": 1,
+    "entries": [
+        {
+            "entryName": "array-fromasync",
+            "compatKeys": [
+                "javascript.builtins.Array.fromAsync"
+            ]
+        },
+        {
+            "entryName": "array-group",
+            "compatKeys": [
+                "javascript.builtins.Map.groupBy",
+                "javascript.builtins.Object.groupBy"
+            ]
+        },
+        {
+            "entryName": "atomics-pause",
+            "compatKeys": [
+                "javascript.builtins.Atomics.pause"
+            ]
+        },
+        {
+            "entryName": "atomics-wait-async",
+            "compatKeys": [
+                "javascript.builtins.Atomics.waitAsync"
+            ]
+        },
+        {
+            "entryName": "float16array",
+            "compatKeys": [
+                "javascript.builtins.DataView.getFloat16",
+                "javascript.builtins.DataView.setFloat16",
+                "javascript.builtins.Float16Array",
+                "javascript.builtins.Float16Array.Float16Array",
+                "javascript.builtins.Math.f16round"
+            ]
+        },
+        {
+            "entryName": "getorinsert",
+            "compatKeys": [
+                "javascript.builtins.Map.getOrInsert",
+                "javascript.builtins.Map.getOrInsertComputed",
+                "javascript.builtins.WeakMap.getOrInsert",
+                "javascript.builtins.WeakMap.getOrInsertComputed"
+            ]
+        },
+        {
+            "entryName": "intl-duration-format",
+            "compatKeys": [
+                "javascript.builtins.Intl.DurationFormat",
+                "javascript.builtins.Intl.DurationFormat.DurationFormat",
+                "javascript.builtins.Intl.DurationFormat.format",
+                "javascript.builtins.Intl.DurationFormat.formatToParts",
+                "javascript.builtins.Intl.DurationFormat.resolvedOptions",
+                "javascript.builtins.Intl.DurationFormat.supportedLocalesOf"
+            ]
+        },
+        {
+            "entryName": "intl-segmenter",
+            "compatKeys": [
+                "javascript.builtins.Intl.Segmenter",
+                "javascript.builtins.Intl.Segmenter.Segmenter",
+                "javascript.builtins.Intl.Segmenter.resolvedOptions",
+                "javascript.builtins.Intl.Segmenter.segment",
+                "javascript.builtins.Intl.Segmenter.supportedLocalesOf",
+                "javascript.builtins.Intl.Segments",
+                "javascript.builtins.Intl.Segments.@@iterator",
+                "javascript.builtins.Intl.Segments.containing"
+            ]
+        },
+        {
+            "entryName": "promise-try",
+            "compatKeys": [
+                "javascript.builtins.Promise.try"
+            ]
+        },
+        {
+            "entryName": "promise-withresolvers",
+            "compatKeys": [
+                "javascript.builtins.Promise.withResolvers"
+            ]
+        },
+        {
+            "entryName": "regexp-escape",
+            "compatKeys": [
+                "javascript.builtins.RegExp.escape"
+            ]
+        },
+        {
+            "entryName": "resizable-buffers",
+            "compatKeys": [
+                "javascript.builtins.ArrayBuffer.ArrayBuffer.maxByteLength_option",
+                "javascript.builtins.ArrayBuffer.maxByteLength",
+                "javascript.builtins.ArrayBuffer.resizable",
+                "javascript.builtins.ArrayBuffer.resize",
+                "javascript.builtins.SharedArrayBuffer.SharedArrayBuffer.maxByteLength_option",
+                "javascript.builtins.SharedArrayBuffer.grow",
+                "javascript.builtins.SharedArrayBuffer.growable",
+                "javascript.builtins.SharedArrayBuffer.maxByteLength"
+            ]
+        },
+        {
+            "entryName": "set-methods",
+            "compatKeys": [
+                "javascript.builtins.Set.difference",
+                "javascript.builtins.Set.intersection",
+                "javascript.builtins.Set.isDisjointFrom",
+                "javascript.builtins.Set.isSubsetOf",
+                "javascript.builtins.Set.isSupersetOf",
+                "javascript.builtins.Set.symmetricDifference",
+                "javascript.builtins.Set.union"
+            ]
+        },
+        {
+            "entryName": "transferable-arraybuffer",
+            "compatKeys": [
+                "javascript.builtins.ArrayBuffer.detached",
+                "javascript.builtins.ArrayBuffer.transfer",
+                "javascript.builtins.ArrayBuffer.transferToFixedLength"
+            ]
+        },
+        {
+            "entryName": "uint8array-base64-hex",
+            "compatKeys": [
+                "javascript.builtins.Uint8Array.fromBase64",
+                "javascript.builtins.Uint8Array.fromHex",
+                "javascript.builtins.Uint8Array.setFromBase64",
+                "javascript.builtins.Uint8Array.setFromHex",
+                "javascript.builtins.Uint8Array.toBase64",
+                "javascript.builtins.Uint8Array.toHex"
+            ]
+        }
+    ]
+}

@@ -21,6 +21,28 @@ npm install --save-dev typescript-baseline-lib
 
 Now only the supported Baseline widely available JavaScript surfaces type-check. APIs that haven't reached Baseline yet (`Promise.withResolvers`, `Array.fromAsync` until it promotes, and so on) are reported as errors. The end goal is first-class `--lib baseline` support upstream in TypeScript.
 
+## Allow a polyfilled feature
+
+When the runtime loads an audited polyfill, add its generated web-features entry after the base package. For example, core-js can provide `Promise.withResolvers` at runtime:
+
+```ts
+import "core-js/proposals/promise-with-resolvers";
+```
+
+```json
+{
+  "compilerOptions": {
+    "noLib": true,
+    "types": [
+      "typescript-baseline-lib",
+      "typescript-baseline-lib/allow/promise-withresolvers"
+    ]
+  }
+}
+```
+
+Only entries approved in `registry/allowlist.json` are public. The registry is a permanent path contract: after every registered compat key becomes Baseline widely available, the same entry remains as an alias to the base package. Limited availability features with `baselineStatus: false` are rejected.
+
 ## Current contract
 
 - Target is `baseline` only.
