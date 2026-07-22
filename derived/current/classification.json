@@ -15,22 +15,22 @@
     "emitCompatCount": 997,
     "notModeledUpstreamCount": 51,
     "alreadyExcludedUpstreamCount": 1,
-    "managedCompatCount": 55,
+    "managedCompatCount": 60,
     "managedCategoryCounts": {
       "actionable_upstream_gap": 12,
       "handled_outside_lib": 3,
-      "legacy_excluded": 9,
+      "legacy_excluded": 14,
       "tracked_by_canonical_lib": 27,
       "ts_settled_limitation": 4
     },
     "managedDeliveryCounts": {
       "cover-checker": 2,
       "defer-upstream": 43,
-      "exclude": 10
+      "exclude": 15
     },
     "managedUpstreamStateCounts": {
       "actionable": 7,
-      "settled": 16,
+      "settled": 21,
       "tracked": 32
     },
     "selectedUnitCount": 1444,
@@ -40,9 +40,9 @@
   "compatManagementRegistrySummary": {
     "kind": "typescript-baseline-lib/compat-management-registry",
     "schemaVersion": 1,
-    "sourceHash": "sha256-499ed0fef28ff4f9a9757e19996b9e498ba8ee658fab3659be1e81cfb73c70ed",
-    "groupCount": 18,
-    "managedCompatCount": 55
+    "sourceHash": "sha256-fbebf10c03122d6fe78bafd62030a5842dabf0cf8f2800c3667b601ffee86133",
+    "groupCount": 19,
+    "managedCompatCount": 60
   },
   "classifiedCompatRows": [
     {
@@ -14256,10 +14256,28 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::RegExpConstructor.$_::294",
         "lib.es5.d.ts::RegExpConstructor.input::293"
       ],
       "transforms": [],
-      "notes": "member surface RegExp.input"
+      "notes": "javascript.builtins.RegExp.input maps to static members input, $_",
+      "management": {
+        "groupId": "regexp-legacy-statics-excluded",
+        "category": "legacy_excluded",
+        "delivery": "exclude",
+        "upstreamState": "settled",
+        "reason": "TypeScript models the RegExp legacy static aliases as separate properties, but they share the same compatibility status and must be excluded together.",
+        "sourceUrls": [
+          "https://github.com/tc39/proposal-regexp-legacy-features/"
+        ],
+        "externalAction": {
+          "kind": "none",
+          "note": "No external action. Keep canonical names and aliases bound to the same compat rows."
+        },
+        "expectedResolutionKinds": [
+          "member"
+        ]
+      }
     },
     {
       "compatKey": "javascript.builtins.RegExp.lastIndex",
@@ -14294,10 +14312,28 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::RegExpConstructor.$&::296",
         "lib.es5.d.ts::RegExpConstructor.lastMatch::295"
       ],
       "transforms": [],
-      "notes": "member surface RegExp.lastMatch"
+      "notes": "javascript.builtins.RegExp.lastMatch maps to static members lastMatch, $&",
+      "management": {
+        "groupId": "regexp-legacy-statics-excluded",
+        "category": "legacy_excluded",
+        "delivery": "exclude",
+        "upstreamState": "settled",
+        "reason": "TypeScript models the RegExp legacy static aliases as separate properties, but they share the same compatibility status and must be excluded together.",
+        "sourceUrls": [
+          "https://github.com/tc39/proposal-regexp-legacy-features/"
+        ],
+        "externalAction": {
+          "kind": "none",
+          "note": "No external action. Keep canonical names and aliases bound to the same compat rows."
+        },
+        "expectedResolutionKinds": [
+          "member"
+        ]
+      }
     },
     {
       "compatKey": "javascript.builtins.RegExp.lastParen",
@@ -14312,10 +14348,28 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::RegExpConstructor.$+::298",
         "lib.es5.d.ts::RegExpConstructor.lastParen::297"
       ],
       "transforms": [],
-      "notes": "member surface RegExp.lastParen"
+      "notes": "javascript.builtins.RegExp.lastParen maps to static members lastParen, $+",
+      "management": {
+        "groupId": "regexp-legacy-statics-excluded",
+        "category": "legacy_excluded",
+        "delivery": "exclude",
+        "upstreamState": "settled",
+        "reason": "TypeScript models the RegExp legacy static aliases as separate properties, but they share the same compatibility status and must be excluded together.",
+        "sourceUrls": [
+          "https://github.com/tc39/proposal-regexp-legacy-features/"
+        ],
+        "externalAction": {
+          "kind": "none",
+          "note": "No external action. Keep canonical names and aliases bound to the same compat rows."
+        },
+        "expectedResolutionKinds": [
+          "member"
+        ]
+      }
     },
     {
       "compatKey": "javascript.builtins.RegExp.leftContext",
@@ -14330,10 +14384,28 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::RegExpConstructor.$`::300",
         "lib.es5.d.ts::RegExpConstructor.leftContext::299"
       ],
       "transforms": [],
-      "notes": "member surface RegExp.leftContext"
+      "notes": "javascript.builtins.RegExp.leftContext maps to static members leftContext, $`",
+      "management": {
+        "groupId": "regexp-legacy-statics-excluded",
+        "category": "legacy_excluded",
+        "delivery": "exclude",
+        "upstreamState": "settled",
+        "reason": "TypeScript models the RegExp legacy static aliases as separate properties, but they share the same compatibility status and must be excluded together.",
+        "sourceUrls": [
+          "https://github.com/tc39/proposal-regexp-legacy-features/"
+        ],
+        "externalAction": {
+          "kind": "none",
+          "note": "No external action. Keep canonical names and aliases bound to the same compat rows."
+        },
+        "expectedResolutionKinds": [
+          "member"
+        ]
+      }
     },
     {
       "compatKey": "javascript.builtins.RegExp.multiline",
@@ -14397,20 +14469,23 @@
         "lib.es5.d.ts::RegExpConstructor.$9::292"
       ],
       "transforms": [],
-      "notes": "javascript.builtins.RegExp.n maps to the legacy RegExpConstructor $1..$9 static properties",
+      "notes": "javascript.builtins.RegExp.n maps to static members $1, $2, $3, $4, $5, $6, $7, $8, $9",
       "management": {
-        "groupId": "legacy-annex-b-excluded",
+        "groupId": "regexp-legacy-statics-excluded",
         "category": "legacy_excluded",
         "delivery": "exclude",
         "upstreamState": "settled",
-        "reason": "These are legacy or Annex B-style web compatibility surfaces that should not become first-class baseline declarations.",
+        "reason": "TypeScript models the RegExp legacy static aliases as separate properties, but they share the same compatibility status and must be excluded together.",
         "sourceUrls": [
-          "https://tc39.es/ecma262/2026/multipage/additional-ecmascript-features-for-web-browsers.html"
+          "https://github.com/tc39/proposal-regexp-legacy-features/"
         ],
         "externalAction": {
           "kind": "none",
-          "note": "No external action. Keep excluded unless the spec position changes."
-        }
+          "note": "No external action. Keep canonical names and aliases bound to the same compat rows."
+        },
+        "expectedResolutionKinds": [
+          "member"
+        ]
       }
     },
     {
@@ -14426,10 +14501,28 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es5.d.ts::RegExpConstructor.$'::302",
         "lib.es5.d.ts::RegExpConstructor.rightContext::301"
       ],
       "transforms": [],
-      "notes": "member surface RegExp.rightContext"
+      "notes": "javascript.builtins.RegExp.rightContext maps to static members rightContext, $'",
+      "management": {
+        "groupId": "regexp-legacy-statics-excluded",
+        "category": "legacy_excluded",
+        "delivery": "exclude",
+        "upstreamState": "settled",
+        "reason": "TypeScript models the RegExp legacy static aliases as separate properties, but they share the same compatibility status and must be excluded together.",
+        "sourceUrls": [
+          "https://github.com/tc39/proposal-regexp-legacy-features/"
+        ],
+        "externalAction": {
+          "kind": "none",
+          "note": "No external action. Keep canonical names and aliases bound to the same compat rows."
+        },
+        "expectedResolutionKinds": [
+          "member"
+        ]
+      }
     },
     {
       "compatKey": "javascript.builtins.RegExp.source",

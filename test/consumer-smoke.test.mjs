@@ -5,7 +5,10 @@ import { execFileSync } from "node:child_process";
 import path from "node:path";
 import test from "node:test";
 import { baselinePackageName } from "../deploy/package-registry.mjs";
-import { renderNegativeProbeSource } from "../lib/negative-probes.mjs";
+import {
+    REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION,
+    renderNegativeProbeSource,
+} from "../lib/negative-probes.mjs";
 import {
     cleanupTempDirectories,
     loadActiveNegativeProbesFromRepo,
@@ -76,6 +79,7 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
         "const reversed = [1, 2, 3].toReversed();",
         "Intl.supportedValuesOf(\"currency\");",
         "reversed.length;",
+        REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION,
         "",
     ].join("\n"));
 

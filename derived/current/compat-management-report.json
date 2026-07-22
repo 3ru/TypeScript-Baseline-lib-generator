@@ -8,32 +8,32 @@
     "kind": "typescript-baseline-lib/compat-management-registry",
     "schemaVersion": 1,
     "sourcePath": "registry/compat-management.json",
-    "sourceHash": "sha256-499ed0fef28ff4f9a9757e19996b9e498ba8ee658fab3659be1e81cfb73c70ed",
-    "groupCount": 18,
-    "managedCompatCount": 55
+    "sourceHash": "sha256-fbebf10c03122d6fe78bafd62030a5842dabf0cf8f2800c3667b601ffee86133",
+    "groupCount": 19,
+    "managedCompatCount": 60
   },
   "summary": {
-    "managedCompatCount": 55,
+    "managedCompatCount": 60,
     "managedCategoryCounts": {
       "actionable_upstream_gap": 12,
       "handled_outside_lib": 3,
-      "legacy_excluded": 9,
+      "legacy_excluded": 14,
       "tracked_by_canonical_lib": 27,
       "ts_settled_limitation": 4
     },
     "managedDeliveryCounts": {
       "cover-checker": 2,
       "defer-upstream": 43,
-      "exclude": 10
+      "exclude": 15
     },
     "managedUpstreamStateCounts": {
       "actionable": 7,
-      "settled": 16,
+      "settled": 21,
       "tracked": 32
     },
     "managedResolutionKindCounts": {
       "already-excluded-upstream": 1,
-      "member": 1,
+      "member": 6,
       "not-modeled-upstream": 51,
       "root-availability": 2
     }
@@ -520,7 +520,7 @@
         "kind": "none",
         "note": "No external action. Keep excluded unless the spec position changes."
       },
-      "compatKeyCount": 9,
+      "compatKeyCount": 8,
       "compatKeys": [
         "javascript.builtins.Date.getYear",
         "javascript.builtins.Date.setYear",
@@ -529,12 +529,39 @@
         "javascript.builtins.Object.defineSetter",
         "javascript.builtins.Object.lookupGetter",
         "javascript.builtins.Object.lookupSetter",
-        "javascript.builtins.Object.proto",
-        "javascript.builtins.RegExp.n"
+        "javascript.builtins.Object.proto"
       ],
       "actualResolutionKinds": [
-        "member",
         "not-modeled-upstream"
+      ]
+    },
+    {
+      "id": "regexp-legacy-statics-excluded",
+      "category": "legacy_excluded",
+      "delivery": "exclude",
+      "upstreamState": "settled",
+      "expectedResolutionKinds": [
+        "member"
+      ],
+      "reason": "TypeScript models the RegExp legacy static aliases as separate properties, but they share the same compatibility status and must be excluded together.",
+      "sourceUrls": [
+        "https://github.com/tc39/proposal-regexp-legacy-features/"
+      ],
+      "externalAction": {
+        "kind": "none",
+        "note": "No external action. Keep canonical names and aliases bound to the same compat rows."
+      },
+      "compatKeyCount": 6,
+      "compatKeys": [
+        "javascript.builtins.RegExp.input",
+        "javascript.builtins.RegExp.lastMatch",
+        "javascript.builtins.RegExp.lastParen",
+        "javascript.builtins.RegExp.leftContext",
+        "javascript.builtins.RegExp.n",
+        "javascript.builtins.RegExp.rightContext"
+      ],
+      "actualResolutionKinds": [
+        "member"
       ]
     }
   ]

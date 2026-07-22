@@ -2,6 +2,57 @@
     "$schema": "./compat-management.schema.json",
     "kind": "typescript-baseline-lib/compat-management-registry",
     "schemaVersion": 1,
+    "declarationMappings": {
+        "javascript.builtins.RegExp.input": {
+            "scope": "static",
+            "memberNames": [
+                "input",
+                "$_"
+            ]
+        },
+        "javascript.builtins.RegExp.lastMatch": {
+            "scope": "static",
+            "memberNames": [
+                "lastMatch",
+                "$&"
+            ]
+        },
+        "javascript.builtins.RegExp.lastParen": {
+            "scope": "static",
+            "memberNames": [
+                "lastParen",
+                "$+"
+            ]
+        },
+        "javascript.builtins.RegExp.leftContext": {
+            "scope": "static",
+            "memberNames": [
+                "leftContext",
+                "$`"
+            ]
+        },
+        "javascript.builtins.RegExp.n": {
+            "scope": "static",
+            "memberNames": [
+                "$1",
+                "$2",
+                "$3",
+                "$4",
+                "$5",
+                "$6",
+                "$7",
+                "$8",
+                "$9"
+            ]
+        },
+        "javascript.builtins.RegExp.rightContext": {
+            "scope": "static",
+            "memberNames": [
+                "rightContext",
+                "$'"
+            ]
+        }
+    },
     "groups": [
         {
             "id": "generator-function-partial-model",
@@ -421,8 +472,32 @@
                 "javascript.builtins.Object.defineSetter",
                 "javascript.builtins.Object.lookupGetter",
                 "javascript.builtins.Object.lookupSetter",
-                "javascript.builtins.Object.proto",
-                "javascript.builtins.RegExp.n"
+                "javascript.builtins.Object.proto"
+            ]
+        },
+        {
+            "id": "regexp-legacy-statics-excluded",
+            "category": "legacy_excluded",
+            "delivery": "exclude",
+            "upstreamState": "settled",
+            "expectedResolutionKinds": [
+                "member"
+            ],
+            "reason": "TypeScript models the RegExp legacy static aliases as separate properties, but they share the same compatibility status and must be excluded together.",
+            "sourceUrls": [
+                "https://github.com/tc39/proposal-regexp-legacy-features/"
+            ],
+            "externalAction": {
+                "kind": "none",
+                "note": "No external action. Keep canonical names and aliases bound to the same compat rows."
+            },
+            "compatKeys": [
+                "javascript.builtins.RegExp.input",
+                "javascript.builtins.RegExp.lastMatch",
+                "javascript.builtins.RegExp.lastParen",
+                "javascript.builtins.RegExp.leftContext",
+                "javascript.builtins.RegExp.n",
+                "javascript.builtins.RegExp.rightContext"
             ]
         }
     ]

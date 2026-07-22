@@ -40,14 +40,51 @@ new Error("problem", { cause: new Error("root") });
 >/baseline/d.hasIndices : Symbol(RegExp.hasIndices, Decl(lib.baseline.d.ts, --, --))
 >hasIndices : Symbol(RegExp.hasIndices, Decl(lib.baseline.d.ts, --, --))
 
+type __BaselineLegacyRegExpStatic =
+>__BaselineLegacyRegExpStatic : Symbol(__BaselineLegacyRegExpStatic, Decl(libBaseline.ts, 9, 23))
+
+    | "$1"
+    | "$2"
+    | "$3"
+    | "$4"
+    | "$5"
+    | "$6"
+    | "$7"
+    | "$8"
+    | "$9"
+    | "input"
+    | "$_"
+    | "lastMatch"
+    | "$&"
+    | "lastParen"
+    | "$+"
+    | "leftContext"
+    | "$`"
+    | "rightContext"
+    | "$'";
+type __BaselineAssertNever<T extends never> = T;
+>__BaselineAssertNever : Symbol(__BaselineAssertNever, Decl(libBaseline.ts, 30, 11))
+>T : Symbol(T, Decl(libBaseline.ts, 31, 27))
+>T : Symbol(T, Decl(libBaseline.ts, 31, 27))
+
+type __BaselineHasNoLegacyRegExpStatics = __BaselineAssertNever<
+>__BaselineHasNoLegacyRegExpStatics : Symbol(__BaselineHasNoLegacyRegExpStatics, Decl(libBaseline.ts, 31, 48))
+>__BaselineAssertNever : Symbol(__BaselineAssertNever, Decl(libBaseline.ts, 30, 11))
+
+    Extract<__BaselineLegacyRegExpStatic, keyof typeof RegExp>
+>Extract : Symbol(Extract, Decl(lib.baseline.d.ts, --, --))
+>__BaselineLegacyRegExpStatic : Symbol(__BaselineLegacyRegExpStatic, Decl(libBaseline.ts, 9, 23))
+>RegExp : Symbol(RegExp, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --) ... and 3 more)
+
+>;
 (function probeCaller() {}).caller; // Error
->probeCaller : Symbol(probeCaller, Decl(libBaseline.ts, 11, 1))
+>probeCaller : Symbol(probeCaller, Decl(libBaseline.ts, 35, 1))
 
 "baseline".substr(1); // Error
 new RegExp("baseline").compile("baseline"); // Error
 >RegExp : Symbol(RegExp, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --) ... and 3 more)
 
 (function probeArguments() { return arguments.callee; })(); // Error
->probeArguments : Symbol(probeArguments, Decl(libBaseline.ts, 14, 1))
+>probeArguments : Symbol(probeArguments, Decl(libBaseline.ts, 38, 1))
 >arguments : Symbol(arguments)
 

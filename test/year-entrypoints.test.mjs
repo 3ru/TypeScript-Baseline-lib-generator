@@ -12,6 +12,7 @@ import {
 } from "../deploy/package-lib.mjs";
 import { baselinePackageName } from "../deploy/package-registry.mjs";
 import { resolveBaselineYears } from "../lib/generator.mjs";
+import { REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION } from "../lib/negative-probes.mjs";
 import {
     buildUpdateSummary,
     renderUpdateMarkdown,
@@ -146,7 +147,10 @@ test("packed year entrypoints enforce API boundaries under TypeScript 6 and 7", 
         repoManifest.firstClassLib.firstYear,
     )) {
         const name = `standalone-${year}`;
-        writeTextFile(path.join(consumerDirectory, `${name}.ts`), "export {};\n");
+        writeTextFile(
+            path.join(consumerDirectory, `${name}.ts`),
+            `${REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION}\n`,
+        );
         writeConsumerConfig(consumerDirectory, name, [`${baselinePackageName}/year/${year}`]);
         const configPath = path.join(consumerDirectory, `tsconfig.${name}.json`);
         runTsc(["-p", configPath], { cwd: consumerDirectory });

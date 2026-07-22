@@ -29,6 +29,7 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
     const fixture = createManifest(tempDirectory);
     /** @type {{ featureRows: unknown[]; compatRows: Array<{ compatKey: string; baselineStatus: string | boolean | undefined; }>; }} */
     const dataset = readJsonFile(repoDatasetPath);
+    const registry = readJsonFile(repoRegistryPath);
     const expectedLibCompatRows = dataset.compatRows.filter(row => isLibCompatKey(row.compatKey));
     const expectedHighCompatRows = expectedLibCompatRows.filter(row => row.baselineStatus === "high");
 
@@ -106,10 +107,6 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
         assert.doesNotMatch(topLevelOutput, probe.pattern, `excluded runtime surface ${probe.name} must stay absent`);
     }
 
-    // RegExp legacy statics (BCD single key RegExp.n) must not leak in either.
-    assert.doesNotMatch(topLevelOutput, /"\$1"/);
-    assert.doesNotMatch(topLevelOutput, /"lastMatch"/);
-
     // The exclusion-invariant audit info must appear in the report.
     assert.ok(generationReport.summary.excludedUnitCount > 0);
     assert.ok(Array.isArray(generationReport.excludedUnits));
@@ -119,6 +116,28 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
             entry => entry.compatKeys.includes("javascript.builtins.Function.caller"),
         ),
     );
+    const classifiedRowByCompatKey = new Map(classificationReport.classifiedCompatRows.map(
+        /** @param {{ compatKey: string; }} row */
+        row => [row.compatKey, row],
+    ));
+    const excludedUnitById = new Map(generationReport.excludedUnits.map(
+        /** @param {{ unitId: string; }} entry */
+        entry => [entry.unitId, entry],
+    ));
+    for (const compatKey of Object.keys(registry.declarationMappings ?? {})) {
+        const classifiedRow = classifiedRowByCompatKey.get(compatKey);
+        assert.ok(classifiedRow, `expected mapped classification row ${compatKey}`);
+        assert.equal(classifiedRow.resolutionKind, "member");
+        assert.ok(classifiedRow.resolvedUnitIds.length > 0);
+        if (!classifiedRow.includeInTarget) {
+            for (const unitId of classifiedRow.resolvedUnitIds) {
+                assert.ok(
+                    excludedUnitById.get(unitId)?.compatKeys.includes(compatKey),
+                    `mapped unit ${unitId} must retain exclusion provenance for ${compatKey}`,
+                );
+            }
+        }
+    }
 
     assert.equal(classificationReport.summary.featureCount, dataset.featureRows.length);
     assert.equal(classificationReport.summary.compatCount, dataset.compatRows.length);

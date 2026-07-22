@@ -6,12 +6,16 @@ import path from "node:path";
 import test from "node:test";
 import {
     LOW_NEGATIVE_PROBE_CANDIDATES,
+    REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION,
+    REGEXP_LEGACY_STATIC_MEMBER_NAMES,
     STABLE_NEGATIVE_PROBES,
     renderNegativeProbeSource,
     selectActiveNegativeProbes,
 } from "../lib/negative-probes.mjs";
 import {
     loadActiveNegativeProbesFromRepo,
+    readJsonFile,
+    repoRegistryPath,
     repoRoot,
 } from "./helpers.mjs";
 
@@ -23,6 +27,13 @@ const compilerFixturePath = path.join(
     "cases",
     "compiler",
     "libBaseline.ts",
+);
+const positiveSmokeFixturePath = path.join(
+    repoRoot,
+    "fixtures",
+    "typescript",
+    "smoke",
+    "positive-flag.ts",
 );
 
 test("checked-in classification still excludes every stable probe and at least one low probe", () => {
@@ -44,7 +55,7 @@ test("checked-in classification still excludes every stable probe and at least o
     );
 });
 
-test("compiler fixture negatives stay in sync with the stable probes", () => {
+test("TypeScript fixtures stay in sync with stable exclusion checks", () => {
     // Reference baselines are static expected values, so the compiler fixture
     // uses only permanently stable probes. This catches any drift between the
     // fixture and the probe definitions.
@@ -61,6 +72,30 @@ test("compiler fixture negatives stay in sync with the stable probes", () => {
             `compiler fixture must not hard-code dated low probe: ${candidate.compatKey}`,
         );
     }
+    assert.ok(
+        fixtureSource.includes(REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION),
+        "compiler fixture must contain the RegExp legacy static absence assertion",
+    );
+    assert.ok(
+        fs.readFileSync(positiveSmokeFixturePath, "utf8").includes(REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION),
+        "upstream smoke fixture must contain the RegExp legacy static absence assertion",
+    );
+
+    const registry = readJsonFile(repoRegistryPath);
+    const legacyGroup = registry.groups.find(
+        /** @param {{ id: string; }} group */
+        group => group.id === "regexp-legacy-statics-excluded",
+    );
+    assert.ok(legacyGroup);
+    const mappedMemberNames = legacyGroup.compatKeys.flatMap(
+        /** @param {string} compatKey */
+        compatKey => registry.declarationMappings[compatKey].memberNames,
+    );
+    assert.deepEqual(
+        [...new Set(mappedMemberNames)].sort(),
+        [...REGEXP_LEGACY_STATIC_MEMBER_NAMES].sort(),
+        "compiler assertion and declaration mappings must cover the same RegExp legacy statics",
+    );
 });
 
 test("selectActiveNegativeProbes fails with actionable messages", () => {

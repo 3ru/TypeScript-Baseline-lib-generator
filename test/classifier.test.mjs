@@ -156,6 +156,8 @@ const FIXTURE_LIB_SOURCE = [
 /**
  * @param {{
  *   rows: Array<Record<string, unknown>>;
+ *   declarationMappings?: Record<string, Record<string, unknown>>;
+ *   additionalLibSources?: Record<string, string>;
  *   registryGroups?: Array<Record<string, unknown>>;
  *   baselineTarget?: string;
  *   libSource?: string;
@@ -170,6 +172,9 @@ async function classifyFixture(options) {
         version: "0.0.0-test",
     });
     fs.writeFileSync(path.join(libDirectory, "lib.es5.d.ts"), options.libSource ?? FIXTURE_LIB_SOURCE);
+    for (const [fileName, sourceText] of Object.entries(options.additionalLibSources ?? {})) {
+        fs.writeFileSync(path.join(libDirectory, fileName), sourceText);
+    }
 
     const sourceLibEntries = await discoverBuiltinSourceLibEntries({
         libDirectory,
@@ -190,6 +195,7 @@ async function classifyFixture(options) {
     writeJsonFile(path.join(tempDirectory, "registry.json"), {
         kind: "typescript-baseline-lib/compat-management-registry",
         schemaVersion: 1,
+        ...(options.declarationMappings ? { declarationMappings: options.declarationMappings } : {}),
         groups: options.registryGroups ?? [],
     });
 
@@ -347,6 +353,138 @@ test("classifier routes synthetic compat rows to the expected resolution kinds",
     const argumentsCallee = findRow(classification, "javascript.functions.arguments.callee");
     assert.equal(argumentsCallee.resolutionKind, "member");
     assert.equal(argumentsCallee.includeInTarget, false);
+});
+
+test("classifier resolves declaration mappings and audits their containers", async () => {
+    const compatKey = "javascript.builtins.Widget.legacy";
+    const widgetLibSource = [
+        "interface UnrelatedHelper {",
+        '    "$future": string;',
+        "}",
+        "interface Widget {}",
+        "declare var Widget: WidgetConstructor;",
+        "interface WidgetConstructor {",
+        "    new(): Widget;",
+        "    readonly prototype: Widget;",
+        "    legacy: string;",
+        '    "$alias": string;',
+        "}",
+        "",
+    ].join("\n");
+    const rows = [
+        row("javascript.builtins.Widget", "high"),
+        row("javascript.builtins.Widget.Widget", "high"),
+        row(compatKey, false),
+    ];
+    const declarationMappings = {
+        [compatKey]: {
+            scope: "static",
+            memberNames: ["legacy", "$alias"],
+        },
+    };
+    const registryGroups = [{
+        id: "widget-legacy",
+        category: "legacy_excluded",
+        delivery: "exclude",
+        upstreamState: "settled",
+        expectedResolutionKinds: ["member"],
+        reason: "Synthetic declaration mapping fixture.",
+        sourceUrls: ["https://example.com/widget-legacy"],
+        externalAction: { kind: "none", note: "Synthetic fixture." },
+        compatKeys: [compatKey],
+    }];
+
+    const classification = await classifyFixture({
+        libSource: widgetLibSource,
+        additionalLibSources: {
+            "lib.es2015.core.d.ts": [
+                "interface WidgetConstructor {",
+                '    "$alias": string;',
+                "}",
+                "",
+            ].join("\n"),
+        },
+        rows,
+        declarationMappings,
+        registryGroups,
+    });
+    const classifiedRow = findRow(classification, compatKey);
+    assert.equal(classifiedRow.resolutionKind, "member");
+    assert.deepEqual(
+        classifiedRow.resolvedUnitIds.map(unitId => unitId.match(/WidgetConstructor\.(.+)::\d+$/)?.[1]).sort(),
+        ["$alias", "$alias", "legacy"],
+    );
+
+    await assert.rejects(
+        classifyFixture({
+            libSource: widgetLibSource.replace('    "$alias": string;\n', ""),
+            rows,
+            declarationMappings,
+            registryGroups,
+        }),
+        /Declaration mapping javascript\.builtins\.Widget\.legacy could not resolve static members: WidgetConstructor\.\$alias/,
+    );
+
+    await assert.rejects(
+        classifyFixture({
+            libSource: widgetLibSource.replace('    "$alias": string;\n', '    "$alias": string;\n    "$future": string;\n'),
+            rows,
+            declarationMappings,
+            registryGroups,
+        }),
+        /Members in mapped containers lack compat claims:[\s\S]*WidgetConstructor\.\$future/,
+    );
+
+    await assert.rejects(
+        classifyFixture({
+            libSource: [
+                "declare class Widget {",
+                "    static legacy: string;",
+                "}",
+                "",
+            ].join("\n"),
+            rows: [row("javascript.builtins.Widget", "high"), row(compatKey, false)],
+            declarationMappings: {
+                [compatKey]: { scope: "static", memberNames: ["legacy"] },
+            },
+            registryGroups,
+        }),
+        /Declaration mapping cannot distinguish static members on shared containers: Widget/,
+    );
+});
+
+test("classifier audits declaration mappings on synthetic roots", async () => {
+    const compatKey = "javascript.builtins.TypedArray.at";
+    const rows = [row(compatKey, false), ...typedArrayFamilyRows()];
+    const declarationMappings = {
+        [compatKey]: { scope: "instance", memberNames: ["at"] },
+    };
+    const registryGroups = [{
+        id: "typed-array-mapping",
+        category: "legacy_excluded",
+        delivery: "exclude",
+        upstreamState: "settled",
+        expectedResolutionKinds: ["member"],
+        reason: "Synthetic root declaration mapping fixture.",
+        sourceUrls: ["https://example.com/typed-array-mapping"],
+        externalAction: { kind: "none", note: "Synthetic fixture." },
+        compatKeys: [compatKey],
+    }];
+    const classification = await classifyFixture({ rows, declarationMappings, registryGroups });
+
+    const classifiedRow = findRow(classification, compatKey);
+    assert.equal(classifiedRow.resolutionKind, "member");
+    assert.equal(classifiedRow.resolvedUnitIds.length, 12);
+
+    await assert.rejects(
+        classifyFixture({
+            libSource: FIXTURE_LIB_SOURCE.replace("    at(index: number): number;\n", ""),
+            rows,
+            declarationMappings,
+            registryGroups,
+        }),
+        /could not resolve instance members: Int8Array\.at/,
+    );
 });
 
 test("classifier honors the low baseline target and rejects unknown targets", async () => {
