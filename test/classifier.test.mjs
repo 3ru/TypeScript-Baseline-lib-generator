@@ -138,7 +138,7 @@ const FIXTURE_LIB_SOURCE = [
     "    new(length: number): BigUint64Array;",
     "    readonly prototype: BigUint64Array;",
     "}",
-    "interface Iterator<T> {",
+    "interface Iterator<T> extends IteratorObject {",
     "    next(): T;",
     "}",
     "interface IteratorObject {",
@@ -222,6 +222,7 @@ function row(compatKey, baselineStatus) {
         featureId: "widget-fixture",
         featureName: "Widget fixture",
         baselineStatus,
+        ...(baselineStatus === false ? {} : { baselineLowDate: "2020-01-01" }),
     };
 }
 
@@ -298,6 +299,8 @@ test("classifier routes synthetic compat rows to the expected resolution kinds",
     const constructorRow = findRow(classification, "javascript.builtins.Widget.Widget");
     assert.equal(constructorRow.resolutionKind, "constructor");
     assert.ok(constructorRow.resolvedUnitIds.some(unitId => unitId.includes("WidgetConstructor.<construct>")));
+    assert.ok(constructorRow.resolvedUnitIds.some(unitId => unitId.includes("WidgetConstructor.prototype")));
+    assert.ok(constructorRow.resolvedUnitIds.some(unitId => unitId.includes("::Widget::")));
 
     const signatureRow = findRow(classification, "javascript.builtins.Widget.Widget.options_parameter");
     assert.equal(signatureRow.resolutionKind, "signature-compat");

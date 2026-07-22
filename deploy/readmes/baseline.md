@@ -60,9 +60,31 @@ import "core-js/proposals/promise-with-resolvers";
 
 Only explicitly audited entries are public. Published entry paths remain valid after all of their compat keys become Baseline widely available and move into the base package. Limited availability features with `baselineStatus: false` are rejected.
 
+## Target a Baseline year
+
+Baseline year targets contain the cumulative JavaScript features that were Baseline newly available by the end of a completed calendar year. For example, Baseline 2024 includes `Promise.withResolvers`:
+
+```json
+{
+  "compilerOptions": {
+    "noLib": true,
+    "types": ["{{PACKAGE_NAME}}/year/2024"]
+  }
+}
+```
+
+Year entrypoints are generated from each compat row's `baselineLowDate`. They are independent alternatives to the widely available base entrypoint, not additions to it. The current year is omitted until it is complete. Targets before 2020 remain an implementation limitation because their TypeScript declaration graph currently pulls symbols from later years.
+
+Do not combine a `year/*` entrypoint with the base package or an `allow/*` entrypoint. Each year file is a complete historical target, while `allow/*` additions are generated only for the current widely available base.
+
+Each year contract reports declaration-backed compat keys and explicitly managed upstream gaps in `reports/generation.json`. The generator never fabricates declarations for behavior that TypeScript cannot model.
+
+Year boundaries apply to runtime JavaScript APIs. Erased TypeScript helper types come from the pinned TypeScript toolchain and are not historical runtime features.
+
 ## Notes
 
 - The base public surface is a single `baseline` lib.
 - Audited `allow/*` entrypoints are optional additions for explicitly polyfilled APIs.
+- Completed cumulative Baseline year entrypoints are independent alternatives to the base lib.
 - The current scope is `javascript.builtins.*` plus the `arguments` object.
-- The generated declarations are derived from the npm `typescript` package and preserve the upstream Microsoft license notice inside `baseline.d.ts`.
+- The generated declarations are derived from the npm `typescript` package and preserve the upstream Microsoft license notice.

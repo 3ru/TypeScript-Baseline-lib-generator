@@ -4,9 +4,9 @@
     "fileCount": 84,
     "containerCount": 483,
     "unitCount": 2887,
-    "rootCount": 348,
-    "declarationSymbolCount": 348,
-    "memberSurfaceCount": 1906
+    "rootCount": 346,
+    "declarationSymbolCount": 346,
+    "memberSurfaceCount": 1905
   },
   "sourceLibs": [
     {
@@ -1074,7 +1074,8 @@
       "compatName": "AsyncIterator",
       "rootDeclarationUnitIds": [],
       "instanceContainerSymbols": [
-        "AsyncIterator"
+        "AsyncIterator",
+        "AsyncIteratorObject"
       ],
       "staticContainerSymbols": []
     },
@@ -2436,14 +2437,25 @@
     {
       "compatName": "Iterator",
       "rootDeclarationUnitIds": [
-        "lib.es2025.iterator.d.ts::Iterator::2"
+        "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31"
       ],
       "instanceContainerSymbols": [
-        "Iterator"
+        "Iterator",
+        "IteratorObject"
       ],
       "staticContainerSymbols": [
-        "Iterator"
+        "Iterator",
+        "IteratorConstructor"
       ]
+    },
+    {
+      "compatName": "IteratorConstructor",
+      "rootDeclarationUnitIds": [],
+      "instanceContainerSymbols": [
+        "IteratorConstructor"
+      ],
+      "staticContainerSymbols": []
     },
     {
       "compatName": "IteratorObject",
@@ -3315,7 +3327,9 @@
       "rootDeclarationUnitIds": [
         "lib.esnext.temporal.d.ts::Temporal.DurationLike::3"
       ],
-      "instanceContainerSymbols": [],
+      "instanceContainerSymbols": [
+        "Temporal.DurationLikeObject"
+      ],
       "staticContainerSymbols": [
         "Temporal.DurationLike"
       ]
@@ -3803,7 +3817,9 @@
       "rootDeclarationUnitIds": [
         "lib.esnext.temporal.d.ts::Temporal.ZonedDateTimeLike::11"
       ],
-      "instanceContainerSymbols": [],
+      "instanceContainerSymbols": [
+        "Temporal.ZonedDateTimeLikeObject"
+      ],
       "staticContainerSymbols": [
         "Temporal.ZonedDateTimeLike"
       ]
@@ -4137,32 +4153,6 @@
       "staticContainerSymbols": [
         "global"
       ]
-    },
-    {
-      "compatName": "global.Iterator",
-      "rootDeclarationUnitIds": [
-        "lib.es2025.iterator.d.ts::global.Iterator::31"
-      ],
-      "instanceContainerSymbols": [],
-      "staticContainerSymbols": [
-        "global.IteratorConstructor"
-      ]
-    },
-    {
-      "compatName": "global.IteratorConstructor",
-      "rootDeclarationUnitIds": [],
-      "instanceContainerSymbols": [
-        "global.IteratorConstructor"
-      ],
-      "staticContainerSymbols": []
-    },
-    {
-      "compatName": "global.IteratorObject",
-      "rootDeclarationUnitIds": [],
-      "instanceContainerSymbols": [
-        "global.IteratorObject"
-      ],
-      "staticContainerSymbols": []
     },
     {
       "compatName": "isFinite",
@@ -7668,7 +7658,8 @@
       ],
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::IteratorObject::24",
-        "lib.es2015.iterable.d.ts::IteratorResult::11"
+        "lib.es2015.iterable.d.ts::IteratorResult::11",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [],
       "surfacePath": "Generator",
@@ -8295,6 +8286,7 @@
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
       ],
       "parameterNames": [],
@@ -8319,6 +8311,7 @@
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
       ],
       "parameterNames": [],
@@ -8342,6 +8335,7 @@
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
       ],
       "parameterNames": [],
@@ -8387,6 +8381,7 @@
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
       ],
       "parameterNames": [],
@@ -8409,7 +8404,8 @@
         "IteratorObject"
       ],
       "dependencyUnitIds": [
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [],
       "surfacePath": "IteratorObject.@@iterator",
@@ -8448,7 +8444,8 @@
       ],
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [],
       "surfacePath": "ArrayIterator",
@@ -8831,7 +8828,8 @@
       ],
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [],
       "surfacePath": "MapIterator",
@@ -9259,7 +9257,8 @@
       ],
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [],
       "surfacePath": "SetIterator",
@@ -9775,7 +9774,8 @@
       ],
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [],
       "surfacePath": "StringIterator",
@@ -27663,7 +27663,8 @@
       ],
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [],
       "surfacePath": "RegExpStringIterator",
@@ -30612,6 +30613,7 @@
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
         "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10",
         "lib.es5.d.ts::Pick::468"
       ],
       "parameterNames": [],
@@ -30828,7 +30830,8 @@
       ],
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [],
       "surfacePath": "Intl.SegmentIterator",
@@ -35375,6 +35378,7 @@
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
       ],
       "parameterNames": [],
@@ -35399,6 +35403,7 @@
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
       ],
       "parameterNames": [],
@@ -38928,8 +38933,13 @@
       "declaredSymbols": [
         "Iterator"
       ],
-      "dependencySymbols": [],
-      "dependencyUnitIds": [],
+      "dependencySymbols": [
+        "IteratorObject"
+      ],
+      "dependencyUnitIds": [
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
+      ],
       "parameterNames": [],
       "surfacePath": "Iterator",
       "order": 3
@@ -38950,6 +38960,7 @@
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
       ],
       "parameterNames": [],
@@ -38970,6 +38981,7 @@
       "dependencySymbols": [
         "Iterable",
         "Iterator",
+        "IteratorConstructor",
         "IteratorObject",
         "IteratorObjectConstructor"
       ],
@@ -38978,7 +38990,10 @@
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5",
+        "lib.es2025.iterator.d.ts::IteratorConstructor::29",
+        "lib.es2025.iterator.d.ts::IteratorObject::10",
         "lib.es2025.iterator.d.ts::IteratorObjectConstructor::6"
       ],
       "parameterNames": [],
@@ -38986,195 +39001,200 @@
       "order": 5
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject::10",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject::10",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "declaration",
       "declarationKind": "interface",
-      "symbolName": "global.IteratorObject",
+      "symbolName": "IteratorObject",
       "containerPath": [
         "global"
       ],
       "parentContainerId": "lib.es2025.iterator.d.ts::container::namespace::global::7",
-      "containerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "containerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [
-        "global.IteratorObject"
+        "IteratorObject"
       ],
       "dependencySymbols": [
         "Iterable",
-        "Iterator",
-        "IteratorObject"
+        "Iterator"
       ],
       "dependencyUnitIds": [
         "lib.es2015.iterable.d.ts::Iterable::18",
         "lib.es2015.iterable.d.ts::Iterator::13",
-        "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
       ],
       "parameterNames": [],
-      "surfacePath": "global.IteratorObject",
+      "surfacePath": "IteratorObject",
       "order": 6
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.@@iterator::11",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.@@iterator::11",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "@@iterator",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [
         "IteratorObject"
       ],
       "dependencyUnitIds": [
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [],
-      "surfacePath": "global.IteratorObject.@@iterator",
+      "surfacePath": "IteratorObject.@@iterator",
       "order": 7
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.map::12",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.map::12",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "map",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [
         "IteratorObject"
       ],
       "dependencyUnitIds": [
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [
         "callbackfn"
       ],
-      "surfacePath": "global.IteratorObject.map",
+      "surfacePath": "IteratorObject.map",
       "order": 8
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.filter::13",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.filter::13",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "filter",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [
         "IteratorObject"
       ],
       "dependencyUnitIds": [
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [
         "predicate"
       ],
-      "surfacePath": "global.IteratorObject.filter",
+      "surfacePath": "IteratorObject.filter",
       "order": 9
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.filter::14",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.filter::14",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "filter",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [
         "IteratorObject"
       ],
       "dependencyUnitIds": [
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [
         "predicate"
       ],
-      "surfacePath": "global.IteratorObject.filter",
+      "surfacePath": "IteratorObject.filter",
       "order": 10
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.take::15",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.take::15",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "take",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [
         "IteratorObject"
       ],
       "dependencyUnitIds": [
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [
         "limit"
       ],
-      "surfacePath": "global.IteratorObject.take",
+      "surfacePath": "IteratorObject.take",
       "order": 11
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.drop::16",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.drop::16",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "drop",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [
         "IteratorObject"
       ],
       "dependencyUnitIds": [
-        "lib.es2015.iterable.d.ts::IteratorObject::24"
+        "lib.es2015.iterable.d.ts::IteratorObject::24",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [
         "count"
       ],
-      "surfacePath": "global.IteratorObject.drop",
+      "surfacePath": "IteratorObject.drop",
       "order": 12
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.flatMap::17",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.flatMap::17",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "flatMap",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [
         "Iterable",
@@ -39186,47 +39206,49 @@
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::Iterator::2",
-        "lib.es2025.iterator.d.ts::Iterator::5"
+        "lib.es2025.iterator.d.ts::Iterator::31",
+        "lib.es2025.iterator.d.ts::Iterator::5",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [
         "callback"
       ],
-      "surfacePath": "global.IteratorObject.flatMap",
+      "surfacePath": "IteratorObject.flatMap",
       "order": 13
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.reduce::18",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.reduce::18",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "reduce",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
       "parameterNames": [
         "callbackfn"
       ],
-      "surfacePath": "global.IteratorObject.reduce",
+      "surfacePath": "IteratorObject.reduce",
       "order": 14
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.reduce::19",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.reduce::19",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "reduce",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
@@ -39234,21 +39256,21 @@
         "callbackfn",
         "initialValue"
       ],
-      "surfacePath": "global.IteratorObject.reduce",
+      "surfacePath": "IteratorObject.reduce",
       "order": 15
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.reduce::20",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.reduce::20",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "reduce",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
@@ -39256,165 +39278,165 @@
         "callbackfn",
         "initialValue"
       ],
-      "surfacePath": "global.IteratorObject.reduce",
+      "surfacePath": "IteratorObject.reduce",
       "order": 16
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.toArray::21",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.toArray::21",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "toArray",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
       "parameterNames": [],
-      "surfacePath": "global.IteratorObject.toArray",
+      "surfacePath": "IteratorObject.toArray",
       "order": 17
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.forEach::22",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.forEach::22",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "forEach",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
       "parameterNames": [
         "callbackfn"
       ],
-      "surfacePath": "global.IteratorObject.forEach",
+      "surfacePath": "IteratorObject.forEach",
       "order": 18
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.some::23",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.some::23",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "some",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
       "parameterNames": [
         "predicate"
       ],
-      "surfacePath": "global.IteratorObject.some",
+      "surfacePath": "IteratorObject.some",
       "order": 19
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.every::24",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.every::24",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "every",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
       "parameterNames": [
         "predicate"
       ],
-      "surfacePath": "global.IteratorObject.every",
+      "surfacePath": "IteratorObject.every",
       "order": 20
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.find::25",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.find::25",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "find",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
       "parameterNames": [
         "predicate"
       ],
-      "surfacePath": "global.IteratorObject.find",
+      "surfacePath": "IteratorObject.find",
       "order": 21
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.find::26",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.find::26",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "find",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
       "parameterNames": [
         "predicate"
       ],
-      "surfacePath": "global.IteratorObject.find",
+      "surfacePath": "IteratorObject.find",
       "order": 22
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorObject.@@toStringTag::27",
+      "id": "lib.es2025.iterator.d.ts::IteratorObject.@@toStringTag::27",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorObject",
+      "ownerSymbol": "IteratorObject",
       "memberName": "@@toStringTag",
       "containerPath": [
         "global",
         "IteratorObject"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorObject::9",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorObject::9",
       "declaredSymbols": [],
       "dependencySymbols": [],
       "dependencyUnitIds": [],
       "parameterNames": [],
-      "surfacePath": "global.IteratorObject.@@toStringTag",
+      "surfacePath": "IteratorObject.@@toStringTag",
       "order": 23
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorConstructor::29",
+      "id": "lib.es2025.iterator.d.ts::IteratorConstructor::29",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "declaration",
       "declarationKind": "interface",
-      "symbolName": "global.IteratorConstructor",
+      "symbolName": "IteratorConstructor",
       "containerPath": [
         "global"
       ],
       "parentContainerId": "lib.es2025.iterator.d.ts::container::namespace::global::7",
-      "containerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorConstructor::28",
+      "containerId": "lib.es2025.iterator.d.ts::container::interface::IteratorConstructor::28",
       "declaredSymbols": [
-        "global.IteratorConstructor"
+        "IteratorConstructor"
       ],
       "dependencySymbols": [
         "Iterable",
@@ -39427,25 +39449,27 @@
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::Iterator::2",
+        "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5",
+        "lib.es2025.iterator.d.ts::IteratorObject::10",
         "lib.es2025.iterator.d.ts::IteratorObjectConstructor::6"
       ],
       "parameterNames": [],
-      "surfacePath": "global.IteratorConstructor",
+      "surfacePath": "IteratorConstructor",
       "order": 24
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.IteratorConstructor.from::30",
+      "id": "lib.es2025.iterator.d.ts::IteratorConstructor.from::30",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "member",
       "declarationKind": "member",
-      "ownerSymbol": "global.IteratorConstructor",
+      "ownerSymbol": "IteratorConstructor",
       "memberName": "from",
       "containerPath": [
         "global",
         "IteratorConstructor"
       ],
-      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::global.IteratorConstructor::28",
+      "parentContainerId": "lib.es2025.iterator.d.ts::container::interface::IteratorConstructor::28",
       "declaredSymbols": [],
       "dependencySymbols": [
         "Iterable",
@@ -39457,36 +39481,38 @@
         "lib.es2015.iterable.d.ts::Iterator::13",
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::Iterator::2",
-        "lib.es2025.iterator.d.ts::Iterator::5"
+        "lib.es2025.iterator.d.ts::Iterator::31",
+        "lib.es2025.iterator.d.ts::Iterator::5",
+        "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
       "parameterNames": [
         "value"
       ],
-      "surfacePath": "global.IteratorConstructor.from",
+      "surfacePath": "IteratorConstructor.from",
       "order": 25
     },
     {
-      "id": "lib.es2025.iterator.d.ts::global.Iterator::31",
+      "id": "lib.es2025.iterator.d.ts::Iterator::31",
       "libFileName": "lib.es2025.iterator.d.ts",
       "unitKind": "declaration",
       "declarationKind": "var",
-      "symbolName": "global.Iterator",
+      "symbolName": "Iterator",
       "containerPath": [
         "global"
       ],
       "parentContainerId": "lib.es2025.iterator.d.ts::container::namespace::global::7",
-      "typeRefName": "global.IteratorConstructor",
+      "typeRefName": "IteratorConstructor",
       "declaredSymbols": [
-        "global.Iterator"
+        "Iterator"
       ],
       "dependencySymbols": [
-        "global.IteratorConstructor"
+        "IteratorConstructor"
       ],
       "dependencyUnitIds": [
-        "lib.es2025.iterator.d.ts::global.IteratorConstructor::29"
+        "lib.es2025.iterator.d.ts::IteratorConstructor::29"
       ],
       "parameterNames": [],
-      "surfacePath": "global.Iterator",
+      "surfacePath": "Iterator",
       "order": 26
     },
     {

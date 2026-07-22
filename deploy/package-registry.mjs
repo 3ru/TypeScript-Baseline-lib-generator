@@ -37,6 +37,10 @@ export const baselinePackage = {
             to: "allow",
         },
         {
+            from: path.join(repoRoot, "generated", "current", "year"),
+            to: "year",
+        },
+        {
             from: path.join(repoRoot, "derived", "current", "classification.json"),
             to: path.join("reports", "classification.json"),
         },

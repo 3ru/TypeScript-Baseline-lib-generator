@@ -26,6 +26,7 @@ if (!args.dryRun && !args.yes && process.env.CI !== "true") {
 const releasePlans = await collectReleasePlans({
     packageId: args.package,
     versionOverride: args.version,
+    preview: args.dryRun,
 });
 
 /** @type {Array<Record<string, unknown>>} */
@@ -56,6 +57,9 @@ for (const releasePlan of releasePlans) {
     console.log(`Next version: ${releasePlan.packageVersion}`);
     console.log(`Latest published: ${releasePlan.publishedVersion ?? "none"}`);
     console.log(`Changed: ${releasePlan.changed ? "yes" : "no"}`);
+    if (releasePlan.requiredVersionBump && !args.version) {
+        console.log(`Reviewed release version required: ${releasePlan.requiredVersionBump} bump`);
+    }
     if (releasePlan.changedFiles.length) {
         console.log(`Changed files: ${releasePlan.changedFiles.join(", ")}`);
     }

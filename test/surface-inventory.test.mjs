@@ -225,3 +225,46 @@ test("type-only aliases cannot introduce unclassified runtime declarations", asy
         /Type-only aliases introduce runtime declarations.*FutureThing/s,
     );
 });
+test("declare global declarations merge into the global inventory surface", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const libDirectory = path.join(tempDirectory, "lib");
+    fs.mkdirSync(libDirectory, { recursive: true });
+    fs.writeFileSync(
+        path.join(libDirectory, "lib.es2025.widget.d.ts"),
+        [
+            "export {};",
+            "interface Widget extends globalThis.WidgetObject {}",
+            "declare global {",
+            "    interface WidgetObject {",
+            "        map(): WidgetObject;",
+            "    }",
+            "    interface WidgetConstructor {",
+            "        from(): WidgetObject;",
+            "    }",
+            "    var Widget: WidgetConstructor;",
+            "}",
+            "",
+        ].join("\n"),
+    );
+
+    const sourceLibEntries = await discoverBuiltinSourceLibEntries({
+        libDirectory,
+        reportPathPrefix: "typescript/lib",
+    });
+    const inventory = await createSurfaceInventory({
+        snapshotName: "global-surface-test",
+        repoRoot: tempDirectory,
+        sourceLibEntries,
+        inventoryOutputPath: path.join(tempDirectory, "inventory.json"),
+    });
+
+    assert.ok(inventory.declarationUnitsBySymbol.has("WidgetObject"));
+    assert.ok(!inventory.declarationUnitsBySymbol.has("global.WidgetObject"));
+    assert.equal(inventory.memberUnitsByOwnerAndName.get("WidgetObject::map")?.length, 1);
+    assert.ok(
+        inventory.declarationUnitsBySymbol.get("Widget")?.[0].dependencySymbols.includes("WidgetObject"),
+    );
+    const widgetRoot = inventory.rootSurfaceByCompatName.get("Widget");
+    assert.ok(widgetRoot?.staticContainerSymbols.has("WidgetConstructor"));
+    assert.ok(widgetRoot?.instanceContainerSymbols.has("WidgetObject"));
+});

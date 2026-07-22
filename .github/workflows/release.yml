@@ -2,6 +2,11 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Explicit package version for reviewed Baseline year contract changes"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -73,7 +78,14 @@ jobs:
         run: npm run test:typescript:full -- --typescript-dir ./.tmp/TypeScript --summary-out .tmp/typescript-integration-summary.md --baseline-diff-out .tmp/typescript-baseline-changes.diff --focused-baselines-out .tmp/typescript-focused-artifact --local-baselines-out .tmp/typescript-raw-local-baselines
 
       - name: Stage publishable baseline package
-        run: npm run pack:baseline
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          args=()
+          if [[ -n "$RELEASE_VERSION" ]]; then
+            args+=(--version "$RELEASE_VERSION")
+          fi
+          npm run pack:baseline -- "${args[@]}"
 
       - name: Upload integration summary and focused artifacts
         if: always()
@@ -96,6 +108,15 @@ jobs:
 
       # Tokenless publish via OIDC trusted publishing; provenance only on public repos.
       - name: Publish changed package and create GitHub release
-        run: npm run release:publish -- ${{ !github.event.repository.private && '--provenance' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          args=()
+          if [[ -n "$RELEASE_VERSION" ]]; then
+            args+=(--version "$RELEASE_VERSION")
+          fi
+          if [[ "${{ github.event.repository.private }}" != "true" ]]; then
+            args+=(--provenance)
+          fi
+          npm run release:publish -- "${args[@]}"

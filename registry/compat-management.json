@@ -264,38 +264,23 @@
             ]
         },
         {
-            "id": "iterator-helpers-tracked",
-            "category": "tracked_by_canonical_lib",
+            "id": "iterator-concat-upstream-gap",
+            "category": "actionable_upstream_gap",
             "delivery": "defer-upstream",
-            "upstreamState": "tracked",
+            "upstreamState": "actionable",
             "compatRoot": "Iterator",
-            "reason": "Iterator helpers already have a canonical tracking path in TypeScript and should flow into baseline through the standard library rather than through custom generator-owned declarations.",
+            "reason": "Iterator.concat is standardized but the pinned TypeScript libraries do not yet expose its static constructor surface.",
             "sourceUrls": [
-                "https://github.com/microsoft/TypeScript/issues/61735",
-                "https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/",
-                "https://github.com/tc39/proposal-iterator-helpers"
+                "https://github.com/tc39/proposal-iterator-sequencing",
+                "https://github.com/microsoft/TypeScript/blob/v6.0.3/src/lib/es2025.iterator.d.ts"
             ],
             "externalAction": {
-                "kind": "watch-existing",
+                "kind": "file-issue",
                 "repo": "microsoft/TypeScript",
-                "targetUrl": "https://github.com/microsoft/TypeScript/issues/61735",
-                "note": "Watch canonical library promotion and move to direct emission only after the standard lib settles."
+                "note": "Propose the canonical Iterator.concat declaration instead of defining a generator-owned substitute."
             },
             "compatKeys": [
-                "javascript.builtins.Iterator.Iterator",
-                "javascript.builtins.Iterator.concat",
-                "javascript.builtins.Iterator.drop",
-                "javascript.builtins.Iterator.every",
-                "javascript.builtins.Iterator.filter",
-                "javascript.builtins.Iterator.find",
-                "javascript.builtins.Iterator.flatMap",
-                "javascript.builtins.Iterator.forEach",
-                "javascript.builtins.Iterator.from",
-                "javascript.builtins.Iterator.map",
-                "javascript.builtins.Iterator.reduce",
-                "javascript.builtins.Iterator.some",
-                "javascript.builtins.Iterator.take",
-                "javascript.builtins.Iterator.toArray"
+                "javascript.builtins.Iterator.concat"
             ]
         },
         {
