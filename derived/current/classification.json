@@ -12,7 +12,7 @@
     "lowCompatCount": 77,
     "falseCompatCount": 323,
     "includedCompatCount": 750,
-    "emitCompatCount": 998,
+    "emitCompatCount": 997,
     "notModeledUpstreamCount": 64,
     "alreadyExcludedUpstreamCount": 1,
     "managedCompatCount": 68,
@@ -14753,10 +14753,10 @@
       "snapshot": [],
       "compatRoot": "RegExp",
       "includeInTarget": true,
-      "resolutionKind": "inherited-member",
+      "resolutionKind": "behavioral",
       "resolvedUnitIds": [],
       "transforms": [],
-      "notes": "javascript.builtins.RegExp.toString.escaping is inherited from shared object prototype declarations"
+      "notes": "javascript.builtins.RegExp.toString.escaping is tracked as behavior on RegExp.toString"
     },
     {
       "compatKey": "javascript.builtins.RegExp.unicode",

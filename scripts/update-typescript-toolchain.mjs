@@ -15,6 +15,8 @@ import {
     applyStradaSourcePin,
     applyTypeScriptGoSourcePin,
 } from "../lib/typescript-source.mjs";
+import { assertTypeScriptPeerRange } from "../deploy/package-lib.mjs";
+import { baselinePackage } from "../deploy/package-registry.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const scriptDirectory = path.dirname(scriptPath);
@@ -41,16 +43,14 @@ await main();
 
 async function main() {
     const typescriptVersion = args.typescriptVersion
-        ?? String(npmViewField(repoRoot, "typescript", "dist-tags.latest"));
+        ?? resolveLatestStableVersion(
+            `typescript@${baselinePackage.typescriptPeerDependencyRange}`,
+            "supported TypeScript",
+        );
     const stradaVersion = args.stradaVersion ?? resolveLatestStradaVersion();
 
-    assertStableSemver(typescriptVersion, "typescript");
-    assertStableSemver(stradaVersion, "typescript-strada");
-    if (!typescriptVersion.startsWith("7.") && !args.typescriptVersion) {
-        throw new Error(
-            `Resolved typescript dist-tags.latest is ${typescriptVersion}, expected a 7.x release. Pass --typescript-version explicitly to override.`,
-        );
-    }
+    assertTypeScriptPeerRange(baselinePackage.typescriptPeerDependencyRange, [typescriptVersion]);
+    assertTypeScriptPeerRange(">=6 <7", [stradaVersion]);
 
     execFileSync("npm", [
         "install",
@@ -110,16 +110,41 @@ async function main() {
  * Automatically follows any security patch released on 6.0.x.
  */
 function resolveLatestStradaVersion() {
-    const versions = npmViewField(repoRoot, "typescript@<7.0.0-0", "version");
+    return resolveLatestStableVersion("typescript@<7.0.0-0", "Strada (typescript <7)");
+}
+
+/**
+ * @param {string} packageSpecifier
+ * @param {string} label
+ */
+function resolveLatestStableVersion(packageSpecifier, label) {
+    const versions = npmViewField(repoRoot, packageSpecifier, "version");
     const versionList = Array.isArray(versions) ? versions : [versions];
     const stableVersions = versionList
-        .filter(version => typeof version === "string" && /^\d+\.\d+\.\d+$/u.test(version));
+        .filter(version => typeof version === "string" && /^\d+\.\d+\.\d+$/u.test(version))
+        .sort(compareStableSemver);
 
     const latest = stableVersions.at(-1);
     if (!latest) {
-        throw new Error("Could not resolve the latest stable Strada (typescript <7) version from the registry");
+        throw new Error(`Could not resolve the latest stable ${label} version from the registry`);
     }
     return latest;
+}
+
+/**
+ * @param {string} left
+ * @param {string} right
+ */
+function compareStableSemver(left, right) {
+    const leftParts = left.split(".").map(Number);
+    const rightParts = right.split(".").map(Number);
+    for (let index = 0; index < 3; index++) {
+        const difference = leftParts[index] - rightParts[index];
+        if (difference) {
+            return difference;
+        }
+    }
+    return 0;
 }
 
 /**
@@ -196,17 +221,6 @@ function computeCrossPlatformLibSourcePin(typescriptVersion) {
         libFileCount: first.fileCount,
     };
 }
-
-/**
- * @param {string} version
- * @param {string} label
- */
-function assertStableSemver(version, label) {
-    if (!/^\d+\.\d+\.\d+$/u.test(version)) {
-        throw new Error(`Resolved ${label} version ${version} is not a stable x.y.z release`);
-    }
-}
-
 
 /**
  * @param {string[]} argv

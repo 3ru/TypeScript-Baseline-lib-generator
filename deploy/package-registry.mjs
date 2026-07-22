@@ -12,6 +12,7 @@ export const baselinePackage = {
     id: "baseline",
     name: "typescript-baseline-lib",
     description: "Baseline widely available JavaScript declarations for TypeScript.",
+    typescriptPeerDependencyRange: ">=6 <8",
     initialVersion: "0.0.1",
     license: "Apache-2.0",
     keywords: [

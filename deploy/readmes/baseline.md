@@ -6,6 +6,7 @@ This package is produced by the [`TypeScript-Baseline-lib-generator`](https://gi
 
 Current snapshot:
 
+- Supported TypeScript versions: `{{TYPESCRIPT_PEER_DEPENDENCY_RANGE}}`
 - Baseline date: `{{BASELINE_DATE}}`
 - TypeScript package: `{{TYPESCRIPT_VERSION}}`
 - web-features package: `{{WEB_FEATURES_VERSION}}`
@@ -21,6 +22,10 @@ Stock TypeScript doesn't treat `"baseline"` as a built-in `lib` yet, so install 
 ```sh
 npm install --save-dev {{PACKAGE_NAME}}
 ```
+
+TypeScript is an optional peer dependency. Install a supported TypeScript 6.x or 7.x compiler separately if your project does not already provide one.
+
+The same snapshot facts are available to tools through `{{PACKAGE_NAME}}/snapshot.json`.
 
 ```json
 {

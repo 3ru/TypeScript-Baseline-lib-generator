@@ -1,6 +1,7 @@
 // @ts-check
 
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import test from "node:test";
 import { baselinePackageName } from "../deploy/package-registry.mjs";
@@ -8,6 +9,7 @@ import { renderNegativeProbeSource } from "../lib/negative-probes.mjs";
 import {
     cleanupTempDirectories,
     loadActiveNegativeProbesFromRepo,
+    readJsonFile,
     stageBaselinePackage,
     createTempDirectory,
     runNpm,
@@ -44,6 +46,30 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
         files: ["consumer-pass.ts"],
     });
     runNpm(["install", "--no-package-lock", "--no-save", stageDirectory], { cwd: consumerDirectory });
+
+    const stagedSnapshot = readJsonFile(path.join(stageDirectory, "snapshot.json"));
+    const importProbePath = path.join(consumerDirectory, "snapshot-import.mjs");
+    const requireProbePath = path.join(consumerDirectory, "snapshot-require.cjs");
+    writeTextFile(importProbePath, [
+        `import snapshot from "${baselinePackageName}/snapshot.json" with { type: "json" };`,
+        "process.stdout.write(JSON.stringify(snapshot));",
+        "",
+    ].join("\n"));
+    writeTextFile(requireProbePath, [
+        `const snapshot = require("${baselinePackageName}/snapshot.json");`,
+        "process.stdout.write(JSON.stringify(snapshot));",
+        "",
+    ].join("\n"));
+    const importedSnapshot = JSON.parse(execFileSync(process.execPath, [importProbePath], {
+        cwd: consumerDirectory,
+        encoding: "utf8",
+    }));
+    const requiredSnapshot = JSON.parse(execFileSync(process.execPath, [requireProbePath], {
+        cwd: consumerDirectory,
+        encoding: "utf8",
+    }));
+    assert.deepEqual(importedSnapshot, stagedSnapshot);
+    assert.deepEqual(requiredSnapshot, stagedSnapshot);
 
     const passPath = path.join(consumerDirectory, "consumer-pass.ts");
     writeTextFile(passPath, [

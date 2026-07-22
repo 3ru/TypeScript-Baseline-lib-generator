@@ -268,7 +268,9 @@ test("classifier routes synthetic compat rows to the expected resolution kinds",
             row("javascript.builtins.Widget.Widget", "high"),
             row("javascript.builtins.Widget.Widget.options_parameter", "low"),
             row("javascript.builtins.Widget.Widget.options_size_parameter", "low"),
+            row("javascript.builtins.Widget.configure.options_size_parameter.extended_values", "high"),
             row("javascript.builtins.Widget.toy.stable_sorting", "high"),
+            row("javascript.builtins.Widget.toString.escaping", "high"),
             row("javascript.builtins.TypedArray.at", "high"),
             row("javascript.builtins.Iterator.map", "low"),
             row("javascript.functions.arguments", "high"),
@@ -306,9 +308,20 @@ test("classifier routes synthetic compat rows to the expected resolution kinds",
     assert.equal(optionRow.resolutionKind, "option-property");
     assert.ok(optionRow.resolvedUnitIds.some(unitId => unitId.includes("WidgetOptions.size")));
 
+    const qualifiedOptionRow = findRow(
+        classification,
+        "javascript.builtins.Widget.configure.options_size_parameter.extended_values",
+    );
+    assert.equal(qualifiedOptionRow.resolutionKind, "option-property");
+    assert.ok(qualifiedOptionRow.resolvedUnitIds.some(unitId => unitId.includes("WidgetOptions.size")));
+
     const behaviorRow = findRow(classification, "javascript.builtins.Widget.toy.stable_sorting");
     assert.equal(behaviorRow.resolutionKind, "behavioral");
     assert.deepEqual(behaviorRow.resolvedUnitIds, []);
+
+    const inheritedBehaviorRow = findRow(classification, "javascript.builtins.Widget.toString.escaping");
+    assert.equal(inheritedBehaviorRow.resolutionKind, "behavioral");
+    assert.deepEqual(inheritedBehaviorRow.resolvedUnitIds, []);
 
     // Synthetic TypedArray root: BCD's "TypedArray" expands to individual typed array types.
     // But only typed arrays whose own root row is in the target get mapped.

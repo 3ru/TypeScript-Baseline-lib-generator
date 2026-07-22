@@ -70,3 +70,6 @@ jobs:
           commit-message: "chore: update TypeScript toolchain snapshot"
           title: "chore: update TypeScript toolchain snapshot"
           body-path: .tmp/typescript-toolchain-update-pr.md
+
+      - name: Check latest TypeScript major against the peer range
+        run: npm run check:typescript-peer-latest

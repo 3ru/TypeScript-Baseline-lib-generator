@@ -41,6 +41,74 @@ export async function createPackageStages(options = {}) {
     return summaries;
 }
 
+const DELIVERED_COMPAT_RESOLUTION_KINDS = new Set([
+    "constructor",
+    "inherited-member",
+    "member",
+    "option-property",
+    "root-availability",
+    "signature-compat",
+    "transform-only",
+    "type-property",
+]);
+const NON_DECLARATION_COMPAT_RESOLUTION_KINDS = new Set([
+    "already-excluded-upstream",
+    "behavioral",
+    "not-modeled-upstream",
+]);
+
+/**
+ * @param {Array<{ includeInTarget: boolean; resolutionKind: string; }>} classifiedCompatRows
+ */
+export function countIncludedCompatRows(classifiedCompatRows) {
+    let count = 0;
+    for (const row of classifiedCompatRows) {
+        const delivered = DELIVERED_COMPAT_RESOLUTION_KINDS.has(row.resolutionKind);
+        const nonDeclaration = NON_DECLARATION_COMPAT_RESOLUTION_KINDS.has(row.resolutionKind);
+        if (!delivered && !nonDeclaration) {
+            throw new Error(`Unknown compat resolution kind: ${row.resolutionKind}`);
+        }
+        if (row.includeInTarget && delivered) {
+            count++;
+        }
+    }
+    return count;
+}
+
+/**
+ * @param {string} range
+ * @param {string[]} versions
+ */
+export function assertTypeScriptPeerRange(range, versions) {
+    const numericIdentifier = "(0|[1-9]\\d*)";
+    const rangeMatch = typeof range === "string"
+        ? range.match(new RegExp(`^>=${numericIdentifier} <${numericIdentifier}$`))
+        : undefined;
+    if (!rangeMatch) {
+        throw new Error(`Unsupported TypeScript peer range: ${range}`);
+    }
+    const minimumMajor = Number(rangeMatch[1]);
+    const maximumMajor = Number(rangeMatch[2]);
+    if (minimumMajor >= maximumMajor) {
+        throw new Error(`Unsupported TypeScript peer range: ${range}`);
+    }
+    if (!versions.length) {
+        throw new Error("No TypeScript versions were provided for peer range validation");
+    }
+    for (const version of versions) {
+        const versionMatch = typeof version === "string"
+            ? version.match(new RegExp(`^${numericIdentifier}\\.${numericIdentifier}\\.${numericIdentifier}$`))
+            : undefined;
+        if (!versionMatch) {
+            throw new Error(`Unsupported TypeScript version: ${version}`);
+        }
+        const major = Number(versionMatch[1]);
+        if (major < minimumMajor || major >= maximumMajor) {
+            throw new Error(`TypeScript ${version} is outside peer range ${range}`);
+        }
+    }
+}
+
 /**
  * @param {{
  *   packageId?: string;
@@ -113,6 +181,10 @@ export async function publishReleasePlan(releasePlan, options = {}) {
  * @param {string} stageDirectory
  */
 async function createPackageStage(packageConfig, snapshot, versionOverride, stageDirectory) {
+    assertTypeScriptPeerRange(packageConfig.typescriptPeerDependencyRange, [
+        snapshot.manifest.snapshot.typescriptStradaVersion,
+        snapshot.manifest.snapshot.typescriptVersion,
+    ]);
     await rm(stageDirectory, { recursive: true, force: true });
     await mkdir(stageDirectory, { recursive: true });
 
@@ -123,6 +195,16 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
     }
 
     const packageVersion = versionOverride ?? await resolveNextPackageVersion(packageConfig);
+    const includedCompatCount = countIncludedCompatRows(snapshot.classification.classifiedCompatRows);
+    const snapshotMetadata = {
+        schemaVersion: 1,
+        baselineDate: snapshot.manifest.snapshot.baselineDate,
+        webFeaturesPackageVersion: snapshot.manifest.snapshot.webFeaturesPackageVersion,
+        webFeaturesGitHead: snapshot.manifest.snapshot.webFeaturesGitHead,
+        typescriptVersion: snapshot.manifest.snapshot.typescriptVersion,
+        includedCompatCount,
+        generatorVersion: snapshot.manifest.snapshot.generatorVersion,
+    };
     const packageJson = {
         name: packageConfig.name,
         version: packageVersion,
@@ -136,6 +218,14 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
         bugs: {
             url: packageConfig.bugsUrl,
         },
+        peerDependencies: {
+            typescript: packageConfig.typescriptPeerDependencyRange,
+        },
+        peerDependenciesMeta: {
+            typescript: {
+                optional: true,
+            },
+        },
         publishConfig: {
             access: "public",
         },
@@ -144,6 +234,7 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
         files: [
             "index.d.ts",
             "baseline.d.ts",
+            "snapshot.json",
             "reports/",
             "README.md",
             "LICENSE",
@@ -160,15 +251,20 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
         `${JSON.stringify(packageJson, undefined, 2)}\n`,
     );
     await writeFile(
+        path.join(stageDirectory, "snapshot.json"),
+        `${JSON.stringify(snapshotMetadata, undefined, 2)}\n`,
+    );
+    await writeFile(
         path.join(stageDirectory, "README.md"),
         renderTemplate(await readFile(packageConfig.readmeTemplatePath, "utf8"), {
             PACKAGE_NAME: packageConfig.name,
             PACKAGE_VERSION: packageVersion,
+            TYPESCRIPT_PEER_DEPENDENCY_RANGE: packageConfig.typescriptPeerDependencyRange,
             BASELINE_DATE: snapshot.manifest.snapshot.baselineDate,
             TYPESCRIPT_VERSION: snapshot.manifest.snapshot.typescriptVersion,
             WEB_FEATURES_VERSION: snapshot.manifest.snapshot.webFeaturesPackageVersion,
             WEB_FEATURES_GIT_HEAD: snapshot.manifest.snapshot.webFeaturesGitHead,
-            INCLUDED_COMPAT_COUNT: String(snapshot.classification.summary.includedCompatCount),
+            INCLUDED_COMPAT_COUNT: String(includedCompatCount),
             SELECTED_UNIT_COUNT: String(snapshot.generation.summary.selectedUnitCount),
             TRANSFORMED_UNIT_COUNT: String(snapshot.generation.summary.transformedUnitCount),
         }),
@@ -463,7 +559,7 @@ function renderReleaseNotes(options) {
         `- TypeScript package: ${snapshot.manifest.snapshot.typescriptVersion}`,
         `- web-features package: ${snapshot.manifest.snapshot.webFeaturesPackageVersion}`,
         `- web-features gitHead: ${snapshot.manifest.snapshot.webFeaturesGitHead}`,
-        `- Included compat rows: ${snapshot.classification.summary.includedCompatCount}`,
+        `- Included compat rows: ${countIncludedCompatRows(snapshot.classification.classifiedCompatRows)}`,
         `- Selected declaration units: ${snapshot.generation.summary.selectedUnitCount}`,
         `- Transformed units: ${snapshot.generation.summary.transformedUnitCount}`,
         "",
@@ -588,6 +684,7 @@ function compareStrings(left, right) {
  *   id: string;
  *   name: string;
  *   description: string;
+ *   typescriptPeerDependencyRange: string;
  *   initialVersion: string;
  *   license: string;
  *   keywords: string[];
