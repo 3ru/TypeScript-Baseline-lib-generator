@@ -7694,21 +7694,6 @@ declare global {
             (pattern: string, flags?: string): RegExp;
 
             readonly "prototype": RegExp;
-
-            /** @deprecated A legacy feature for browser compatibility */
-            "$_": string;
-
-            /** @deprecated A legacy feature for browser compatibility */
-            "$&": string;
-
-            /** @deprecated A legacy feature for browser compatibility */
-            "$+": string;
-
-            /** @deprecated A legacy feature for browser compatibility */
-            "$`": string;
-
-            /** @deprecated A legacy feature for browser compatibility */
-            "$'": string;
     }
 
     var RegExp: RegExpConstructor;

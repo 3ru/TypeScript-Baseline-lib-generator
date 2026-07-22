@@ -17,9 +17,9 @@
   "summary": {
     "sourceLibCount": 84,
     "classifiedCompatCount": 1150,
-    "selectedUnitCount": 1906,
+    "selectedUnitCount": 1901,
     "completeContainerCount": 172,
-    "excludedUnitCount": 409,
+    "excludedUnitCount": 414,
     "preservedTypeOnlyUnitCount": 29,
     "transformedUnitCount": 2,
     "allowEntryCount": 15,
@@ -1099,7 +1099,7 @@
     {
       "year": 2020,
       "outputPath": "generated/current/year/2020/index.d.ts",
-      "contentHash": "sha256-aa80f5ba1d4d9970926612e2ae6c7eb253ef2b44e523ff885fbf896f00be77f9",
+      "contentHash": "sha256-a211ab22eb9752333b9c614a57eeb1689b97a116d2a7d8f9eb44130ae63d576f",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -1723,14 +1723,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1547,
+      "selectedUnitCount": 1542,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 1
     },
     {
       "year": 2021,
       "outputPath": "generated/current/year/2021/index.d.ts",
-      "contentHash": "sha256-3ea92b0290076b42ea3d54aed4cb1a8bb9bc0053fcbd0ff345ae28ecfa51bae5",
+      "contentHash": "sha256-d5eae27351671819ee1bbf892a62f6a181c0f2509a648c0a307e9c6ad0ff1fef",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -2418,14 +2418,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1788,
+      "selectedUnitCount": 1783,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 2
     },
     {
       "year": 2022,
       "outputPath": "generated/current/year/2022/index.d.ts",
-      "contentHash": "sha256-739b273874376570226373ae7f23e200925ecbb9e5d0489f56fd357547725d88",
+      "contentHash": "sha256-afea5cbf913cdcc885b448ca6d75908546346bc368a99089a0365aff70a5d400",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -3123,14 +3123,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1843,
+      "selectedUnitCount": 1838,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 2
     },
     {
       "year": 2023,
       "outputPath": "generated/current/year/2023/index.d.ts",
-      "contentHash": "sha256-a5a699351a7726d18cbbe6b3e89c37583a3bfc021e817bfdb31144fc0de1c7fb",
+      "contentHash": "sha256-41b12b45750e6ea6c38804e6f885ea82e307e2a290f18550f1fcfa58aa80548f",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -3850,14 +3850,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1906,
+      "selectedUnitCount": 1901,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 2
     },
     {
       "year": 2024,
       "outputPath": "generated/current/year/2024/index.d.ts",
-      "contentHash": "sha256-a6cb9a7de70cbc8c9ec9f3176fc8361a898c3f8e8e4bc01cd5e717cf5847fec2",
+      "contentHash": "sha256-28acaad2d01790d586ab9aa39d8e22b22755e00da10afdca60828954609752d5",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -4607,14 +4607,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1967,
+      "selectedUnitCount": 1962,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 0
     },
     {
       "year": 2025,
       "outputPath": "generated/current/year/2025/index.d.ts",
-      "contentHash": "sha256-f1c7636db5d360cdbd806a96be98c2334b3755fa033231cae2c744c7ee961f98",
+      "contentHash": "sha256-2371b7fc8f777f6ba6832eb35bf5aae17d004df7663722983a1fb54814cb3cb3",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -5404,7 +5404,7 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 2124,
+      "selectedUnitCount": 2119,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 0
     }
@@ -5994,6 +5994,24 @@
       ]
     },
     {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$&::296",
+      "compatKeys": [
+        "javascript.builtins.RegExp.lastMatch"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$'::302",
+      "compatKeys": [
+        "javascript.builtins.RegExp.rightContext"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$+::298",
+      "compatKeys": [
+        "javascript.builtins.RegExp.lastParen"
+      ]
+    },
+    {
       "unitId": "lib.es5.d.ts::RegExpConstructor.$1::284",
       "compatKeys": [
         "javascript.builtins.RegExp.n"
@@ -6045,6 +6063,18 @@
       "unitId": "lib.es5.d.ts::RegExpConstructor.$9::292",
       "compatKeys": [
         "javascript.builtins.RegExp.n"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$_::294",
+      "compatKeys": [
+        "javascript.builtins.RegExp.input"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::RegExpConstructor.$`::300",
+      "compatKeys": [
+        "javascript.builtins.RegExp.leftContext"
       ]
     },
     {

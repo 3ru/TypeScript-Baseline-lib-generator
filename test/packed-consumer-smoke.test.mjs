@@ -4,7 +4,10 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import test from "node:test";
 import { baselinePackageName } from "../deploy/package-registry.mjs";
-import { renderNegativeProbeSource } from "../lib/negative-probes.mjs";
+import {
+    REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION,
+    renderNegativeProbeSource,
+} from "../lib/negative-probes.mjs";
 import {
     cleanupTempDirectories,
     createBaselinePackageTarball,
@@ -63,6 +66,7 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
         "const result = Promise.withResolvers<number>();",
         "reversed.length + values.length;",
         "result.promise;",
+        REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION,
         "",
     ].join("\n"));
 
