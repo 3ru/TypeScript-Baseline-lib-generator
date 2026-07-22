@@ -21,13 +21,15 @@
     "baselineTarget": "high",
     "dataset": "../datasets/web-features-js-compat.json",
     "compatManagementRegistry": "../registry/compat-management.json",
+    "allowlistRegistry": "../registry/allowlist.json",
     "classificationOutput": "../derived/current/classification.json",
     "compatManagementOutput": "../derived/current/compat-management-report.json",
     "inventoryOutput": "../derived/current/inventory.json",
     "generationOutput": "../derived/current/generation.json",
     "firstClassLib": {
         "libName": "baseline",
-        "outputFile": "../generated/current/baseline.d.ts"
+        "outputFile": "../generated/current/baseline.d.ts",
+        "allowDirectory": "../generated/current/allow"
     },
     "libSource": {
         "basePackage": "typescript",

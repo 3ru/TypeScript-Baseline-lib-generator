@@ -147,6 +147,9 @@ function buildUpdateSummary(options) {
     const previousClassificationSummary = previousState?.classification?.summary;
     const previousGenerationSummary = previousState?.generation?.summary;
     const previousCompatRegistry = previousState?.compatManagement?.registry;
+    const currentAllowEntries = currentState.generation.allowEntries ?? [];
+    const previousAllowEntries = previousState?.generation?.allowEntries ?? [];
+    const allowEntryChanges = compareAllowEntries(previousAllowEntries, currentAllowEntries);
 
     /** @type {string[]} */
     const reviewFlags = [];
@@ -158,6 +161,9 @@ function buildUpdateSummary(options) {
     }
     if ((delta(currentCompatSummary.managedUpstreamStateCounts.actionable, previousState?.compatManagement?.summary?.managedUpstreamStateCounts?.actionable) ?? 0) !== 0) {
         reviewFlags.push("Actionable upstream-gap count changed. Confirm whether a new or updated `microsoft/TypeScript` or `web-features` action item is needed.");
+    }
+    if (allowEntryChanges.length) {
+        reviewFlags.push("Allow entry state or compat contract changed. Verify the polyfill contract and generated declaration diff before merging.");
     }
     if (!reviewFlags.length) {
         reviewFlags.push("No special review flags beyond the normal generated diff review.");
@@ -181,6 +187,17 @@ function buildUpdateSummary(options) {
             managedCompatCount: delta(currentClassificationSummary.managedCompatCount, previousClassificationSummary?.managedCompatCount),
             selectedUnitCount: delta(currentGenerationSummary.selectedUnitCount, previousGenerationSummary?.selectedUnitCount),
             transformedUnitCount: delta(currentGenerationSummary.transformedUnitCount, previousGenerationSummary?.transformedUnitCount),
+        },
+        allowEntries: {
+            activeCount: currentAllowEntries.filter(
+                /** @param {{ kind?: string; }} entry */
+                entry => entry.kind === "active",
+            ).length,
+            aliasCount: currentAllowEntries.filter(
+                /** @param {{ kind?: string; }} entry */
+                entry => entry.kind === "alias",
+            ).length,
+            changes: allowEntryChanges,
         },
         reviewFlags,
     };
@@ -217,6 +234,8 @@ function renderMarkdown(summary) {
         `- Included high rows: ${formatCountWithDelta(currentClassificationSummary.includedCompatCount, summary.deltas.includedCompatCount)}`,
         `- Selected declaration units: ${formatCountWithDelta(currentGenerationSummary.selectedUnitCount, summary.deltas.selectedUnitCount)}`,
         `- Transformed units: ${formatCountWithDelta(currentGenerationSummary.transformedUnitCount, summary.deltas.transformedUnitCount)}`,
+        `- Allow entries: ${summary.allowEntries.activeCount} active, ${summary.allowEntries.aliasCount} aliases`,
+        `- Allow entry changes: ${summary.allowEntries.changes.length ? summary.allowEntries.changes.join("; ") : "none"}`,
         "",
         "## Compat Management",
         `- Registry hash: \`${summary.currentState.compatManagement.registry.sourceHash}\``,
@@ -237,6 +256,39 @@ function renderMarkdown(summary) {
         "## Review Notes",
         ...summary.reviewFlags.map(flag => `- ${flag}`),
     ].join("\n");
+}
+
+/**
+ * @param {Array<{ entryName: string; kind?: string; compatKeys?: string[]; }>} previousEntries
+ * @param {Array<{ entryName: string; kind?: string; compatKeys?: string[]; }>} currentEntries
+ */
+function compareAllowEntries(previousEntries, currentEntries) {
+    const previousByName = new Map(previousEntries.map(entry => [entry.entryName, entry]));
+    const currentByName = new Map(currentEntries.map(entry => [entry.entryName, entry]));
+    const names = [...new Set([...previousByName.keys(), ...currentByName.keys()])].sort();
+    const changes = [];
+
+    for (const name of names) {
+        const previous = previousByName.get(name);
+        const current = currentByName.get(name);
+        if (!previous) {
+            changes.push(`added allow/${name} (${current?.kind ?? "unknown"})`);
+            continue;
+        }
+        if (!current) {
+            changes.push(`removed allow/${name}`);
+            continue;
+        }
+        if (previous.kind !== current.kind) {
+            changes.push(`allow/${name}: ${previous.kind ?? "unknown"} -> ${current.kind ?? "unknown"}`);
+        }
+        const previousCompatKeys = [...(previous.compatKeys ?? [])].sort();
+        const currentCompatKeys = [...(current.compatKeys ?? [])].sort();
+        if (JSON.stringify(previousCompatKeys) !== JSON.stringify(currentCompatKeys)) {
+            changes.push(`allow/${name}: compat contract changed`);
+        }
+    }
+    return changes;
 }
 
 /**

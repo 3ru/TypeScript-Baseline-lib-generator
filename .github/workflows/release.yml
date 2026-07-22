@@ -55,7 +55,13 @@ jobs:
       # Block publishing when checked-in artifacts don't match the regenerated
       # output (i.e. publishing unreviewed content).
       - name: Verify checked-in generated artifacts
-        run: git diff --exit-code -- derived/current generated/current
+        run: |
+          git diff --exit-code -- derived/current generated/current
+          status="$(git status --porcelain --untracked-files=all -- derived/current generated/current)"
+          if [[ -n "$status" ]]; then
+            printf '%s\n' "$status"
+            exit 1
+          fi
 
       - name: Run validation and smoke tests
         run: npm test

@@ -191,7 +191,7 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
     for (const file of packageConfig.generatedFiles) {
         const destinationPath = path.join(stageDirectory, file.to);
         await mkdir(path.dirname(destinationPath), { recursive: true });
-        await cp(file.from, destinationPath);
+        await cp(file.from, destinationPath, { recursive: true });
     }
 
     const packageVersion = versionOverride ?? await resolveNextPackageVersion(packageConfig);
@@ -231,10 +231,16 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
         },
         keywords: packageConfig.keywords,
         types: "./index.d.ts",
+        typesVersions: {
+            "*": {
+                "allow/*": ["allow/*/index.d.ts"],
+            },
+        },
         files: [
             "index.d.ts",
             "baseline.d.ts",
             "snapshot.json",
+            "allow/",
             "reports/",
             "README.md",
             "LICENSE",
@@ -306,6 +312,11 @@ async function buildReleasePlan(stageSummary) {
     }
 
     const removedFiles = [...publishedPaths].sort(compareStrings);
+    assertNoRemovedAllowEntries(removedFiles);
+    assertAllowEntryContractsPreserved(
+        published.snapshot.get("reports/generation.json"),
+        stagedSnapshot.get("reports/generation.json"),
+    );
     const changed = !published.version || changedFiles.length > 0 || removedFiles.length > 0;
 
     return {
@@ -325,6 +336,60 @@ async function buildReleasePlan(stageSummary) {
             removedFiles,
         }),
     };
+}
+
+/**
+ * @param {string[]} removedFiles
+ */
+export function assertNoRemovedAllowEntries(removedFiles) {
+    const removedEntries = removedFiles.filter(relativePath => /^allow\/[^/]+\/index\.d\.ts$/.test(relativePath));
+    if (removedEntries.length) {
+        throw new Error(`Published allow entry paths cannot be removed: ${removedEntries.join(", ")}`);
+    }
+}
+
+/**
+ * @param {string | undefined} publishedReportText
+ * @param {string | undefined} stagedReportText
+ */
+export function assertAllowEntryContractsPreserved(publishedReportText, stagedReportText) {
+    if (!publishedReportText) {
+        return;
+    }
+    if (!stagedReportText) {
+        throw new Error("The staged package is missing reports/generation.json");
+    }
+
+    const publishedEntries = readAllowEntryContracts(publishedReportText, "published");
+    const stagedEntries = readAllowEntryContracts(stagedReportText, "staged");
+    for (const [entryName, publishedCompatKeys] of publishedEntries) {
+        const stagedCompatKeys = stagedEntries.get(entryName);
+        if (!stagedCompatKeys || JSON.stringify(stagedCompatKeys) !== JSON.stringify(publishedCompatKeys)) {
+            throw new Error(`Published allow entry contract changed: allow/${entryName}`);
+        }
+    }
+}
+
+/**
+ * @param {string} reportText
+ * @param {string} label
+ */
+function readAllowEntryContracts(reportText, label) {
+    /** @type {{ allowEntries?: Array<{ entryName?: unknown; compatKeys?: unknown; }>; }} */
+    const report = JSON.parse(reportText);
+    const contracts = new Map();
+    for (const entry of report.allowEntries ?? []) {
+        if (
+            typeof entry.entryName !== "string"
+            || !Array.isArray(entry.compatKeys)
+            || entry.compatKeys.some(compatKey => typeof compatKey !== "string")
+            || contracts.has(entry.entryName)
+        ) {
+            throw new Error(`Invalid ${label} allow entry contract report`);
+        }
+        contracts.set(entry.entryName, [...entry.compatKeys].sort(compareStrings));
+    }
+    return contracts;
 }
 
 /**
@@ -430,8 +495,10 @@ async function fetchPackageMetadata(packageName) {
  * @param {string} directoryPath
  */
 export async function createPackageTarball(directoryPath) {
-    await mkdir(path.join(repoRoot, ".tmp", "release-tarballs"), { recursive: true });
-    const packOutput = execFileSync("npm", ["pack", directoryPath, "--pack-destination", path.join(repoRoot, ".tmp", "release-tarballs"), "--silent"], {
+    const tarballRoot = path.join(repoRoot, ".tmp", "release-tarballs");
+    await mkdir(tarballRoot, { recursive: true });
+    const tarballDirectory = await mkdtemp(path.join(tarballRoot, "pack-"));
+    const packOutput = execFileSync("npm", ["pack", directoryPath, "--pack-destination", tarballDirectory, "--silent"], {
         cwd: repoRoot,
         encoding: "utf8",
     }).trim();
@@ -439,7 +506,7 @@ export async function createPackageTarball(directoryPath) {
     if (!tarballName) {
         throw new Error(`npm pack did not return a tarball name for ${directoryPath}`);
     }
-    return path.join(repoRoot, ".tmp", "release-tarballs", tarballName);
+    return path.join(tarballDirectory, tarballName);
 }
 
 /**

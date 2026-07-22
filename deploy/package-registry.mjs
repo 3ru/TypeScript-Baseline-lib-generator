@@ -33,6 +33,10 @@ export const baselinePackage = {
             to: "baseline.d.ts",
         },
         {
+            from: path.join(repoRoot, "generated", "current", "allow"),
+            to: "allow",
+        },
+        {
             from: path.join(repoRoot, "derived", "current", "classification.json"),
             to: path.join("reports", "classification.json"),
         },

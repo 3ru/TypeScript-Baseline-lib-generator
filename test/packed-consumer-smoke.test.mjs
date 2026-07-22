@@ -40,7 +40,7 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
         compilerOptions: {
             noLib: true,
             strict: true,
-            types: [baselinePackageName],
+            types: [baselinePackageName, `${baselinePackageName}/allow/promise-withresolvers`],
         },
         files: ["consumer-pass.ts"],
     });
@@ -60,7 +60,9 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
     writeTextFile(path.join(consumerDirectory, "consumer-pass.ts"), [
         "const reversed = [1, 2, 3].toReversed();",
         "const values = Intl.supportedValuesOf(\"currency\");",
+        "const result = Promise.withResolvers<number>();",
         "reversed.length + values.length;",
+        "result.promise;",
         "",
     ].join("\n"));
 

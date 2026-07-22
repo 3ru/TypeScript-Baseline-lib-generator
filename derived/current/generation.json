@@ -21,7 +21,10 @@
     "completeContainerCount": 178,
     "excludedUnitCount": 381,
     "preservedTypeOnlyUnitCount": 29,
-    "transformedUnitCount": 2
+    "transformedUnitCount": 2,
+    "allowEntryCount": 15,
+    "allowEntryUnitCount": 126,
+    "allowSupportUnitCount": 79
   },
   "sourceLibs": [
     {
@@ -533,6 +536,86 @@
     {
       "kind": "top-level-lib",
       "outputPath": "generated/current/baseline.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/array-fromasync/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/array-group/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/atomics-pause/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/atomics-wait-async/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/float16array/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/getorinsert/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/intl-duration-format/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/intl-segmenter/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/promise-try/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/promise-withresolvers/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/regexp-escape/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/resizable-buffers/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/set-methods/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/transferable-arraybuffer/index.d.ts"
+    },
+    {
+      "kind": "allow-entry",
+      "outputPath": "generated/current/allow/uint8array-base64-hex/index.d.ts"
+    },
+    {
+      "kind": "allow-support",
+      "outputPath": "generated/current/allow/_support/array-fromasync.d.ts"
+    },
+    {
+      "kind": "allow-support",
+      "outputPath": "generated/current/allow/_support/intl-duration-format.d.ts"
+    },
+    {
+      "kind": "allow-support",
+      "outputPath": "generated/current/allow/_support/intl-segmenter.d.ts"
+    },
+    {
+      "kind": "allow-support",
+      "outputPath": "generated/current/allow/_support/promise-withresolvers.d.ts"
+    },
+    {
+      "kind": "allow-support",
+      "outputPath": "generated/current/allow/_support/set-methods.d.ts"
     }
   ],
   "preservedTypeOnlyUnits": [
@@ -569,6 +652,423 @@
   "transformedUnits": [
     "lib.es2024.arraybuffer.d.ts::ArrayBufferConstructor.<construct>::10",
     "lib.es2024.sharedmemory.d.ts::SharedArrayBufferConstructor.<construct>::11"
+  ],
+  "allowEntries": [
+    {
+      "kind": "active",
+      "entryName": "array-fromasync",
+      "outputPath": "generated/current/allow/array-fromasync/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Array.fromAsync"
+      ],
+      "unitIds": [
+        "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::2",
+        "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::3"
+      ],
+      "supportUnitIds": [
+        "lib.es2018.asynciterable.d.ts::AsyncIterable.@@asyncIterator::10",
+        "lib.es2018.asynciterable.d.ts::AsyncIterable::9"
+      ]
+    },
+    {
+      "kind": "active",
+      "entryName": "array-group",
+      "outputPath": "generated/current/allow/array-group/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Map.groupBy",
+        "javascript.builtins.Object.groupBy"
+      ],
+      "unitIds": [
+        "lib.es2024.collection.d.ts::MapConstructor.groupBy::2",
+        "lib.es2024.object.d.ts::ObjectConstructor.groupBy::2"
+      ],
+      "supportUnitIds": []
+    },
+    {
+      "kind": "active",
+      "entryName": "atomics-pause",
+      "outputPath": "generated/current/allow/atomics-pause/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Atomics.pause"
+      ],
+      "unitIds": [
+        "lib.esnext.sharedmemory.d.ts::Atomics.pause::2"
+      ],
+      "supportUnitIds": []
+    },
+    {
+      "kind": "active",
+      "entryName": "atomics-wait-async",
+      "outputPath": "generated/current/allow/atomics-wait-async/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Atomics.waitAsync"
+      ],
+      "unitIds": [
+        "lib.es2024.sharedmemory.d.ts::Atomics.waitAsync::2",
+        "lib.es2024.sharedmemory.d.ts::Atomics.waitAsync::3"
+      ],
+      "supportUnitIds": []
+    },
+    {
+      "kind": "active",
+      "entryName": "float16array",
+      "outputPath": "generated/current/allow/float16array/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.DataView.getFloat16",
+        "javascript.builtins.DataView.setFloat16",
+        "javascript.builtins.Float16Array",
+        "javascript.builtins.Float16Array.Float16Array",
+        "javascript.builtins.Math.f16round"
+      ],
+      "unitIds": [
+        "lib.es2025.float16.d.ts::DataView.getFloat16::67",
+        "lib.es2025.float16.d.ts::DataView.setFloat16::68",
+        "lib.es2025.float16.d.ts::Float16Array.<index>::41",
+        "lib.es2025.float16.d.ts::Float16Array.@@iterator::42",
+        "lib.es2025.float16.d.ts::Float16Array.@@toStringTag::46",
+        "lib.es2025.float16.d.ts::Float16Array.BYTES_PER_ELEMENT::2",
+        "lib.es2025.float16.d.ts::Float16Array.at::6",
+        "lib.es2025.float16.d.ts::Float16Array.buffer::3",
+        "lib.es2025.float16.d.ts::Float16Array.byteLength::4",
+        "lib.es2025.float16.d.ts::Float16Array.byteOffset::5",
+        "lib.es2025.float16.d.ts::Float16Array.copyWithin::7",
+        "lib.es2025.float16.d.ts::Float16Array.entries::43",
+        "lib.es2025.float16.d.ts::Float16Array.every::8",
+        "lib.es2025.float16.d.ts::Float16Array.fill::9",
+        "lib.es2025.float16.d.ts::Float16Array.filter::10",
+        "lib.es2025.float16.d.ts::Float16Array.find::11",
+        "lib.es2025.float16.d.ts::Float16Array.findIndex::12",
+        "lib.es2025.float16.d.ts::Float16Array.findLast::13",
+        "lib.es2025.float16.d.ts::Float16Array.findLast::14",
+        "lib.es2025.float16.d.ts::Float16Array.findLastIndex::15",
+        "lib.es2025.float16.d.ts::Float16Array.forEach::16",
+        "lib.es2025.float16.d.ts::Float16Array.includes::17",
+        "lib.es2025.float16.d.ts::Float16Array.indexOf::18",
+        "lib.es2025.float16.d.ts::Float16Array.join::19",
+        "lib.es2025.float16.d.ts::Float16Array.keys::44",
+        "lib.es2025.float16.d.ts::Float16Array.lastIndexOf::20",
+        "lib.es2025.float16.d.ts::Float16Array.length::21",
+        "lib.es2025.float16.d.ts::Float16Array.map::22",
+        "lib.es2025.float16.d.ts::Float16Array.reduce::23",
+        "lib.es2025.float16.d.ts::Float16Array.reduce::24",
+        "lib.es2025.float16.d.ts::Float16Array.reduce::25",
+        "lib.es2025.float16.d.ts::Float16Array.reduceRight::26",
+        "lib.es2025.float16.d.ts::Float16Array.reduceRight::27",
+        "lib.es2025.float16.d.ts::Float16Array.reduceRight::28",
+        "lib.es2025.float16.d.ts::Float16Array.reverse::29",
+        "lib.es2025.float16.d.ts::Float16Array.set::30",
+        "lib.es2025.float16.d.ts::Float16Array.slice::31",
+        "lib.es2025.float16.d.ts::Float16Array.some::32",
+        "lib.es2025.float16.d.ts::Float16Array.sort::33",
+        "lib.es2025.float16.d.ts::Float16Array.subarray::34",
+        "lib.es2025.float16.d.ts::Float16Array.toLocaleString::35",
+        "lib.es2025.float16.d.ts::Float16Array.toReversed::36",
+        "lib.es2025.float16.d.ts::Float16Array.toSorted::37",
+        "lib.es2025.float16.d.ts::Float16Array.toString::38",
+        "lib.es2025.float16.d.ts::Float16Array.valueOf::39",
+        "lib.es2025.float16.d.ts::Float16Array.values::45",
+        "lib.es2025.float16.d.ts::Float16Array.with::40",
+        "lib.es2025.float16.d.ts::Float16Array::1",
+        "lib.es2025.float16.d.ts::Float16Array::61",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::50",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::51",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::52",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::53",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.<construct>::54",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.BYTES_PER_ELEMENT::55",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.from::57",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.from::58",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.from::59",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.from::60",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.of::56",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor.prototype::49",
+        "lib.es2025.float16.d.ts::Float16ArrayConstructor::48",
+        "lib.es2025.float16.d.ts::Math.f16round::64"
+      ],
+      "supportUnitIds": []
+    },
+    {
+      "kind": "active",
+      "entryName": "getorinsert",
+      "outputPath": "generated/current/allow/getorinsert/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Map.getOrInsert",
+        "javascript.builtins.Map.getOrInsertComputed",
+        "javascript.builtins.WeakMap.getOrInsert",
+        "javascript.builtins.WeakMap.getOrInsertComputed"
+      ],
+      "unitIds": [
+        "lib.esnext.collection.d.ts::Map.getOrInsert::2",
+        "lib.esnext.collection.d.ts::Map.getOrInsertComputed::3",
+        "lib.esnext.collection.d.ts::WeakMap.getOrInsert::6",
+        "lib.esnext.collection.d.ts::WeakMap.getOrInsertComputed::7"
+      ],
+      "supportUnitIds": []
+    },
+    {
+      "kind": "active",
+      "entryName": "intl-duration-format",
+      "outputPath": "generated/current/allow/intl-duration-format/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Intl.DurationFormat",
+        "javascript.builtins.Intl.DurationFormat.DurationFormat",
+        "javascript.builtins.Intl.DurationFormat.format",
+        "javascript.builtins.Intl.DurationFormat.formatToParts",
+        "javascript.builtins.Intl.DurationFormat.resolvedOptions",
+        "javascript.builtins.Intl.DurationFormat.supportedLocalesOf"
+      ],
+      "unitIds": [
+        "lib.es2025.intl.d.ts::Intl.DurationFormat.<construct>::68",
+        "lib.es2025.intl.d.ts::Intl.DurationFormat.format::36",
+        "lib.es2025.intl.d.ts::Intl.DurationFormat.formatToParts::37",
+        "lib.es2025.intl.d.ts::Intl.DurationFormat.prototype::67",
+        "lib.es2025.intl.d.ts::Intl.DurationFormat.resolvedOptions::38",
+        "lib.es2025.intl.d.ts::Intl.DurationFormat.supportedLocalesOf::69",
+        "lib.es2025.intl.d.ts::Intl.DurationFormat::35",
+        "lib.es2025.intl.d.ts::Intl.DurationFormat::66"
+      ],
+      "supportUnitIds": [
+        "lib.es2025.intl.d.ts::Intl.DurationFormatDisplayOption::4",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatLocaleMatcher::2",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.days::19",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.daysDisplay::20",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.fractionalDigits::33",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.hours::21",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.hoursDisplay::22",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.localeMatcher::10",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.microseconds::29",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.microsecondsDisplay::30",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.milliseconds::27",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.millisecondsDisplay::28",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.minutes::23",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.minutesDisplay::24",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.months::15",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.monthsDisplay::16",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.nanoseconds::31",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.nanosecondsDisplay::32",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.numberingSystem::11",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.seconds::25",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.secondsDisplay::26",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.style::12",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.weeks::17",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.weeksDisplay::18",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.years::13",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions.yearsDisplay::14",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatOptions::9",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatPart::7",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatStyle::3",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatUnit::5",
+        "lib.es2025.intl.d.ts::Intl.DurationFormatUnitSingular::6",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.days::50",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.daysDisplay::51",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.fractionalDigits::64",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.hours::52",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.hoursDisplay::53",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.locale::41",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.microseconds::60",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.microsecondsDisplay::61",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.milliseconds::58",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.millisecondsDisplay::59",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.minutes::54",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.minutesDisplay::55",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.months::46",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.monthsDisplay::47",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.nanoseconds::62",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.nanosecondsDisplay::63",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.numberingSystem::42",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.seconds::56",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.secondsDisplay::57",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.style::43",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.weeks::48",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.weeksDisplay::49",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.years::44",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions.yearsDisplay::45",
+        "lib.es2025.intl.d.ts::Intl.ResolvedDurationFormatOptions::40"
+      ]
+    },
+    {
+      "kind": "active",
+      "entryName": "intl-segmenter",
+      "outputPath": "generated/current/allow/intl-segmenter/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Intl.Segmenter",
+        "javascript.builtins.Intl.Segmenter.Segmenter",
+        "javascript.builtins.Intl.Segmenter.resolvedOptions",
+        "javascript.builtins.Intl.Segmenter.segment",
+        "javascript.builtins.Intl.Segmenter.supportedLocalesOf",
+        "javascript.builtins.Intl.Segments",
+        "javascript.builtins.Intl.Segments.@@iterator",
+        "javascript.builtins.Intl.Segments.containing"
+      ],
+      "unitIds": [
+        "lib.es2022.intl.d.ts::Intl.Segmenter.<construct>::30",
+        "lib.es2022.intl.d.ts::Intl.Segmenter.prototype::29",
+        "lib.es2022.intl.d.ts::Intl.Segmenter.resolvedOptions::9",
+        "lib.es2022.intl.d.ts::Intl.Segmenter.segment::8",
+        "lib.es2022.intl.d.ts::Intl.Segmenter.supportedLocalesOf::31",
+        "lib.es2022.intl.d.ts::Intl.Segmenter::28",
+        "lib.es2022.intl.d.ts::Intl.Segmenter::7",
+        "lib.es2022.intl.d.ts::Intl.Segments.@@iterator::20",
+        "lib.es2022.intl.d.ts::Intl.Segments.containing::19",
+        "lib.es2022.intl.d.ts::Intl.Segments::18"
+      ],
+      "supportUnitIds": [
+        "lib.es2022.intl.d.ts::Intl.ResolvedSegmenterOptions.granularity::13",
+        "lib.es2022.intl.d.ts::Intl.ResolvedSegmenterOptions.locale::12",
+        "lib.es2022.intl.d.ts::Intl.ResolvedSegmenterOptions::11",
+        "lib.es2022.intl.d.ts::Intl.SegmentData.index::24",
+        "lib.es2022.intl.d.ts::Intl.SegmentData.input::25",
+        "lib.es2022.intl.d.ts::Intl.SegmentData.isWordLike::26",
+        "lib.es2022.intl.d.ts::Intl.SegmentData.segment::23",
+        "lib.es2022.intl.d.ts::Intl.SegmentData::22",
+        "lib.es2022.intl.d.ts::Intl.SegmentIterator.@@iterator::16",
+        "lib.es2022.intl.d.ts::Intl.SegmentIterator::15",
+        "lib.es2022.intl.d.ts::Intl.SegmenterOptions.granularity::5",
+        "lib.es2022.intl.d.ts::Intl.SegmenterOptions.localeMatcher::4",
+        "lib.es2022.intl.d.ts::Intl.SegmenterOptions::3"
+      ]
+    },
+    {
+      "kind": "active",
+      "entryName": "promise-try",
+      "outputPath": "generated/current/allow/promise-try/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Promise.try"
+      ],
+      "unitIds": [
+        "lib.es2025.promise.d.ts::PromiseConstructor.try::2"
+      ],
+      "supportUnitIds": []
+    },
+    {
+      "kind": "active",
+      "entryName": "promise-withresolvers",
+      "outputPath": "generated/current/allow/promise-withresolvers/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Promise.withResolvers"
+      ],
+      "unitIds": [
+        "lib.es2024.promise.d.ts::PromiseConstructor.withResolvers::7"
+      ],
+      "supportUnitIds": [
+        "lib.es2024.promise.d.ts::PromiseWithResolvers.promise::2",
+        "lib.es2024.promise.d.ts::PromiseWithResolvers.reject::4",
+        "lib.es2024.promise.d.ts::PromiseWithResolvers.resolve::3",
+        "lib.es2024.promise.d.ts::PromiseWithResolvers::1"
+      ]
+    },
+    {
+      "kind": "active",
+      "entryName": "regexp-escape",
+      "outputPath": "generated/current/allow/regexp-escape/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.RegExp.escape"
+      ],
+      "unitIds": [
+        "lib.es2025.regexp.d.ts::RegExpConstructor.escape::2"
+      ],
+      "supportUnitIds": []
+    },
+    {
+      "kind": "active",
+      "entryName": "resizable-buffers",
+      "outputPath": "generated/current/allow/resizable-buffers/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.ArrayBuffer.ArrayBuffer.maxByteLength_option",
+        "javascript.builtins.ArrayBuffer.maxByteLength",
+        "javascript.builtins.ArrayBuffer.resizable",
+        "javascript.builtins.ArrayBuffer.resize",
+        "javascript.builtins.SharedArrayBuffer.SharedArrayBuffer.maxByteLength_option",
+        "javascript.builtins.SharedArrayBuffer.grow",
+        "javascript.builtins.SharedArrayBuffer.growable",
+        "javascript.builtins.SharedArrayBuffer.maxByteLength"
+      ],
+      "unitIds": [
+        "lib.es2024.arraybuffer.d.ts::ArrayBuffer.maxByteLength::2",
+        "lib.es2024.arraybuffer.d.ts::ArrayBuffer.resizable::3",
+        "lib.es2024.arraybuffer.d.ts::ArrayBuffer.resize::4",
+        "lib.es2024.arraybuffer.d.ts::ArrayBufferConstructor.<construct>::10",
+        "lib.es2024.sharedmemory.d.ts::SharedArrayBuffer.grow::8",
+        "lib.es2024.sharedmemory.d.ts::SharedArrayBuffer.growable::6",
+        "lib.es2024.sharedmemory.d.ts::SharedArrayBuffer.maxByteLength::7",
+        "lib.es2024.sharedmemory.d.ts::SharedArrayBufferConstructor.<construct>::11"
+      ],
+      "supportUnitIds": []
+    },
+    {
+      "kind": "active",
+      "entryName": "set-methods",
+      "outputPath": "generated/current/allow/set-methods/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Set.difference",
+        "javascript.builtins.Set.intersection",
+        "javascript.builtins.Set.isDisjointFrom",
+        "javascript.builtins.Set.isSubsetOf",
+        "javascript.builtins.Set.isSupersetOf",
+        "javascript.builtins.Set.symmetricDifference",
+        "javascript.builtins.Set.union"
+      ],
+      "unitIds": [
+        "lib.es2025.collection.d.ts::ReadonlySet.difference::18",
+        "lib.es2025.collection.d.ts::ReadonlySet.intersection::17",
+        "lib.es2025.collection.d.ts::ReadonlySet.isDisjointFrom::22",
+        "lib.es2025.collection.d.ts::ReadonlySet.isSubsetOf::20",
+        "lib.es2025.collection.d.ts::ReadonlySet.isSupersetOf::21",
+        "lib.es2025.collection.d.ts::ReadonlySet.symmetricDifference::19",
+        "lib.es2025.collection.d.ts::ReadonlySet.union::16",
+        "lib.es2025.collection.d.ts::Set.difference::9",
+        "lib.es2025.collection.d.ts::Set.intersection::8",
+        "lib.es2025.collection.d.ts::Set.isDisjointFrom::13",
+        "lib.es2025.collection.d.ts::Set.isSubsetOf::11",
+        "lib.es2025.collection.d.ts::Set.isSupersetOf::12",
+        "lib.es2025.collection.d.ts::Set.symmetricDifference::10",
+        "lib.es2025.collection.d.ts::Set.union::7"
+      ],
+      "supportUnitIds": [
+        "lib.es2025.collection.d.ts::ReadonlySetLike.has::3",
+        "lib.es2025.collection.d.ts::ReadonlySetLike.keys::2",
+        "lib.es2025.collection.d.ts::ReadonlySetLike.size::4",
+        "lib.es2025.collection.d.ts::ReadonlySetLike::1"
+      ]
+    },
+    {
+      "kind": "active",
+      "entryName": "transferable-arraybuffer",
+      "outputPath": "generated/current/allow/transferable-arraybuffer/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.ArrayBuffer.detached",
+        "javascript.builtins.ArrayBuffer.transfer",
+        "javascript.builtins.ArrayBuffer.transferToFixedLength"
+      ],
+      "unitIds": [
+        "lib.es2024.arraybuffer.d.ts::ArrayBuffer.detached::5",
+        "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transfer::6",
+        "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transferToFixedLength::7"
+      ],
+      "supportUnitIds": []
+    },
+    {
+      "kind": "active",
+      "entryName": "uint8array-base64-hex",
+      "outputPath": "generated/current/allow/uint8array-base64-hex/index.d.ts",
+      "compatKeys": [
+        "javascript.builtins.Uint8Array.fromBase64",
+        "javascript.builtins.Uint8Array.fromHex",
+        "javascript.builtins.Uint8Array.setFromBase64",
+        "javascript.builtins.Uint8Array.setFromHex",
+        "javascript.builtins.Uint8Array.toBase64",
+        "javascript.builtins.Uint8Array.toHex"
+      ],
+      "unitIds": [
+        "lib.esnext.typedarrays.d.ts::Uint8Array.setFromBase64::3",
+        "lib.esnext.typedarrays.d.ts::Uint8Array.setFromHex::5",
+        "lib.esnext.typedarrays.d.ts::Uint8Array.toBase64::2",
+        "lib.esnext.typedarrays.d.ts::Uint8Array.toHex::4",
+        "lib.esnext.typedarrays.d.ts::Uint8ArrayConstructor.fromBase64::8",
+        "lib.esnext.typedarrays.d.ts::Uint8ArrayConstructor.fromHex::9"
+      ],
+      "supportUnitIds": []
+    }
   ],
   "excludedUnits": [
     {

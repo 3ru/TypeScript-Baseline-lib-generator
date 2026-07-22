@@ -38,8 +38,31 @@ The same snapshot facts are available to tools through `{{PACKAGE_NAME}}/snapsho
 
 Now only the supported Baseline widely available JavaScript surfaces type-check; APIs that haven't reached Baseline yet are reported as errors.
 
+## Allow a polyfilled feature
+
+When the runtime loads an audited polyfill, add its generated web-features entry after the base package. For example, core-js can provide `Promise.withResolvers` at runtime:
+
+```ts
+import "core-js/proposals/promise-with-resolvers";
+```
+
+```json
+{
+  "compilerOptions": {
+    "noLib": true,
+    "types": [
+      "{{PACKAGE_NAME}}",
+      "{{PACKAGE_NAME}}/allow/promise-withresolvers"
+    ]
+  }
+}
+```
+
+Only explicitly audited entries are public. Published entry paths remain valid after all of their compat keys become Baseline widely available and move into the base package. Limited availability features with `baselineStatus: false` are rejected.
+
 ## Notes
 
-- The public surface is a single `baseline` lib.
+- The base public surface is a single `baseline` lib.
+- Audited `allow/*` entrypoints are optional additions for explicitly polyfilled APIs.
 - The current scope is `javascript.builtins.*` plus the `arguments` object.
 - The generated declarations are derived from the npm `typescript` package and preserve the upstream Microsoft license notice inside `baseline.d.ts`.
