@@ -953,7 +953,8 @@
         "lib.es5.d.ts::Array::443"
       ],
       "instanceContainerSymbols": [
-        "Array"
+        "Array",
+        "ReadonlyArray"
       ],
       "staticContainerSymbols": [
         "ArrayConstructor"
@@ -2516,7 +2517,8 @@
         "lib.es2015.collection.d.ts::Map::14"
       ],
       "instanceContainerSymbols": [
-        "Map"
+        "Map",
+        "ReadonlyMap"
       ],
       "staticContainerSymbols": [
         "MapConstructor"
@@ -3115,6 +3117,7 @@
         "lib.es2015.collection.d.ts::Set::44"
       ],
       "instanceContainerSymbols": [
+        "ReadonlySet",
         "Set"
       ],
       "staticContainerSymbols": [

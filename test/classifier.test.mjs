@@ -144,6 +144,12 @@ const FIXTURE_LIB_SOURCE = [
     "interface IteratorObject {",
     "    map(callback: unknown): IteratorObject;",
     "}",
+    "interface IArguments {",
+    "    [index: number]: any;",
+    "    length: number;",
+    "    callee: Function;",
+    "    [Symbol.iterator](): Iterator<any>;",
+    "}",
     "",
 ].join("\n");
 
@@ -265,6 +271,10 @@ test("classifier routes synthetic compat rows to the expected resolution kinds",
             row("javascript.builtins.Widget.toy.stable_sorting", "high"),
             row("javascript.builtins.TypedArray.at", "high"),
             row("javascript.builtins.Iterator.map", "low"),
+            row("javascript.functions.arguments", "high"),
+            row("javascript.functions.arguments.@@iterator", "high"),
+            row("javascript.functions.arguments.callee", false),
+            row("javascript.functions.arguments.length", "high"),
             ...typedArrayFamilyRows({ Float16Array: "low" }),
         ],
     });
@@ -314,6 +324,13 @@ test("classifier routes synthetic compat rows to the expected resolution kinds",
     const iteratorRow = findRow(classification, "javascript.builtins.Iterator.map");
     assert.equal(iteratorRow.resolutionKind, "member");
     assert.ok(iteratorRow.resolvedUnitIds.some(unitId => unitId.includes("IteratorObject.map")));
+
+    const argumentsIterator = findRow(classification, "javascript.functions.arguments.@@iterator");
+    assert.equal(argumentsIterator.resolutionKind, "member");
+    assert.ok(argumentsIterator.resolvedUnitIds.some(unitId => unitId.includes("IArguments.@@iterator")));
+    const argumentsCallee = findRow(classification, "javascript.functions.arguments.callee");
+    assert.equal(argumentsCallee.resolutionKind, "member");
+    assert.equal(argumentsCallee.includeInTarget, false);
 });
 
 test("classifier honors the low baseline target and rejects unknown targets", async () => {

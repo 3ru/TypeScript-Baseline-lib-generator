@@ -2,7 +2,7 @@
 
 Generated `baseline` declarations for TypeScript.
 
-This package is produced by the [`TypeScript-Baseline-lib-generator`](https://github.com/3ru/TypeScript-Baseline-lib-generator) repo. It packages the JavaScript built-ins that are [Baseline widely available](https://web.dev/baseline) (`baselineStatus === "high"`) as a single global declaration bundle.
+This package is produced by the [`TypeScript-Baseline-lib-generator`](https://github.com/3ru/TypeScript-Baseline-lib-generator) repo. It packages TypeScript-declarable JavaScript features that are [Baseline widely available](https://web.dev/baseline) as a single global declaration bundle.
 
 Current snapshot:
 
@@ -26,16 +26,15 @@ npm install --save-dev {{PACKAGE_NAME}}
 {
   "compilerOptions": {
     "noLib": true,
-    "skipLibCheck": true,
     "types": ["{{PACKAGE_NAME}}"]
   }
 }
 ```
 
-Now only Baseline widely available built-ins type-check; APIs that haven't reached Baseline yet are reported as errors.
+Now only the supported Baseline widely available JavaScript surfaces type-check; APIs that haven't reached Baseline yet are reported as errors.
 
 ## Notes
 
 - The public surface is a single `baseline` lib.
-- The current scope is `javascript.builtins.*` only.
+- The current scope is `javascript.builtins.*` plus the `arguments` object.
 - The generated declarations are derived from the npm `typescript` package and preserve the upstream Microsoft license notice inside `baseline.d.ts`.

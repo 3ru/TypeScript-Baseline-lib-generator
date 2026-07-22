@@ -11,6 +11,7 @@ import {
 import {
     assertExclusionInvariants,
     resolveExcludedUnits,
+    resolveUnclaimedTypeOnlyUnitIds,
 } from "../lib/generator.mjs";
 import {
     createSurfaceInventory,
@@ -174,6 +175,52 @@ test("resolveExcludedUnits bans surface-defining exclusions but keeps shared and
     assert.ok(!excludedUnitIds.has("unit-good"));
     // Don't block a shared unit that also resolves to an included row.
     assert.ok(!excludedUnitIds.has("unit-shared"));
+});
+
+test("resolveUnclaimedTypeOnlyUnitIds preserves global aliases without selecting interface surface", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const inventory = await createFixtureInventory(tempDirectory, {
+        "lib.es5.d.ts": [
+            "type Utility<T> = { value: T };",
+            "type ClaimedAlias = string;",
+            "interface ExcludedSupport { detail: string; }",
+            "interface TypeOnly {",
+            "    value: string;",
+            "    excluded(input: Utility<ExcludedSupport>): void;",
+            "}",
+            "interface RuntimeThing {",
+            "    visible(): void;",
+            "}",
+            "interface RuntimeThingConstructor {",
+            "    new(): RuntimeThing;",
+            "}",
+            "declare var RuntimeThing: RuntimeThingConstructor;",
+            "",
+        ].join("\n"),
+    });
+    const claimedAlias = (inventory.declarationUnitsBySymbol.get("ClaimedAlias") ?? [])[0];
+    const excludedMember = requireMemberUnit(inventory, "TypeOnly::excluded");
+    assert.ok(claimedAlias);
+
+    const selected = resolveUnclaimedTypeOnlyUnitIds({
+        inventory,
+        classifiedCompatRows: [
+            { resolvedUnitIds: [claimedAlias.id] },
+            { resolvedUnitIds: [excludedMember.id] },
+        ],
+        excludedUnitIds: new Set([excludedMember.id]),
+    });
+    const selectedUnits = selected.map(unitId => inventory.unitById.get(unitId));
+
+    assert.ok(selectedUnits.some(unit => unit?.symbolName === "Utility"));
+    assert.ok(!selectedUnits.some(unit => unit?.symbolName === "ClaimedAlias"));
+    assert.ok(!selectedUnits.some(unit => unit?.symbolName === "ExcludedSupport"));
+    assert.ok(!selectedUnits.some(unit => unit?.ownerSymbol === "ExcludedSupport"));
+    assert.ok(!selectedUnits.some(unit => unit?.symbolName === "TypeOnly"));
+    assert.ok(!selectedUnits.some(unit => unit?.ownerSymbol === "TypeOnly"));
+    assert.ok(!selectedUnits.some(unit => unit?.ownerSymbol === "TypeOnly" && unit.memberName === "excluded"));
+    assert.ok(!selectedUnits.some(unit => unit?.symbolName?.startsWith("RuntimeThing")));
+    assert.ok(!selectedUnits.some(unit => unit?.ownerSymbol?.startsWith("RuntimeThing")));
 });
 
 test("assertExclusionInvariants rejects selections that intersect excluded units", async () => {

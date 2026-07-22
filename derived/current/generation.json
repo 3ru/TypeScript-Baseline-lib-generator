@@ -16,10 +16,11 @@
   "inventoryOutputPath": "derived/current/inventory.json",
   "summary": {
     "sourceLibCount": 84,
-    "classifiedCompatCount": 1146,
-    "selectedUnitCount": 1837,
-    "completeContainerCount": 171,
-    "excludedUnitCount": 373,
+    "classifiedCompatCount": 1150,
+    "selectedUnitCount": 1906,
+    "completeContainerCount": 178,
+    "excludedUnitCount": 381,
+    "preservedTypeOnlyUnitCount": 29,
     "transformedUnitCount": 2
   },
   "sourceLibs": [
@@ -534,6 +535,37 @@
       "outputPath": "generated/current/baseline.d.ts"
     }
   ],
+  "preservedTypeOnlyUnits": [
+    "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
+    "lib.es2015.iterable.d.ts::IteratorResult::11",
+    "lib.es2019.array.d.ts::FlatArray::0",
+    "lib.es2020.promise.d.ts::PromiseSettledResult::8",
+    "lib.es5.d.ts::ArrayBufferLike::496",
+    "lib.es5.d.ts::Awaited::460",
+    "lib.es5.d.ts::Capitalize::480",
+    "lib.es5.d.ts::ConstructorParameters::475",
+    "lib.es5.d.ts::Exclude::470",
+    "lib.es5.d.ts::Extract::471",
+    "lib.es5.d.ts::InstanceType::477",
+    "lib.es5.d.ts::Lowercase::479",
+    "lib.es5.d.ts::NoInfer::482",
+    "lib.es5.d.ts::NonNullable::473",
+    "lib.es5.d.ts::Omit::472",
+    "lib.es5.d.ts::OmitThisParameter::78",
+    "lib.es5.d.ts::Parameters::474",
+    "lib.es5.d.ts::Partial::465",
+    "lib.es5.d.ts::Pick::468",
+    "lib.es5.d.ts::PromiseConstructorLike::452",
+    "lib.es5.d.ts::PropertyKey::17",
+    "lib.es5.d.ts::Readonly::467",
+    "lib.es5.d.ts::Record::469",
+    "lib.es5.d.ts::Required::466",
+    "lib.es5.d.ts::ReturnType::476",
+    "lib.es5.d.ts::ThisParameterType::77",
+    "lib.es5.d.ts::Uncapitalize::481",
+    "lib.es5.d.ts::Uppercase::478",
+    "lib.es5.d.ts::WeakKey::488"
+  ],
   "transformedUnits": [
     "lib.es2024.arraybuffer.d.ts::ArrayBufferConstructor.<construct>::10",
     "lib.es2024.sharedmemory.d.ts::SharedArrayBufferConstructor.<construct>::11"
@@ -772,6 +804,48 @@
       ]
     },
     {
+      "unitId": "lib.es2025.collection.d.ts::ReadonlySet.difference::18",
+      "compatKeys": [
+        "javascript.builtins.Set.difference"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::ReadonlySet.intersection::17",
+      "compatKeys": [
+        "javascript.builtins.Set.intersection"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::ReadonlySet.isDisjointFrom::22",
+      "compatKeys": [
+        "javascript.builtins.Set.isDisjointFrom"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::ReadonlySet.isSubsetOf::20",
+      "compatKeys": [
+        "javascript.builtins.Set.isSubsetOf"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::ReadonlySet.isSupersetOf::21",
+      "compatKeys": [
+        "javascript.builtins.Set.isSupersetOf"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::ReadonlySet.symmetricDifference::19",
+      "compatKeys": [
+        "javascript.builtins.Set.symmetricDifference"
+      ]
+    },
+    {
+      "unitId": "lib.es2025.collection.d.ts::ReadonlySet.union::16",
+      "compatKeys": [
+        "javascript.builtins.Set.union"
+      ]
+    },
+    {
       "unitId": "lib.es2025.collection.d.ts::Set.difference::9",
       "compatKeys": [
         "javascript.builtins.Set.difference"
@@ -943,6 +1017,12 @@
       "unitId": "lib.es5.d.ts::Function.caller::70",
       "compatKeys": [
         "javascript.builtins.Function.caller"
+      ]
+    },
+    {
+      "unitId": "lib.es5.d.ts::IArguments.callee::97",
+      "compatKeys": [
+        "javascript.functions.arguments.callee"
       ]
     },
     {

@@ -11,7 +11,7 @@ export const deployGeneratedDirectory = path.join(deployDirectory, "generated");
 export const baselinePackage = {
     id: "baseline",
     name: "typescript-baseline-lib",
-    description: "Baseline widely available JavaScript built-in declarations for TypeScript.",
+    description: "Baseline widely available JavaScript declarations for TypeScript.",
     initialVersion: "0.0.1",
     license: "Apache-2.0",
     keywords: [

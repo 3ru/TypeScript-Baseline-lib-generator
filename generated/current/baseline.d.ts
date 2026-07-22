@@ -70,6 +70,16 @@ interface MapConstructor {
 
 declare var Map: MapConstructor;
 
+interface ReadonlyMap<K, V> {
+        forEach(callbackfn: (value: V, key: K, map: ReadonlyMap<K, V>) => void, thisArg?: any): void;
+
+        get(key: K): V | undefined;
+
+        has(key: K): boolean;
+
+        readonly size: number;
+}
+
 interface WeakMap<K extends WeakKey, V> {
         /**
          * Removes the specified element from the WeakMap.
@@ -142,6 +152,23 @@ interface SetConstructor {
 }
 
 declare var Set: SetConstructor;
+
+interface ReadonlySet<T> {
+        /**
+         * Executes a provided function once per each value in the ReadonlySet object, in insertion order.
+         */
+        forEach(callbackfn: (value: T, value2: T, set: ReadonlySet<T>) => void, thisArg?: any): void;
+
+        /**
+         * @returns a boolean indicating whether an element with the specified value exists in the Set or not.
+         */
+        has(value: T): boolean;
+
+        /**
+         * @returns the number of (unique) elements in the Set.
+         */
+        readonly size: number;
+}
 
 interface WeakSet<T extends WeakKey> {
         /**
@@ -496,6 +523,34 @@ interface ObjectConstructor {
         setPrototypeOf(o: any, proto: object | null): any;
 }
 
+interface ReadonlyArray<T> {
+        /**
+         * Returns the value of the first element in the array where predicate is true, and undefined
+         * otherwise.
+         * @param predicate find calls predicate once for each element of the array, in ascending
+         * order, until it finds one where predicate returns true. If such an element is found, find
+         * immediately returns that element value. Otherwise, find returns undefined.
+         * @param thisArg If provided, it will be used as the this value for each invocation of
+         * predicate. If it is not provided, undefined is used instead.
+         */
+        find<S extends T>(predicate: (value: T, index: number, obj: readonly T[]) => value is S, thisArg?: any): S | undefined;
+
+        find(predicate: (value: T, index: number, obj: readonly T[]) => unknown, thisArg?: any): T | undefined;
+
+        /**
+         * Returns the index of the first element in the array where predicate is true, and -1
+         * otherwise.
+         * @param predicate find calls predicate once for each element of the array, in ascending
+         * order, until it finds one where predicate returns true. If such an element is found,
+         * findIndex immediately returns that element index. Otherwise, findIndex returns -1.
+         * @param thisArg If provided, it will be used as the this value for each invocation of
+         * predicate. If it is not provided, undefined is used instead.
+         */
+        findIndex(predicate: (value: T, index: number, obj: readonly T[]) => unknown, thisArg?: any): number;
+
+        toLocaleString(locales: string | string[], options?: Intl.NumberFormatOptions & Intl.DateTimeFormatOptions): string;
+}
+
 interface RegExp {
         /**
          * Returns a string indicating the flags of the regular expression in question. This field is read-only.
@@ -776,11 +831,56 @@ interface ArrayConstructor {
         from<T, U>(iterable: Iterable<T> | ArrayLike<T>, mapfn: (v: T, k: number) => U, thisArg?: any): U[];
 }
 
+interface ReadonlyArray<T> {
+        /** Iterator of values in the array. */
+        [Symbol.iterator](): ArrayIterator<T>;
+
+        /**
+         * Returns an iterable of key, value pairs for every entry in the array
+         */
+        entries(): ArrayIterator<[number, T]>;
+
+        /**
+         * Returns an iterable of keys in the array
+         */
+        keys(): ArrayIterator<number>;
+
+        /**
+         * Returns an iterable of values in the array
+         */
+        values(): ArrayIterator<T>;
+}
+
+interface IArguments {
+        /** Iterator */
+        [Symbol.iterator](): ArrayIterator<any>;
+}
+
 interface MapIterator<T> extends IteratorObject<T, BuiltinIteratorReturn, unknown> {
         [Symbol.iterator](): MapIterator<T>;
 }
 
 interface Map<K, V> {
+        /** Returns an iterable of entries in the map. */
+        [Symbol.iterator](): MapIterator<[K, V]>;
+
+        /**
+         * Returns an iterable of key, value pairs for every entry in the map.
+         */
+        entries(): MapIterator<[K, V]>;
+
+        /**
+         * Returns an iterable of keys in the map
+         */
+        keys(): MapIterator<K>;
+
+        /**
+         * Returns an iterable of values in the map
+         */
+        values(): MapIterator<V>;
+}
+
+interface ReadonlyMap<K, V> {
         /** Returns an iterable of entries in the map. */
         [Symbol.iterator](): MapIterator<[K, V]>;
 
@@ -818,6 +918,26 @@ interface SetIterator<T> extends IteratorObject<T, BuiltinIteratorReturn, unknow
 }
 
 interface Set<T> {
+        /** Iterates over values in the set. */
+        [Symbol.iterator](): SetIterator<T>;
+
+        /**
+         * Returns an iterable of [v,v] pairs for every value `v` in the set.
+         */
+        entries(): SetIterator<[T, T]>;
+
+        /**
+         * Despite its name, returns an iterable of the values in the set.
+         */
+        keys(): SetIterator<T>;
+
+        /**
+         * Returns an iterable of values in the set.
+         */
+        values(): SetIterator<T>;
+}
+
+interface ReadonlySet<T> {
         /** Iterates over values in the set. */
         [Symbol.iterator](): SetIterator<T>;
 
@@ -1621,6 +1741,16 @@ interface Array<T> {
         };
 }
 
+interface ReadonlyArray<T> {
+        /**
+         * Is an object whose properties have the value 'true'
+         * when they will be absent when used in a 'with' statement.
+         */
+        readonly [Symbol.unscopables]: {
+            [K in keyof readonly any[]]?: boolean;
+        };
+}
+
 interface Date {
         /**
          * Converts a Date object to a string.
@@ -1791,6 +1921,15 @@ interface ArrayBufferConstructor {
 // lib.es2016.array.include.d.ts
 /////////////////////////////
 interface Array<T> {
+        /**
+         * Determines whether an array includes a certain element, returning true or false as appropriate.
+         * @param searchElement The element to search for.
+         * @param fromIndex The position in this array at which to begin searching for searchElement.
+         */
+        includes(searchElement: T, fromIndex?: number): boolean;
+}
+
+interface ReadonlyArray<T> {
         /**
          * Determines whether an array includes a certain element, returning true or false as appropriate.
          * @param searchElement The element to search for.
@@ -2381,6 +2520,34 @@ type FlatArray<Arr, Depth extends number> = {
     recur: Arr extends ReadonlyArray<infer InnerArr> ? FlatArray<InnerArr, [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20][Depth]>
         : Arr;
 }[Depth extends -1 ? "done" : "recur"];
+
+interface ReadonlyArray<T> {
+        /**
+         * Calls a defined callback function on each element of an array. Then, flattens the result into
+         * a new array.
+         * This is identical to a map followed by flat with depth 1.
+         *
+         * @param callback A function that accepts up to three arguments. The flatMap method calls the
+         * callback function one time for each element in the array.
+         * @param thisArg An object to which the this keyword can refer in the callback function. If
+         * thisArg is omitted, undefined is used as the this value.
+         */
+        flatMap<U, This = undefined>(
+            callback: (this: This, value: T, index: number, array: T[]) => U | ReadonlyArray<U>,
+            thisArg?: This,
+        ): U[];
+
+        /**
+         * Returns a new array with all sub-array elements concatenated into it recursively up to the
+         * specified depth.
+         *
+         * @param depth The maximum recursion depth
+         */
+        flat<A, D extends number = 1>(
+            this: A,
+            depth?: D,
+        ): FlatArray<A, D>[];
+}
 
 interface Array<T> {
         /**
@@ -4177,6 +4344,14 @@ interface Array<T> {
         at(index: number): T | undefined;
 }
 
+interface ReadonlyArray<T> {
+        /**
+         * Returns the item located at the specified index.
+         * @param index The zero-based index of the desired code unit. A negative index will count back from the last item.
+         */
+        at(index: number): T | undefined;
+}
+
 interface Int8Array<TArrayBuffer extends ArrayBufferLike> {
         /**
          * Returns the item located at the specified index.
@@ -4449,6 +4624,85 @@ interface Array<T> {
          * negative, then it replaces from the end of the array.
          * @param value The value to write into the copied array.
          * @returns The copied array with the updated value.
+         */
+        with(index: number, value: T): T[];
+}
+
+interface ReadonlyArray<T> {
+        /**
+         * Returns the value of the last element in the array where predicate is true, and undefined
+         * otherwise.
+         * @param predicate findLast calls predicate once for each element of the array, in descending
+         * order, until it finds one where predicate returns true. If such an element is found, findLast
+         * immediately returns that element value. Otherwise, findLast returns undefined.
+         * @param thisArg If provided, it will be used as the this value for each invocation of
+         * predicate. If it is not provided, undefined is used instead.
+         */
+        findLast<S extends T>(
+            predicate: (value: T, index: number, array: readonly T[]) => value is S,
+            thisArg?: any,
+        ): S | undefined;
+
+        findLast(
+            predicate: (value: T, index: number, array: readonly T[]) => unknown,
+            thisArg?: any,
+        ): T | undefined;
+
+        /**
+         * Returns the index of the last element in the array where predicate is true, and -1
+         * otherwise.
+         * @param predicate findLastIndex calls predicate once for each element of the array, in descending
+         * order, until it finds one where predicate returns true. If such an element is found,
+         * findLastIndex immediately returns that element index. Otherwise, findLastIndex returns -1.
+         * @param thisArg If provided, it will be used as the this value for each invocation of
+         * predicate. If it is not provided, undefined is used instead.
+         */
+        findLastIndex(
+            predicate: (value: T, index: number, array: readonly T[]) => unknown,
+            thisArg?: any,
+        ): number;
+
+        /**
+         * Copies the array and returns the copied array with all of its elements reversed.
+         */
+        toReversed(): T[];
+
+        /**
+         * Copies and sorts the array.
+         * @param compareFn Function used to determine the order of the elements. It is expected to return
+         * a negative value if the first argument is less than the second argument, zero if they're equal, and a positive
+         * value otherwise. If omitted, the elements are sorted in ascending, UTF-16 code unit order.
+         * ```ts
+         * [11, 2, 22, 1].toSorted((a, b) => a - b) // [1, 2, 11, 22]
+         * ```
+         */
+        toSorted(compareFn?: (a: T, b: T) => number): T[];
+
+        /**
+         * Copies an array and removes elements while, if necessary, inserting new elements in their place, returning the remaining elements.
+         * @param start The zero-based location in the array from which to start removing elements.
+         * @param deleteCount The number of elements to remove.
+         * @param items Elements to insert into the copied array in place of the deleted elements.
+         * @returns A copy of the original array with the remaining elements.
+         */
+        toSpliced(start: number, deleteCount: number, ...items: T[]): T[];
+
+        /**
+         * Copies an array and removes elements while returning the remaining elements.
+         * @param start The zero-based location in the array from which to start removing elements.
+         * @param deleteCount The number of elements to remove.
+         * @returns A copy of the original array with the remaining elements.
+         */
+        toSpliced(start: number, deleteCount?: number): T[];
+
+        /**
+         * Copies an array, then overwrites the value at the provided index with the
+         * given value. If the index is negative, then it replaces from the end
+         * of the array
+         * @param index The index of the value to overwrite. If the index is
+         * negative, then it replaces from the end of the array.
+         * @param value The value to insert into the copied array.
+         * @returns A copy of the original array with the inserted value.
          */
         with(index: number, value: T): T[];
 }
@@ -5621,12 +5875,83 @@ type ThisParameterType<T> = T extends (this: infer U, ...args: never) => any ? U
 type OmitThisParameter<T> = unknown extends ThisParameterType<T> ? T : T extends (...args: infer A) => infer R ? (...args: A) => R : T;
 
 interface CallableFunction extends Function {
+        /**
+         * Calls the function with the specified object as the this value and the elements of specified array as the arguments.
+         * @param thisArg The object to be used as the this object.
+         */
+        apply<T, R>(this: (this: T) => R, thisArg: T): R;
+
+        /**
+         * Calls the function with the specified object as the this value and the elements of specified array as the arguments.
+         * @param thisArg The object to be used as the this object.
+         * @param args An array of argument values to be passed to the function.
+         */
+        apply<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, args: A): R;
+
+        /**
+         * Calls the function with the specified object as the this value and the specified rest arguments as the arguments.
+         * @param thisArg The object to be used as the this object.
+         * @param args Argument values to be passed to the function.
+         */
+        call<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, ...args: A): R;
+
+        /**
+         * For a given function, creates a bound function that has the same body as the original function.
+         * The this object of the bound function is associated with the specified object, and has the specified initial parameters.
+         * @param thisArg The object to be used as the this object.
+         */
+        bind<T>(this: T, thisArg: ThisParameterType<T>): OmitThisParameter<T>;
+
+        /**
+         * For a given function, creates a bound function that has the same body as the original function.
+         * The this object of the bound function is associated with the specified object, and has the specified initial parameters.
+         * @param thisArg The object to be used as the this object.
+         * @param args Arguments to bind to the parameters of the function.
+         */
+        bind<T, A extends any[], B extends any[], R>(this: (this: T, ...args: [...A, ...B]) => R, thisArg: T, ...args: A): (...args: B) => R;
 }
 
 interface NewableFunction extends Function {
+        /**
+         * Calls the function with the specified object as the this value and the elements of specified array as the arguments.
+         * @param thisArg The object to be used as the this object.
+         */
+        apply<T>(this: new () => T, thisArg: T): void;
+
+        /**
+         * Calls the function with the specified object as the this value and the elements of specified array as the arguments.
+         * @param thisArg The object to be used as the this object.
+         * @param args An array of argument values to be passed to the function.
+         */
+        apply<T, A extends any[]>(this: new (...args: A) => T, thisArg: T, args: A): void;
+
+        /**
+         * Calls the function with the specified object as the this value and the specified rest arguments as the arguments.
+         * @param thisArg The object to be used as the this object.
+         * @param args Argument values to be passed to the function.
+         */
+        call<T, A extends any[]>(this: new (...args: A) => T, thisArg: T, ...args: A): void;
+
+        /**
+         * For a given function, creates a bound function that has the same body as the original function.
+         * The this object of the bound function is associated with the specified object, and has the specified initial parameters.
+         * @param thisArg The object to be used as the this object.
+         */
+        bind<T>(this: T, thisArg: any): T;
+
+        /**
+         * For a given function, creates a bound function that has the same body as the original function.
+         * The this object of the bound function is associated with the specified object, and has the specified initial parameters.
+         * @param thisArg The object to be used as the this object.
+         * @param args Arguments to bind to the parameters of the function.
+         */
+        bind<A extends any[], B extends any[], R>(this: new (...args: [...A, ...B]) => R, thisArg: any, ...args: A): new (...args: B) => R;
 }
 
 interface IArguments {
+        [index: number]: any;
+
+        length: number;
 }
 
 interface String {
@@ -6849,6 +7174,8 @@ interface TypedPropertyDescriptor<T> {
         set?: (value: T) => void;
 }
 
+declare type PromiseConstructorLike = new <T>(executor: (resolve: (value: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void) => PromiseLike<T>;
+
 interface PromiseLike<T> {
         /**
          * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -6898,6 +7225,20 @@ interface ArrayLike<T> {
 }
 
 /**
+ * Make all properties in T optional
+ */
+type Partial<T> = {
+    [P in keyof T]?: T[P];
+};
+
+/**
+ * Make all properties in T required
+ */
+type Required<T> = {
+    [P in keyof T]-?: T[P];
+};
+
+/**
  * Make all properties in T readonly
  */
 type Readonly<T> = {
@@ -6912,9 +7253,76 @@ type Pick<T, K extends keyof T> = {
 };
 
 /**
+ * Construct a type with a set of properties K of type T
+ */
+type Record<K extends keyof any, T> = {
+    [P in K]: T;
+};
+
+/**
  * Exclude from T those types that are assignable to U
  */
 type Exclude<T, U> = T extends U ? never : T;
+
+/**
+ * Extract from T those types that are assignable to U
+ */
+type Extract<T, U> = T extends U ? T : never;
+
+/**
+ * Construct a type with the properties of T except for those in type K.
+ */
+type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
+
+/**
+ * Exclude null and undefined from T
+ */
+type NonNullable<T> = T & {};
+
+/**
+ * Obtain the parameters of a function type in a tuple
+ */
+type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
+
+/**
+ * Obtain the parameters of a constructor function type in a tuple
+ */
+type ConstructorParameters<T extends abstract new (...args: any) => any> = T extends abstract new (...args: infer P) => any ? P : never;
+
+/**
+ * Obtain the return type of a function type
+ */
+type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
+
+/**
+ * Obtain the return type of a constructor function type
+ */
+type InstanceType<T extends abstract new (...args: any) => any> = T extends abstract new (...args: any) => infer R ? R : any;
+
+/**
+ * Convert string literal type to uppercase
+ */
+type Uppercase<S extends string> = intrinsic;
+
+/**
+ * Convert string literal type to lowercase
+ */
+type Lowercase<S extends string> = intrinsic;
+
+/**
+ * Convert first character of string literal type to uppercase
+ */
+type Capitalize<S extends string> = intrinsic;
+
+/**
+ * Convert first character of string literal type to lowercase
+ */
+type Uncapitalize<S extends string> = intrinsic;
+
+/**
+ * Marker for non-inference type position
+ */
+type NoInfer<T> = intrinsic;
 
 /**
  * Marker for contextual 'this' type

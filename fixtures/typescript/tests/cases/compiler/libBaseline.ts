@@ -15,3 +15,4 @@ new Error("problem", { cause: new Error("root") });
 (function probeCaller() {}).caller; // Error
 "baseline".substr(1); // Error
 new RegExp("baseline").compile("baseline"); // Error
+(function probeArguments() { return arguments.callee; })(); // Error
