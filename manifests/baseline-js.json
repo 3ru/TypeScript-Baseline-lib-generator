@@ -1,11 +1,11 @@
 {
     "snapshot": {
         "name": "baseline-js",
-        "baselineDate": "2026-07-07",
+        "baselineDate": "2026-07-21",
         "generatorVersion": "0.0.1",
         "typescriptVersion": "7.0.2",
-        "webFeaturesPackageVersion": "3.32.0",
-        "webFeaturesGitHead": "720a40b4e4b722bfa74dad329570f6078ec1f239",
+        "webFeaturesPackageVersion": "3.34.1",
+        "webFeaturesGitHead": "c8b4c88e92fe9f49168371f766358bea6a4f18ab",
         "typescriptStradaVersion": "6.0.3"
     },
     "toolchain": {
