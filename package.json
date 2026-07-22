@@ -29,6 +29,7 @@
     },
     "scripts": {
         "generate": "node scripts/generate.mjs",
+        "check:typescript-peer-latest": "node scripts/check-typescript-peer-latest.mjs",
         "update:typescript-toolchain": "node scripts/update-typescript-toolchain.mjs",
         "update:web-features": "node scripts/update-web-features.mjs",
         "checkout:typescript-source": "node scripts/checkout-typescript-source.mjs",

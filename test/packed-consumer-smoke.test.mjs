@@ -10,6 +10,8 @@ import {
     createBaselinePackageTarball,
     createTempDirectory,
     loadActiveNegativeProbesFromRepo,
+    readJsonFile,
+    repoManifest,
     runNpm,
     runTsc,
     runTscExpectFailure,
@@ -44,6 +46,16 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
     });
 
     runNpm(["install", "--no-package-lock", "--no-save", tarballPath], { cwd: consumerDirectory });
+
+    const installedPackageDirectory = path.join(consumerDirectory, "node_modules", baselinePackageName);
+    const installedPackageJson = readJsonFile(path.join(installedPackageDirectory, "package.json"));
+    assert.deepEqual(installedPackageJson.peerDependencies, {
+        typescript: ">=6 <8",
+    });
+    assert.equal(
+        readJsonFile(path.join(installedPackageDirectory, "snapshot.json")).baselineDate,
+        repoManifest.snapshot.baselineDate,
+    );
 
     writeTextFile(path.join(consumerDirectory, "consumer-pass.ts"), [
         "const reversed = [1, 2, 3].toReversed();",
