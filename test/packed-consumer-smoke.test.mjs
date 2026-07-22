@@ -37,7 +37,6 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
     writeJsonFile(path.join(consumerDirectory, "tsconfig.json"), {
         compilerOptions: {
             noLib: true,
-            skipLibCheck: true,
             strict: true,
             types: [baselinePackageName],
         },
@@ -65,7 +64,6 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
     writeJsonFile(path.join(consumerDirectory, "tsconfig.fail.json"), {
         compilerOptions: {
             noLib: true,
-            skipLibCheck: true,
             strict: true,
             types: [baselinePackageName],
         },

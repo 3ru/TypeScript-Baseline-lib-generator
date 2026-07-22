@@ -47,3 +47,7 @@ new Error("problem", { cause: new Error("root") });
 new RegExp("baseline").compile("baseline"); // Error
 >RegExp : Symbol(RegExp, Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --), Decl(lib.baseline.d.ts, --, --) ... and 3 more)
 
+(function probeArguments() { return arguments.callee; })(); // Error
+>probeArguments : Symbol(probeArguments, Decl(libBaseline.ts, 14, 1))
+>arguments : Symbol(arguments)
+

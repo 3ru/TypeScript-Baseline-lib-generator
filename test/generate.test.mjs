@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 import { selectActiveNegativeProbes } from "../lib/negative-probes.mjs";
+import { isLibCompatKey } from "../lib/surface-inventory.mjs";
 import {
     cleanupTempDirectories,
     createManifest,
@@ -23,12 +24,12 @@ test.afterEach(() => {
     cleanupTempDirectories(tempDirectories);
 });
 
-test("generate emits a direct baseline lib for the current JS builtins widely available surface", () => {
+test("generate emits the current TypeScript-declarable Baseline JavaScript surface", () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const fixture = createManifest(tempDirectory);
     /** @type {{ featureRows: unknown[]; compatRows: Array<{ compatKey: string; baselineStatus: string | boolean | undefined; }>; }} */
     const dataset = readJsonFile(repoDatasetPath);
-    const expectedLibCompatRows = dataset.compatRows.filter(row => row.compatKey.startsWith("javascript.builtins."));
+    const expectedLibCompatRows = dataset.compatRows.filter(row => isLibCompatKey(row.compatKey));
     const expectedHighCompatRows = expectedLibCompatRows.filter(row => row.baselineStatus === "high");
 
     const output = runGenerate(fixture.manifestPath);
@@ -46,6 +47,37 @@ test("generate emits a direct baseline lib for the current JS builtins widely av
     assert.match(topLevelOutput, /interface Iterator<T, TReturn = any, TNext = any> \{[\s\S]*next\(/);
     assert.match(topLevelOutput, /interface ArrayBufferTypes \{[\s\S]*ArrayBuffer: ArrayBuffer;/);
     assert.match(topLevelOutput, /interface ListFormatOptions \{[\s\S]*localeMatcher\?:/);
+    for (const typeName of [
+        "Awaited",
+        "Partial",
+        "Required",
+        "Readonly",
+        "Pick",
+        "Record",
+        "Exclude",
+        "Extract",
+        "Omit",
+        "NonNullable",
+        "Parameters",
+        "ConstructorParameters",
+        "ReturnType",
+        "InstanceType",
+        "ThisParameterType",
+        "OmitThisParameter",
+        "ThisType",
+        "Uppercase",
+        "Lowercase",
+        "Capitalize",
+        "Uncapitalize",
+        "ReadonlyMap",
+        "ReadonlySet",
+    ]) {
+        assert.match(
+            topLevelOutput,
+            new RegExp(`(?:type|interface) ${typeName}(?:[<{\\s]|$)`),
+            `expected erased declaration ${typeName}`,
+        );
+    }
     assert.doesNotMatch(topLevelOutput, /\/\/\/ <reference lib=/);
     assert.equal([...topLevelOutput.matchAll(/Copyright \(c\) Microsoft Corporation/g)].length, 1);
 
@@ -62,6 +94,16 @@ test("generate emits a direct baseline lib for the current JS builtins widely av
                 `excluded probe ${probe.compatKey} must not appear in the emitted lib`,
             );
         }
+    }
+    for (const probe of [
+        { name: "Float16Array", pattern: /\b(?:interface|declare var) Float16Array\b/ },
+        { name: "Promise.withResolvers", pattern: /\bwithResolvers\s*\(/ },
+        { name: "Array.fromAsync", pattern: /\bfromAsync\s*</ },
+        { name: "Intl.Segmenter", pattern: /\b(?:interface|const) Segmenter\b/ },
+        { name: "String.prototype.substr", pattern: /\bsubstr\s*\(/ },
+        { name: "escape", pattern: /^declare function escape\b/m },
+    ]) {
+        assert.doesNotMatch(topLevelOutput, probe.pattern, `excluded runtime surface ${probe.name} must stay absent`);
     }
 
     // RegExp legacy statics (BCD single key RegExp.n) must not leak in either.

@@ -163,3 +163,19 @@ new RegExp("baseline").compile("baseline"); // Error
 >"baseline" : "baseline"
 >           : ^^^^^^^^^^
 
+(function probeArguments() { return arguments.callee; })(); // Error
+>(function probeArguments() { return arguments.callee; })() : any
+>                                                           : ^^^
+>(function probeArguments() { return arguments.callee; }) : () => any
+>                                                         : ^^^^^^^^^
+>function probeArguments() { return arguments.callee; } : () => any
+>                                                       : ^^^^^^^^^
+>probeArguments : () => any
+>               : ^^^^^^^^^
+>arguments.callee : any
+>                 : ^^^
+>arguments : IArguments
+>          : ^^^^^^^^^^
+>callee : any
+>       : ^^^
+

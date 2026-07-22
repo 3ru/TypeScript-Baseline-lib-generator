@@ -7,12 +7,12 @@
   "summary": {
     "featureCount": 121,
     "compatCount": 1356,
-    "libCompatCount": 1146,
-    "highCompatCount": 747,
+    "libCompatCount": 1150,
+    "highCompatCount": 750,
     "lowCompatCount": 77,
-    "falseCompatCount": 322,
-    "includedCompatCount": 747,
-    "emitCompatCount": 995,
+    "falseCompatCount": 323,
+    "includedCompatCount": 750,
+    "emitCompatCount": 998,
     "notModeledUpstreamCount": 64,
     "alreadyExcludedUpstreamCount": 1,
     "managedCompatCount": 68,
@@ -33,7 +33,7 @@
       "settled": 16,
       "tracked": 46
     },
-    "selectedUnitCount": 1342,
+    "selectedUnitCount": 1407,
     "transformedUnitCount": 2
   },
   "compatManagementRegistryPath": "registry/compat-management.json",
@@ -153,7 +153,8 @@
       "resolvedUnitIds": [
         "lib.es5.d.ts::Array::401",
         "lib.es5.d.ts::Array::443",
-        "lib.es5.d.ts::ArrayConstructor::434"
+        "lib.es5.d.ts::ArrayConstructor::434",
+        "lib.es5.d.ts::ReadonlyArray::370"
       ],
       "transforms": [],
       "notes": "compat root Array selects standalone declaration units"
@@ -175,7 +176,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::Array.@@iterator::32"
+        "lib.es2015.iterable.d.ts::Array.@@iterator::32",
+        "lib.es2015.iterable.d.ts::ReadonlyArray.@@iterator::42"
       ],
       "transforms": [],
       "notes": "member surface Array.@@iterator"
@@ -215,7 +217,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.symbol.wellknown.d.ts::Array.@@unscopables::18"
+        "lib.es2015.symbol.wellknown.d.ts::Array.@@unscopables::18",
+        "lib.es2015.symbol.wellknown.d.ts::ReadonlyArray.@@unscopables::21"
       ],
       "transforms": [],
       "notes": "member surface Array.@@unscopables"
@@ -264,7 +267,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2022.array.d.ts::Array.at::2"
+        "lib.es2022.array.d.ts::Array.at::2",
+        "lib.es2022.array.d.ts::ReadonlyArray.at::5"
       ],
       "transforms": [],
       "notes": "member surface Array.at"
@@ -287,7 +291,9 @@
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es5.d.ts::Array.concat::407",
-        "lib.es5.d.ts::Array.concat::408"
+        "lib.es5.d.ts::Array.concat::408",
+        "lib.es5.d.ts::ReadonlyArray.concat::374",
+        "lib.es5.d.ts::ReadonlyArray.concat::375"
       ],
       "transforms": [],
       "notes": "member surface Array.concat"
@@ -331,7 +337,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::Array.entries::33"
+        "lib.es2015.iterable.d.ts::Array.entries::33",
+        "lib.es2015.iterable.d.ts::ReadonlyArray.entries::43"
       ],
       "transforms": [],
       "notes": "member surface Array.entries"
@@ -354,7 +361,9 @@
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es5.d.ts::Array.every::419",
-        "lib.es5.d.ts::Array.every::420"
+        "lib.es5.d.ts::Array.every::420",
+        "lib.es5.d.ts::ReadonlyArray.every::380",
+        "lib.es5.d.ts::ReadonlyArray.every::381"
       ],
       "transforms": [],
       "notes": "member surface Array.every"
@@ -399,7 +408,9 @@
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es5.d.ts::Array.filter::424",
-        "lib.es5.d.ts::Array.filter::425"
+        "lib.es5.d.ts::Array.filter::425",
+        "lib.es5.d.ts::ReadonlyArray.filter::385",
+        "lib.es5.d.ts::ReadonlyArray.filter::386"
       ],
       "transforms": [],
       "notes": "member surface Array.filter"
@@ -422,7 +433,9 @@
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es2015.core.d.ts::Array.find::2",
-        "lib.es2015.core.d.ts::Array.find::3"
+        "lib.es2015.core.d.ts::Array.find::3",
+        "lib.es2015.core.d.ts::ReadonlyArray.find::61",
+        "lib.es2015.core.d.ts::ReadonlyArray.find::62"
       ],
       "transforms": [],
       "notes": "member surface Array.find"
@@ -444,7 +457,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.core.d.ts::Array.findIndex::4"
+        "lib.es2015.core.d.ts::Array.findIndex::4",
+        "lib.es2015.core.d.ts::ReadonlyArray.findIndex::63"
       ],
       "transforms": [],
       "notes": "member surface Array.findIndex"
@@ -467,7 +481,9 @@
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es2023.array.d.ts::Array.findLast::2",
-        "lib.es2023.array.d.ts::Array.findLast::3"
+        "lib.es2023.array.d.ts::Array.findLast::3",
+        "lib.es2023.array.d.ts::ReadonlyArray.findLast::12",
+        "lib.es2023.array.d.ts::ReadonlyArray.findLast::13"
       ],
       "transforms": [],
       "notes": "member surface Array.findLast"
@@ -489,7 +505,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2023.array.d.ts::Array.findLastIndex::4"
+        "lib.es2023.array.d.ts::Array.findLastIndex::4",
+        "lib.es2023.array.d.ts::ReadonlyArray.findLastIndex::14"
       ],
       "transforms": [],
       "notes": "member surface Array.findLastIndex"
@@ -511,7 +528,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2019.array.d.ts::Array.flat::8"
+        "lib.es2019.array.d.ts::Array.flat::8",
+        "lib.es2019.array.d.ts::ReadonlyArray.flat::4"
       ],
       "transforms": [],
       "notes": "member surface Array.flat"
@@ -533,7 +551,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2019.array.d.ts::Array.flatMap::7"
+        "lib.es2019.array.d.ts::Array.flatMap::7",
+        "lib.es2019.array.d.ts::ReadonlyArray.flatMap::3"
       ],
       "transforms": [],
       "notes": "member surface Array.flatMap"
@@ -555,7 +574,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::Array.forEach::422"
+        "lib.es5.d.ts::Array.forEach::422",
+        "lib.es5.d.ts::ReadonlyArray.forEach::383"
       ],
       "transforms": [],
       "notes": "member surface Array.forEach"
@@ -622,7 +642,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2016.array.include.d.ts::Array.includes::2"
+        "lib.es2016.array.include.d.ts::Array.includes::2",
+        "lib.es2016.array.include.d.ts::ReadonlyArray.includes::5"
       ],
       "transforms": [],
       "notes": "member surface Array.includes"
@@ -644,7 +665,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::Array.indexOf::417"
+        "lib.es5.d.ts::Array.indexOf::417",
+        "lib.es5.d.ts::ReadonlyArray.indexOf::378"
       ],
       "transforms": [],
       "notes": "member surface Array.indexOf"
@@ -688,7 +710,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::Array.join::409"
+        "lib.es5.d.ts::Array.join::409",
+        "lib.es5.d.ts::ReadonlyArray.join::376"
       ],
       "transforms": [],
       "notes": "member surface Array.join"
@@ -710,7 +733,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::Array.keys::34"
+        "lib.es2015.iterable.d.ts::Array.keys::34",
+        "lib.es2015.iterable.d.ts::ReadonlyArray.keys::44"
       ],
       "transforms": [],
       "notes": "member surface Array.keys"
@@ -732,7 +756,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::Array.lastIndexOf::418"
+        "lib.es5.d.ts::Array.lastIndexOf::418",
+        "lib.es5.d.ts::ReadonlyArray.lastIndexOf::379"
       ],
       "transforms": [],
       "notes": "member surface Array.lastIndexOf"
@@ -754,7 +779,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::Array.length::402"
+        "lib.es5.d.ts::Array.length::402",
+        "lib.es5.d.ts::ReadonlyArray.length::371"
       ],
       "transforms": [],
       "notes": "member surface Array.length"
@@ -776,7 +802,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::Array.map::423"
+        "lib.es5.d.ts::Array.map::423",
+        "lib.es5.d.ts::ReadonlyArray.map::384"
       ],
       "transforms": [],
       "notes": "member surface Array.map"
@@ -866,7 +893,10 @@
       "resolvedUnitIds": [
         "lib.es5.d.ts::Array.reduce::426",
         "lib.es5.d.ts::Array.reduce::427",
-        "lib.es5.d.ts::Array.reduce::428"
+        "lib.es5.d.ts::Array.reduce::428",
+        "lib.es5.d.ts::ReadonlyArray.reduce::387",
+        "lib.es5.d.ts::ReadonlyArray.reduce::388",
+        "lib.es5.d.ts::ReadonlyArray.reduce::389"
       ],
       "transforms": [],
       "notes": "member surface Array.reduce"
@@ -890,7 +920,10 @@
       "resolvedUnitIds": [
         "lib.es5.d.ts::Array.reduceRight::429",
         "lib.es5.d.ts::Array.reduceRight::430",
-        "lib.es5.d.ts::Array.reduceRight::431"
+        "lib.es5.d.ts::Array.reduceRight::431",
+        "lib.es5.d.ts::ReadonlyArray.reduceRight::390",
+        "lib.es5.d.ts::ReadonlyArray.reduceRight::391",
+        "lib.es5.d.ts::ReadonlyArray.reduceRight::392"
       ],
       "transforms": [],
       "notes": "member surface Array.reduceRight"
@@ -956,7 +989,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::Array.slice::412"
+        "lib.es5.d.ts::Array.slice::412",
+        "lib.es5.d.ts::ReadonlyArray.slice::377"
       ],
       "transforms": [],
       "notes": "member surface Array.slice"
@@ -978,7 +1012,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::Array.some::421"
+        "lib.es5.d.ts::Array.some::421",
+        "lib.es5.d.ts::ReadonlyArray.some::382"
       ],
       "transforms": [],
       "notes": "member surface Array.some"
@@ -1063,7 +1098,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.core.d.ts::Array.toLocaleString::7"
+        "lib.es2015.core.d.ts::Array.toLocaleString::7",
+        "lib.es2015.core.d.ts::ReadonlyArray.toLocaleString::64"
       ],
       "transforms": [],
       "notes": "member surface Array.toLocaleString"
@@ -1083,7 +1119,8 @@
       "includeInTarget": true,
       "resolutionKind": "signature-compat",
       "resolvedUnitIds": [
-        "lib.es2015.core.d.ts::Array.toLocaleString::7"
+        "lib.es2015.core.d.ts::Array.toLocaleString::7",
+        "lib.es2015.core.d.ts::ReadonlyArray.toLocaleString::64"
       ],
       "transforms": [],
       "notes": "locales_parameter is tracked against Array.toLocaleString"
@@ -1103,7 +1140,8 @@
       "includeInTarget": true,
       "resolutionKind": "signature-compat",
       "resolvedUnitIds": [
-        "lib.es2015.core.d.ts::Array.toLocaleString::7"
+        "lib.es2015.core.d.ts::Array.toLocaleString::7",
+        "lib.es2015.core.d.ts::ReadonlyArray.toLocaleString::64"
       ],
       "transforms": [],
       "notes": "options_parameter is tracked against Array.toLocaleString"
@@ -1125,7 +1163,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2023.array.d.ts::Array.toReversed::5"
+        "lib.es2023.array.d.ts::Array.toReversed::5",
+        "lib.es2023.array.d.ts::ReadonlyArray.toReversed::15"
       ],
       "transforms": [],
       "notes": "member surface Array.toReversed"
@@ -1147,7 +1186,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2023.array.d.ts::Array.toSorted::6"
+        "lib.es2023.array.d.ts::Array.toSorted::6",
+        "lib.es2023.array.d.ts::ReadonlyArray.toSorted::16"
       ],
       "transforms": [],
       "notes": "member surface Array.toSorted"
@@ -1170,7 +1210,9 @@
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es2023.array.d.ts::Array.toSpliced::7",
-        "lib.es2023.array.d.ts::Array.toSpliced::8"
+        "lib.es2023.array.d.ts::Array.toSpliced::8",
+        "lib.es2023.array.d.ts::ReadonlyArray.toSpliced::17",
+        "lib.es2023.array.d.ts::ReadonlyArray.toSpliced::18"
       ],
       "transforms": [],
       "notes": "member surface Array.toSpliced"
@@ -1192,7 +1234,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es5.d.ts::Array.toString::403"
+        "lib.es5.d.ts::Array.toString::403",
+        "lib.es5.d.ts::ReadonlyArray.toString::372"
       ],
       "transforms": [],
       "notes": "member surface Array.toString"
@@ -1236,7 +1279,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::Array.values::35"
+        "lib.es2015.iterable.d.ts::Array.values::35",
+        "lib.es2015.iterable.d.ts::ReadonlyArray.values::45"
       ],
       "transforms": [],
       "notes": "member surface Array.values"
@@ -1258,7 +1302,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2023.array.d.ts::Array.with::9"
+        "lib.es2023.array.d.ts::Array.with::9",
+        "lib.es2023.array.d.ts::ReadonlyArray.with::19"
       ],
       "transforms": [],
       "notes": "member surface Array.with"
@@ -10166,8 +10211,10 @@
         "lib.es2015.collection.d.ts::Map::1",
         "lib.es2015.collection.d.ts::Map::14",
         "lib.es2015.collection.d.ts::MapConstructor::10",
+        "lib.es2015.collection.d.ts::ReadonlyMap::16",
         "lib.es2015.iterable.d.ts::Map::53",
         "lib.es2015.iterable.d.ts::MapConstructor::65",
+        "lib.es2015.iterable.d.ts::ReadonlyMap::59",
         "lib.es2015.symbol.wellknown.d.ts::Map::29",
         "lib.es2015.symbol.wellknown.d.ts::MapConstructor::112"
       ],
@@ -10191,7 +10238,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::Map.@@iterator::54"
+        "lib.es2015.iterable.d.ts::Map.@@iterator::54",
+        "lib.es2015.iterable.d.ts::ReadonlyMap.@@iterator::60"
       ],
       "transforms": [],
       "notes": "member surface Map.@@iterator"
@@ -10354,7 +10402,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::Map.entries::55"
+        "lib.es2015.iterable.d.ts::Map.entries::55",
+        "lib.es2015.iterable.d.ts::ReadonlyMap.entries::61"
       ],
       "transforms": [],
       "notes": "member surface Map.entries"
@@ -10376,7 +10425,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.collection.d.ts::Map.forEach::4"
+        "lib.es2015.collection.d.ts::Map.forEach::4",
+        "lib.es2015.collection.d.ts::ReadonlyMap.forEach::17"
       ],
       "transforms": [],
       "notes": "member surface Map.forEach"
@@ -10398,7 +10448,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.collection.d.ts::Map.get::5"
+        "lib.es2015.collection.d.ts::Map.get::5",
+        "lib.es2015.collection.d.ts::ReadonlyMap.get::18"
       ],
       "transforms": [],
       "notes": "member surface Map.get"
@@ -10477,7 +10528,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.collection.d.ts::Map.has::6"
+        "lib.es2015.collection.d.ts::Map.has::6",
+        "lib.es2015.collection.d.ts::ReadonlyMap.has::19"
       ],
       "transforms": [],
       "notes": "member surface Map.has"
@@ -10519,7 +10571,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::Map.keys::56"
+        "lib.es2015.iterable.d.ts::Map.keys::56",
+        "lib.es2015.iterable.d.ts::ReadonlyMap.keys::62"
       ],
       "transforms": [],
       "notes": "member surface Map.keys"
@@ -10563,7 +10616,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.collection.d.ts::Map.size::8"
+        "lib.es2015.collection.d.ts::Map.size::8",
+        "lib.es2015.collection.d.ts::ReadonlyMap.size::20"
       ],
       "transforms": [],
       "notes": "member surface Map.size"
@@ -10585,7 +10639,8 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
-        "lib.es2015.iterable.d.ts::Map.values::57"
+        "lib.es2015.iterable.d.ts::Map.values::57",
+        "lib.es2015.iterable.d.ts::ReadonlyMap.values::63"
       ],
       "transforms": [],
       "notes": "member surface Map.values"
@@ -14760,9 +14815,11 @@
       "includeInTarget": true,
       "resolutionKind": "root-availability",
       "resolvedUnitIds": [
+        "lib.es2015.collection.d.ts::ReadonlySet::46",
         "lib.es2015.collection.d.ts::Set::33",
         "lib.es2015.collection.d.ts::Set::44",
         "lib.es2015.collection.d.ts::SetConstructor::41",
+        "lib.es2015.iterable.d.ts::ReadonlySet::83",
         "lib.es2015.iterable.d.ts::Set::77",
         "lib.es2015.iterable.d.ts::SetConstructor::89",
         "lib.es2015.symbol.wellknown.d.ts::Set::35",
@@ -14788,6 +14845,7 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2015.iterable.d.ts::ReadonlySet.@@iterator::84",
         "lib.es2015.iterable.d.ts::Set.@@iterator::78"
       ],
       "transforms": [],
@@ -14964,6 +15022,7 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2025.collection.d.ts::ReadonlySet.difference::18",
         "lib.es2025.collection.d.ts::Set.difference::9"
       ],
       "transforms": [],
@@ -14986,6 +15045,7 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2015.iterable.d.ts::ReadonlySet.entries::85",
         "lib.es2015.iterable.d.ts::Set.entries::79"
       ],
       "transforms": [],
@@ -15008,6 +15068,7 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2015.collection.d.ts::ReadonlySet.forEach::47",
         "lib.es2015.collection.d.ts::Set.forEach::37"
       ],
       "transforms": [],
@@ -15030,6 +15091,7 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2015.collection.d.ts::ReadonlySet.has::48",
         "lib.es2015.collection.d.ts::Set.has::38"
       ],
       "transforms": [],
@@ -15049,6 +15111,7 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2025.collection.d.ts::ReadonlySet.intersection::17",
         "lib.es2025.collection.d.ts::Set.intersection::8"
       ],
       "transforms": [],
@@ -15068,6 +15131,7 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2025.collection.d.ts::ReadonlySet.isDisjointFrom::22",
         "lib.es2025.collection.d.ts::Set.isDisjointFrom::13"
       ],
       "transforms": [],
@@ -15087,6 +15151,7 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2025.collection.d.ts::ReadonlySet.isSubsetOf::20",
         "lib.es2025.collection.d.ts::Set.isSubsetOf::11"
       ],
       "transforms": [],
@@ -15106,6 +15171,7 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2025.collection.d.ts::ReadonlySet.isSupersetOf::21",
         "lib.es2025.collection.d.ts::Set.isSupersetOf::12"
       ],
       "transforms": [],
@@ -15148,6 +15214,7 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2015.iterable.d.ts::ReadonlySet.keys::86",
         "lib.es2015.iterable.d.ts::Set.keys::80"
       ],
       "transforms": [],
@@ -15170,6 +15237,7 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2015.collection.d.ts::ReadonlySet.size::49",
         "lib.es2015.collection.d.ts::Set.size::39"
       ],
       "transforms": [],
@@ -15189,6 +15257,7 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2025.collection.d.ts::ReadonlySet.symmetricDifference::19",
         "lib.es2025.collection.d.ts::Set.symmetricDifference::10"
       ],
       "transforms": [],
@@ -15208,6 +15277,7 @@
       "includeInTarget": false,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2025.collection.d.ts::ReadonlySet.union::16",
         "lib.es2025.collection.d.ts::Set.union::7"
       ],
       "transforms": [],
@@ -15230,6 +15300,7 @@
       "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
+        "lib.es2015.iterable.d.ts::ReadonlySet.values::87",
         "lib.es2015.iterable.d.ts::Set.values::81"
       ],
       "transforms": [],
@@ -24622,6 +24693,84 @@
       ],
       "transforms": [],
       "notes": "compat root unescape selects standalone declaration units"
+    },
+    {
+      "compatKey": "javascript.functions.arguments",
+      "featureId": "functions",
+      "featureName": "Functions",
+      "baselineStatus": "high",
+      "baselineLowDate": "2015-07-29",
+      "baselineHighDate": "2018-01-29",
+      "sourceRefs": [
+        "javascript.functions.arguments"
+      ],
+      "snapshot": [],
+      "compatRoot": "IArguments",
+      "includeInTarget": true,
+      "resolutionKind": "root-availability",
+      "resolvedUnitIds": [
+        "lib.es5.d.ts::IArguments::94"
+      ],
+      "transforms": [],
+      "notes": "compat root IArguments selects standalone declaration units"
+    },
+    {
+      "compatKey": "javascript.functions.arguments.@@iterator",
+      "featureId": "functions",
+      "featureName": "Functions",
+      "baselineStatus": "high",
+      "baselineLowDate": "2016-07-27",
+      "baselineHighDate": "2019-01-27",
+      "sourceRefs": [
+        "javascript.functions.arguments.@@iterator"
+      ],
+      "snapshot": [],
+      "compatRoot": "IArguments",
+      "includeInTarget": true,
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2015.iterable.d.ts::IArguments.@@iterator::48"
+      ],
+      "transforms": [],
+      "notes": "member surface IArguments.@@iterator"
+    },
+    {
+      "compatKey": "javascript.functions.arguments.callee",
+      "featureId": "arguments-callee",
+      "featureName": "arguments.callee",
+      "baselineStatus": false,
+      "sourceRefs": [
+        "javascript.functions.arguments.callee"
+      ],
+      "snapshot": [],
+      "compatRoot": "IArguments",
+      "includeInTarget": false,
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es5.d.ts::IArguments.callee::97"
+      ],
+      "transforms": [],
+      "notes": "member surface IArguments.callee"
+    },
+    {
+      "compatKey": "javascript.functions.arguments.length",
+      "featureId": "functions",
+      "featureName": "Functions",
+      "baselineStatus": "high",
+      "baselineLowDate": "2015-07-29",
+      "baselineHighDate": "2018-01-29",
+      "sourceRefs": [
+        "javascript.functions.arguments.length"
+      ],
+      "snapshot": [],
+      "compatRoot": "IArguments",
+      "includeInTarget": true,
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es5.d.ts::IArguments.length::96"
+      ],
+      "transforms": [],
+      "notes": "member surface IArguments.length"
     }
   ]
 }

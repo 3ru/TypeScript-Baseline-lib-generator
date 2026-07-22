@@ -38,7 +38,6 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
     writeJsonFile(path.join(consumerDirectory, "tsconfig.json"), {
         compilerOptions: {
             noLib: true,
-            skipLibCheck: true,
             strict: true,
             types: [baselinePackageName],
         },
@@ -69,7 +68,6 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
     writeJsonFile(path.join(consumerDirectory, "tsconfig.fail.json"), {
         compilerOptions: {
             noLib: true,
-            skipLibCheck: true,
             strict: true,
             types: [baselinePackageName],
         },

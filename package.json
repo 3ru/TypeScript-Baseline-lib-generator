@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "license": "Apache-2.0",
-    "description": "Generates Baseline widely available JavaScript built-in declarations for TypeScript.",
+    "description": "Generates Baseline widely available JavaScript declarations for TypeScript.",
     "keywords": [
         "typescript",
         "baseline",

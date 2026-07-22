@@ -12,6 +12,7 @@ import {
     createSurfaceInventory,
     discoverBuiltinSourceLibEntries,
 } from "../lib/surface-inventory.mjs";
+import { resolveTypeOnlyDependencyClosure } from "../lib/generator.mjs";
 
 /** @type {string[]} */
 const tempDirectories = [];
@@ -80,6 +81,9 @@ test("surface inventory lookup maps share dependency-populated unit records", as
             "interface Widget extends HelperBag {",
             "    configure(options: WidgetOptions): void;",
             "}",
+            "interface ReadonlyWidget {",
+            "    configure(options: WidgetOptions): void;",
+            "}",
             "declare var Widget: WidgetConstructor;",
             "interface WidgetConstructor {",
             "    new(): Widget;",
@@ -121,6 +125,11 @@ test("surface inventory lookup maps share dependency-populated unit records", as
     );
     assert.equal(configureUnits[0], inventory.unitById.get(configureUnits[0].id));
 
+    const widgetRoot = inventory.rootSurfaceByCompatName.get("Widget");
+    assert.ok(widgetRoot);
+    assert.ok(widgetRoot.instanceContainerSymbols.has("Widget"));
+    assert.ok(!widgetRoot.instanceContainerSymbols.has("ReadonlyWidget"));
+
     for (const [symbolName, symbolUnits] of inventory.declarationUnitsBySymbol) {
         for (const unit of symbolUnits) {
             assert.equal(
@@ -139,4 +148,80 @@ test("surface inventory lookup maps share dependency-populated unit records", as
             );
         }
     }
+});
+
+test("readonly companion discovery fails closed on unmatched members", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const libDirectory = path.join(tempDirectory, "lib");
+    fs.mkdirSync(libDirectory, { recursive: true });
+    fs.writeFileSync(
+        path.join(libDirectory, "lib.es5.d.ts"),
+        [
+            "interface Array<T> {",
+            "    read(): void;",
+            "}",
+            "interface ReadonlyArray<T> {",
+            "    unrelated(): void;",
+            "}",
+            "declare var Array: ArrayConstructor;",
+            "interface ArrayConstructor {",
+            "    new<T>(): Array<T>;",
+            "}",
+            "",
+        ].join("\n"),
+    );
+
+    const sourceLibEntries = await discoverBuiltinSourceLibEntries({
+        libDirectory,
+        reportPathPrefix: "typescript/lib",
+    });
+    await assert.rejects(
+        createSurfaceInventory({
+            snapshotName: "readonly-companion-test",
+            repoRoot: tempDirectory,
+            sourceLibEntries,
+            inventoryOutputPath: path.join(tempDirectory, "inventory.json"),
+        }),
+        /Readonly companion ReadonlyArray does not structurally match Array: unrelated/,
+    );
+});
+
+test("type-only aliases cannot introduce unclassified runtime declarations", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const libDirectory = path.join(tempDirectory, "lib");
+    fs.mkdirSync(libDirectory, { recursive: true });
+    fs.writeFileSync(
+        path.join(libDirectory, "lib.es5.d.ts"),
+        [
+            "type FutureAlias = typeof FutureThing;",
+            "declare var FutureThing: FutureThingConstructor;",
+            "interface FutureThingConstructor {",
+            "    dangerous(): void;",
+            "}",
+            "",
+        ].join("\n"),
+    );
+    const sourceLibEntries = await discoverBuiltinSourceLibEntries({
+        libDirectory,
+        reportPathPrefix: "typescript/lib",
+    });
+    const inventory = await createSurfaceInventory({
+        snapshotName: "type-only-runtime-test",
+        repoRoot: tempDirectory,
+        sourceLibEntries,
+        inventoryOutputPath: path.join(tempDirectory, "inventory.json"),
+    });
+    const aliasUnit = inventory.declarationUnitsBySymbol.get("FutureAlias")?.[0];
+    assert.ok(aliasUnit);
+
+    assert.throws(
+        () => resolveTypeOnlyDependencyClosure({
+            inventory,
+            compatSelectedUnitIds: new Set(),
+            typeOnlyUnitIds: [aliasUnit.id],
+            completeContainerUnitIds: new Set(),
+            excludedUnitIds: new Set(),
+        }),
+        /Type-only aliases introduce runtime declarations.*FutureThing/s,
+    );
 });

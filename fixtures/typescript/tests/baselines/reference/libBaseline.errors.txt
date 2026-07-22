@@ -1,9 +1,10 @@
 libBaseline.ts(12,29): error TS2339: Property 'caller' does not exist on type '() => void'.
 libBaseline.ts(13,12): error TS2339: Property 'substr' does not exist on type '"baseline"'.
 libBaseline.ts(14,24): error TS2339: Property 'compile' does not exist on type 'RegExp'.
+libBaseline.ts(15,47): error TS2339: Property 'callee' does not exist on type 'IArguments'.
 
 
-==== libBaseline.ts (3 errors) ====
+==== libBaseline.ts (4 errors) ====
     Intl.supportedValuesOf("currency");
     new Intl.NumberFormat().formatRange(1, 2);
     
@@ -24,4 +25,7 @@ libBaseline.ts(14,24): error TS2339: Property 'compile' does not exist on type '
     new RegExp("baseline").compile("baseline"); // Error
                            ~~~~~~~
 !!! error TS2339: Property 'compile' does not exist on type 'RegExp'.
+    (function probeArguments() { return arguments.callee; })(); // Error
+                                                  ~~~~~~
+!!! error TS2339: Property 'callee' does not exist on type 'IArguments'.
     
