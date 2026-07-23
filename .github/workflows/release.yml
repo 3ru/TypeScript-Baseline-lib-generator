@@ -4,16 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Explicit package version for reviewed Baseline year contract changes"
+        description: "Explicit version for reviewed declaration or year contract changes"
         required: false
         type: string
 
-permissions:
-  contents: write
-  # Issue an OIDC token for npm provenance (Sigstore).
-  id-token: write
-
-# Serialize concurrent release runs (don't cancel).
 concurrency:
   group: release
   cancel-in-progress: false
@@ -23,11 +17,14 @@ defaults:
     shell: bash
 
 jobs:
-  release:
+  verify:
     runs-on: ubuntu-latest
-    # Create a `release` environment in repo settings with required reviewers
-    # to gate publishes behind human approval (see README).
-    environment: release
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.release-plan.outputs.changed }}
+      artifact-integrity: ${{ steps.prepare-artifact.outputs.artifact-integrity }}
 
     steps:
       - name: Ensure release runs from main
@@ -39,53 +36,66 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "npm"
-
-      # OIDC publishing needs npm >= 11.5.1; Node 22 bundles npm 10.
-      - name: Upgrade npm
-        run: npm install -g npm@latest
-
+      - name: Resolve trusted release tools
+        id: release-tools
+        run: |
+          echo "node=$(command -v node)" >> "$GITHUB_OUTPUT"
+          echo "npm=$(command -v npm)" >> "$GITHUB_OUTPUT"
+          echo "tar=$(command -v tar)" >> "$GITHUB_OUTPUT"
       - run: npm ci
+      - run: npm run validate
 
-      - name: Run static JS checks
-        run: npm run lint
-
-      - name: Validate compat-management schema
-        run: npm run validate:registry
-
-      - name: Regenerate baseline
-        run: npm run generate
-
-      # Block publishing when checked-in artifacts don't match the regenerated
-      # output (i.e. publishing unreviewed content).
       - name: Verify checked-in generated artifacts
         run: |
           git diff --exit-code -- derived/current generated/current
-          status="$(git status --porcelain --untracked-files=all -- derived/current generated/current)"
-          if [[ -n "$status" ]]; then
-            printf '%s\n' "$status"
-            exit 1
-          fi
-
-      - name: Run validation and smoke tests
-        run: npm test
+          test -z "$(git status --porcelain --untracked-files=all -- derived/current generated/current)"
 
       - name: Checkout pinned TypeScript source
         run: npm run checkout:typescript-source -- --out .tmp/TypeScript --force
 
-      - name: Run pinned TypeScript integration gate
-        run: npm run test:typescript:full -- --typescript-dir ./.tmp/TypeScript --summary-out .tmp/typescript-integration-summary.md --baseline-diff-out .tmp/typescript-baseline-changes.diff --focused-baselines-out .tmp/typescript-focused-artifact --local-baselines-out .tmp/typescript-raw-local-baselines
+      - name: Run blocking TypeScript integration
+        run: npm run test:typescript:full -- --typescript-dir ./.tmp/TypeScript --summary-out typescript-integration-artifacts/summary.md --baseline-diff-out typescript-integration-artifacts/baseline-changes.diff --focused-baselines-out typescript-integration-artifacts/focused --local-baselines-out typescript-integration-artifacts/raw-local-baselines
 
-      - name: Stage publishable baseline package
+      - name: Prepare immutable release artifact
+        id: prepare-artifact
         env:
           RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_GIT_EXECUTABLE: /usr/bin/git
+          RELEASE_NODE_EXECUTABLE: ${{ steps.release-tools.outputs.node }}
+          RELEASE_NPM_EXECUTABLE: ${{ steps.release-tools.outputs.npm }}
+          RELEASE_TAR_EXECUTABLE: ${{ steps.release-tools.outputs.tar }}
         run: |
           args=()
           if [[ -n "$RELEASE_VERSION" ]]; then
             args+=(--version "$RELEASE_VERSION")
           fi
-          npm run pack:baseline -- "${args[@]}"
+          "$RELEASE_NODE_EXECUTABLE" deploy/prepareReleaseArtifact.mjs "${args[@]}"
+
+      - name: Test exact release tarball
+        if: ${{ hashFiles('release-artifact/package.tgz') != '' }}
+        env:
+          BASELINE_PACKAGE_TARBALL: release-artifact/package.tgz
+          RELEASE_NODE_EXECUTABLE: ${{ steps.release-tools.outputs.node }}
+          RELEASE_NPM_EXECUTABLE: ${{ steps.release-tools.outputs.npm }}
+        run: "$RELEASE_NODE_EXECUTABLE" --test test/packed-consumer-smoke.test.mjs
+
+      - name: Verify immutable release artifact
+        id: release-plan
+        env:
+          RELEASE_NODE_EXECUTABLE: ${{ steps.release-tools.outputs.node }}
+          RELEASE_TAR_EXECUTABLE: ${{ steps.release-tools.outputs.tar }}
+          EXPECTED_ARTIFACT_INTEGRITY: ${{ steps.prepare-artifact.outputs.artifact-integrity }}
+        run: "$RELEASE_NODE_EXECUTABLE" deploy/verifyReleaseArtifact.mjs --artifact-dir release-artifact
+
+      - name: Upload release artifact
+        if: steps.release-plan.outputs.changed == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: npm-release-artifact
+          path: release-artifact
+          if-no-files-found: error
 
       - name: Upload integration summary and focused artifacts
         if: always()
@@ -93,30 +103,61 @@ jobs:
         with:
           name: release-typescript-integration
           path: |
-            .tmp/typescript-integration-summary.md
-            .tmp/typescript-baseline-changes.diff
-            .tmp/typescript-focused-artifact
-          if-no-files-found: ignore
+            typescript-integration-artifacts/summary.md
+            typescript-integration-artifacts/baseline-changes.diff
+            typescript-integration-artifacts/focused
+          if-no-files-found: error
 
       - name: Upload raw local baselines
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-typescript-integration-raw-local-baselines
-          path: .tmp/typescript-raw-local-baselines
-          if-no-files-found: ignore
+          path: typescript-integration-artifacts/raw-local-baselines
+          if-no-files-found: error
 
-      # Tokenless publish via OIDC trusted publishing; provenance only on public repos.
-      - name: Publish changed package and create GitHub release
+  publish:
+    needs: verify
+    if: needs.verify.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: release
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: "24"
+
+      - name: Resolve trusted publish tools
+        id: publish-tools
+        run: |
+          echo "node=$(command -v node)" >> "$GITHUB_OUTPUT"
+          echo "npm=$(command -v npm)" >> "$GITHUB_OUTPUT"
+
+      - name: Require npm trusted-publishing support
+        env:
+          RELEASE_NPM_EXECUTABLE: ${{ steps.publish-tools.outputs.npm }}
+        run: test "$(printf '11.5.1\n%s\n' "$("$RELEASE_NPM_EXECUTABLE" --version)" | sort -V | head -n1)" = "11.5.1"
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: npm-release-artifact
+          path: release-artifact
+
+      - name: Publish verified tarball and create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_VERSION: ${{ inputs.version }}
+          EXPECTED_ARTIFACT_INTEGRITY: ${{ needs.verify.outputs.artifact-integrity }}
+          RELEASE_NODE_EXECUTABLE: ${{ steps.publish-tools.outputs.node }}
+          RELEASE_NPM_EXECUTABLE: ${{ steps.publish-tools.outputs.npm }}
+          RELEASE_TAR_EXECUTABLE: /usr/bin/tar
         run: |
           args=()
-          if [[ -n "$RELEASE_VERSION" ]]; then
-            args+=(--version "$RELEASE_VERSION")
-          fi
           if [[ "${{ github.event.repository.private }}" != "true" ]]; then
             args+=(--provenance)
           fi
-          npm run release:publish -- "${args[@]}"
+          "$RELEASE_NODE_EXECUTABLE" deploy/publishReleaseArtifact.mjs --artifact-dir release-artifact "${args[@]}"

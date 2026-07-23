@@ -36,6 +36,9 @@ jobs:
           cache: "npm"
       - run: npm ci
 
+      - name: Verify pinned web-features dataset
+        run: npm run verify:dataset
+
       - name: Regenerate baseline
         run: npm run generate
 
@@ -56,12 +59,12 @@ jobs:
           cache-dependency-path: .tmp/typescript-go/go.sum
 
       - name: Run tsgo --lib baseline integration
-        run: npm run test:typescript-go -- --typescript-go-dir .tmp/typescript-go --out .tmp/typescript-go-integration-summary.md
+        run: npm run test:typescript-go -- --typescript-go-dir .tmp/typescript-go --out typescript-integration-artifacts/typescript-go-summary.md
 
       - name: Upload integration summary
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: typescript-go-integration
-          path: .tmp/typescript-go-integration-summary.md
-          if-no-files-found: ignore
+          path: typescript-integration-artifacts/typescript-go-summary.md
+          if-no-files-found: error

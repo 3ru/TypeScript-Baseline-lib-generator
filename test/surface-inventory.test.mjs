@@ -150,6 +150,30 @@ test("surface inventory lookup maps share dependency-populated unit records", as
     }
 });
 
+test("surface inventory rejects multi-declarator runtime globals", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const libDirectory = path.join(tempDirectory, "lib");
+    fs.mkdirSync(libDirectory, { recursive: true });
+    fs.writeFileSync(
+        path.join(libDirectory, "lib.es5.d.ts"),
+        "declare var Known: KnownConstructor, Surprise: SurpriseConstructor;\n",
+    );
+    const sourceLibEntries = await discoverBuiltinSourceLibEntries({
+        libDirectory,
+        reportPathPrefix: "typescript/lib",
+    });
+
+    await assert.rejects(
+        createSurfaceInventory({
+            snapshotName: "multi-declarator-test",
+            repoRoot: tempDirectory,
+            sourceLibEntries,
+            inventoryOutputPath: path.join(tempDirectory, "inventory.json"),
+        }),
+        /variable statement with multiple declarators/,
+    );
+});
+
 test("readonly companion discovery fails closed on unmatched members", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const libDirectory = path.join(tempDirectory, "lib");
@@ -218,6 +242,7 @@ test("type-only aliases cannot introduce unclassified runtime declarations", asy
         () => resolveTypeOnlyDependencyClosure({
             inventory,
             compatSelectedUnitIds: new Set(),
+            compilerSupportUnitIds: new Set(),
             typeOnlyUnitIds: [aliasUnit.id],
             completeContainerUnitIds: new Set(),
             excludedUnitIds: new Set(),

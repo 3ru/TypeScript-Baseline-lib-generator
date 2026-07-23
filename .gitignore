@@ -4,3 +4,5 @@ coverage/
 npm-debug.log*
 .DS_Store
 .tmp
+release-artifact/
+typescript-integration-artifacts/

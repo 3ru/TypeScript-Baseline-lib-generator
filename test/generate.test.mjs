@@ -72,6 +72,10 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
         "Uncapitalize",
         "ReadonlyMap",
         "ReadonlySet",
+        "IterableIterator",
+        "AsyncIterable",
+        "AsyncIterableIterator",
+        "TemplateStringsArray",
     ]) {
         assert.match(
             topLevelOutput,
@@ -195,4 +199,88 @@ test("generate fails closed when compat-management metadata drifts", () => {
 
     assert.match(failureOutput, /compat management registry drift detected/);
     assert.match(failureOutput, /javascript\.builtins\.globalThis/);
+});
+
+test("generate rejects emitted instance and static members whose compat row disappeared", () => {
+    for (const probe of [
+        {
+            compatKey: "javascript.builtins.String.substr",
+            unitPattern: /lib\.es5\.d\.ts::String\.substr/u,
+        },
+        {
+            compatKey: "javascript.builtins.Array.isArray",
+            unitPattern: /lib\.es5\.d\.ts::ArrayConstructor\.isArray/u,
+        },
+        {
+            compatKey: "javascript.builtins.String.toString",
+            unitPattern: /lib\.es5\.d\.ts::String\.toString/u,
+        },
+        {
+            compatKey: "javascript.builtins.String.valueOf",
+            unitPattern: /lib\.es5\.d\.ts::String\.valueOf/u,
+        },
+    ]) {
+        const tempDirectory = createTempDirectory(tempDirectories);
+        const datasetPath = `${tempDirectory}/dataset.json`;
+        const dataset = readJsonFile(repoDatasetPath);
+        dataset.compatRows = dataset.compatRows.filter(
+            /** @param {{ compatKey: string; }} row */
+            row => row.compatKey !== probe.compatKey,
+        );
+        writeJsonFile(datasetPath, dataset);
+
+        const fixture = createManifest(tempDirectory, { datasetPath });
+        const failureOutput = runGenerateExpectFailure(fixture.manifestPath, probe.compatKey);
+        assert.match(failureOutput, /Emitted runtime declarations lack compat or compiler-support provenance/u);
+        assert.match(failureOutput, probe.unitPattern);
+    }
+});
+
+test("generate rejects stale compiler support registry surfaces", () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const registryPath = `${tempDirectory}/compat-management.json`;
+    const registry = readJsonFile(repoRegistryPath);
+    registry.compilerSupport[0].surfaces.push("MissingCompilerSupportSurface");
+    writeJsonFile(registryPath, registry);
+
+    const fixture = createManifest(tempDirectory, { registryPath });
+    assert.match(
+        runGenerateExpectFailure(fixture.manifestPath),
+        /Compiler support surface is not modeled by the TypeScript lib inventory: MissingCompilerSupportSurface/u,
+    );
+});
+
+test("generate rejects stale runtime alias registry surfaces", () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const registryPath = `${tempDirectory}/compat-management.json`;
+    const registry = readJsonFile(repoRegistryPath);
+    registry.runtimeAliases[0].surfaces.push("MissingRuntimeAliasSurface");
+    writeJsonFile(registryPath, registry);
+
+    const fixture = createManifest(tempDirectory, { registryPath });
+    assert.match(
+        runGenerateExpectFailure(fixture.manifestPath),
+        /Runtime alias surface is not modeled by the TypeScript lib inventory: MissingRuntimeAliasSurface/u,
+    );
+});
+
+test("generate rejects manifest and stale-report paths outside managed output roots", () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const fixture = createManifest(tempDirectory);
+    const manifest = readJsonFile(fixture.manifestPath);
+    manifest.firstClassLib.allowDirectory = "../outside";
+    writeJsonFile(fixture.manifestPath, manifest);
+    assert.match(
+        runGenerateExpectFailure(fixture.manifestPath),
+        /must be a repo-relative path without '\.\.'/u,
+    );
+
+    const safeFixture = createManifest(createTempDirectory(tempDirectories));
+    writeJsonFile(safeFixture.generationOutputPath, {
+        outputEntries: [{ outputPath: "../outside" }],
+    });
+    assert.match(
+        runGenerateExpectFailure(safeFixture.manifestPath),
+        /outputEntries\[\]\.outputPath must be a repo-relative path without '\.\.'/u,
+    );
 });

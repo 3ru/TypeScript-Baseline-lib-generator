@@ -6,10 +6,10 @@ import {
     spawnSync,
 } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createPackageStages, createPackageTarball } from "../deploy/package-lib.mjs";
+import { resolveReleaseExecutable } from "../deploy/trusted-executable.mjs";
 import { resolveInstalledPackageRoot } from "../lib/installed-package.mjs";
 import { selectActiveNegativeProbes } from "../lib/negative-probes.mjs";
 
@@ -37,7 +37,9 @@ export function loadActiveNegativeProbesFromRepo() {
  * @param {string[]} tempDirectories
  */
 export function createTempDirectory(tempDirectories) {
-    const tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "ts-baseline-lib-generator-"));
+    const tempRoot = path.join(repoRoot, ".tmp", "tests");
+    fs.mkdirSync(tempRoot, { recursive: true });
+    const tempDirectory = fs.mkdtempSync(path.join(tempRoot, "run-"));
     tempDirectories.push(tempDirectory);
     return tempDirectory;
 }
@@ -95,19 +97,19 @@ export function createManifest(tempDirectory, options = {}) {
         manifestDirectory,
         options.allowlistRegistryPath ?? repoAllowlistRegistryPath,
     );
-    manifest.classificationOutput = path.join(outputRoot, "derived", "classification.json");
-    manifest.compatManagementOutput = path.join(outputRoot, "derived", "compat-management-report.json");
-    manifest.inventoryOutput = path.join(outputRoot, "derived", "inventory.json");
-    manifest.generationOutput = path.join(outputRoot, "derived", "generation.json");
+    manifest.classificationOutput = toPosixRelativePath(repoRoot, path.join(outputRoot, "derived", "classification.json"));
+    manifest.compatManagementOutput = toPosixRelativePath(repoRoot, path.join(outputRoot, "derived", "compat-management-report.json"));
+    manifest.inventoryOutput = toPosixRelativePath(repoRoot, path.join(outputRoot, "derived", "inventory.json"));
+    manifest.generationOutput = toPosixRelativePath(repoRoot, path.join(outputRoot, "derived", "generation.json"));
     manifest.firstClassLib = {
         libName: "baseline",
-        outputFile: path.join(outputRoot, "generated", "baseline.d.ts"),
-        allowDirectory: path.join(outputRoot, "generated", "allow"),
-        yearDirectory: path.join(outputRoot, "generated", "year"),
+        outputFile: toPosixRelativePath(repoRoot, path.join(outputRoot, "generated", "baseline.d.ts")),
+        allowDirectory: toPosixRelativePath(repoRoot, path.join(outputRoot, "generated", "allow")),
+        yearDirectory: toPosixRelativePath(repoRoot, path.join(outputRoot, "generated", "year")),
         firstYear: repoManifest.firstClassLib.firstYear,
     };
     if (options.generatedOutputPath) {
-        manifest.firstClassLib.outputFile = toPosixRelativePath(manifestDirectory, options.generatedOutputPath);
+        manifest.firstClassLib.outputFile = toPosixRelativePath(repoRoot, options.generatedOutputPath);
     }
 
     writeJsonFile(manifestPath, manifest);
@@ -135,8 +137,9 @@ export function runGenerate(manifestPath) {
 
 /**
  * @param {string} manifestPath
+ * @param {string} [label]
  */
-export function runGenerateExpectFailure(manifestPath) {
+export function runGenerateExpectFailure(manifestPath, label = manifestPath) {
     const result = spawnSync(process.execPath, [path.join(repoRoot, "scripts", "generate.mjs"), "--manifest", manifestPath], {
         cwd: repoRoot,
         encoding: "utf8",
@@ -147,7 +150,7 @@ export function runGenerateExpectFailure(manifestPath) {
         return `${result.stdout ?? ""}${result.stderr ?? ""}`;
     }
 
-    assert.fail(`Expected generator to fail for ${manifestPath}`);
+    assert.fail(`Expected generator to fail for ${label}`);
 }
 
 // Compiler runs resolve the in-package bin explicitly instead of node_modules/.bin.
@@ -210,11 +213,14 @@ export function runTscStradaExpectFailure(args, options = {}) {
  * @param {{ cwd?: string; }} [options]
  */
 export function runNpm(args, options = {}) {
-    return execFileSync("npm", args, {
-        cwd: options.cwd ?? repoRoot,
+    const cwd = options.cwd ?? repoRoot;
+    const npm = resolveReleaseExecutable(repoRoot, "RELEASE_NPM_EXECUTABLE", "npm");
+    return execFileSync(npm.executable, args, {
+        cwd,
         encoding: "utf8",
         env: {
-            ...process.env,
+            ...npm.environment,
+            npm_config_cache: path.join(cwd, ".npm-cache"),
             npm_config_yes: "true",
         },
     });

@@ -61,3 +61,36 @@ test("every workflow action is pinned to a full commit SHA with a version commen
         `unpinned workflow actions found (pin to a 40-hex commit SHA with a version comment):\n${violations.join("\n")}`,
     );
 });
+
+test("release publishing stays isolated from build dependencies", () => {
+    const source = readFileSync(path.join(workflowsDirectory, "release.yml"), "utf8");
+    const publishJob = source.split(/^  publish:/mu)[1];
+    assert.ok(publishJob, "expected a dedicated publish job");
+    assert.match(source, /^  verify:[\s\S]*?permissions:\n      contents: read/mu);
+    assert.match(source, /RELEASE_GIT_EXECUTABLE: \/usr\/bin\/git/u);
+    assert.match(source, /RELEASE_NODE_EXECUTABLE: \$\{\{ steps\.release-tools\.outputs\.node \}\}/u);
+    assert.match(source, /RELEASE_NPM_EXECUTABLE: \$\{\{ steps\.release-tools\.outputs\.npm \}\}/u);
+    assert.match(source, /RELEASE_TAR_EXECUTABLE: \$\{\{ steps\.release-tools\.outputs\.tar \}\}/u);
+    assert.match(source, /"\$RELEASE_NODE_EXECUTABLE" deploy\/prepareReleaseArtifact\.mjs/u);
+    assert.match(source, /"\$RELEASE_NODE_EXECUTABLE" --test test\/packed-consumer-smoke\.test\.mjs/u);
+    assert.match(source, /"\$RELEASE_NODE_EXECUTABLE" deploy\/verifyReleaseArtifact\.mjs --artifact-dir release-artifact/u);
+    assert.match(source, /artifact-integrity: \$\{\{ steps\.prepare-artifact\.outputs\.artifact-integrity \}\}/u);
+    assert.match(source, /EXPECTED_ARTIFACT_INTEGRITY: \$\{\{ needs\.verify\.outputs\.artifact-integrity \}\}/u);
+    assert.doesNotMatch(source, /\bjq\b/u);
+    assert.match(publishJob, /environment: release/u);
+    assert.match(publishJob, /id-token: write/u);
+    assert.match(publishJob, /actions\/download-artifact@[0-9a-f]{40}/u);
+    assert.match(publishJob, /"\$RELEASE_NODE_EXECUTABLE" deploy\/publishReleaseArtifact\.mjs --artifact-dir release-artifact/u);
+    assert.match(publishJob, /RELEASE_NODE_EXECUTABLE: \$\{\{ steps\.publish-tools\.outputs\.node \}\}/u);
+    assert.match(publishJob, /RELEASE_NPM_EXECUTABLE: \$\{\{ steps\.publish-tools\.outputs\.npm \}\}/u);
+    assert.match(publishJob, /RELEASE_TAR_EXECUTABLE: \/usr\/bin\/tar/u);
+    assert.doesNotMatch(publishJob, /npm (?:ci|install)/u);
+    assert.doesNotMatch(source, /\.tmp\/release-artifact/u);
+    assert.doesNotMatch(source, /\.tmp\/typescript-(?:integration|baseline|focused|raw)/u);
+    assert.match(source, /path: typescript-integration-artifacts\/raw-local-baselines\n          if-no-files-found: error/u);
+    for (const fileName of ["test-typescript.yml", "test-typescript-go.yml"]) {
+        const integrationSource = readFileSync(path.join(workflowsDirectory, fileName), "utf8");
+        assert.doesNotMatch(integrationSource, /\.tmp\/typescript-(?:integration|baseline|focused|raw|go-integration)/u);
+        assert.match(integrationSource, /if-no-files-found: error/u);
+    }
+});

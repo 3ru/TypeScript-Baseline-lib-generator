@@ -11,6 +11,7 @@ import {
     selectActiveNegativeProbes,
 } from "../lib/negative-probes.mjs";
 import {
+    findUnexpectedTypeScriptPatchPaths,
     prepareTypeScriptBaselinePatch,
     renderTypeScriptPatchSummary,
 } from "../lib/typescript-upstream.mjs";
@@ -25,6 +26,17 @@ const defaultSummaryPath = path.join(repoRoot, ".tmp", "typescript-integration-s
 const defaultDiffPath = path.join(repoRoot, ".tmp", "typescript-baseline-changes.diff");
 const defaultFocusedBaselinesDirectory = path.join(repoRoot, ".tmp", "typescript-focused-artifact");
 const defaultLocalBaselinesDirectory = path.join(repoRoot, ".tmp", "typescript-raw-local-baselines");
+const TYPESCRIPT_PROPOSAL_PATHS = [
+    "eslint.config.mjs",
+    path.join("src", "compiler", "commandLineParser.ts"),
+    path.join("src", "lib", "baseline.d.ts"),
+    path.join("src", "lib", "libs.json"),
+    path.join("tests", "cases", "compiler", "libBaseline.ts"),
+    path.join("tests", "baselines", "reference", "libBaseline.errors.txt"),
+    path.join("tests", "baselines", "reference", "libBaseline.js"),
+    path.join("tests", "baselines", "reference", "libBaseline.symbols"),
+    path.join("tests", "baselines", "reference", "libBaseline.types"),
+];
 
 const args = parseArgs(process.argv.slice(2));
 
@@ -44,7 +56,8 @@ async function main() {
     let smokeResults;
     /** @type {{
      *   targetedHarness?: { ok: boolean; output: string; };
-     *   fullSuite?: { ok: boolean; output: string; };
+     *   fullSuiteBeforeBaselineAccept?: { ok: boolean; output: string; };
+     *   fullSuiteAfterBaselineAccept?: { ok: boolean; output: string; };
      *   baselineAccept?: { ok: boolean; output: string; };
      *   baselineDiffPath?: string;
      *   focusedBaselinesPath?: string;
@@ -67,8 +80,8 @@ async function main() {
 
             // gate: blocking checks only (smoke + targeted harness). Meant to run
             //   per PR, so it excludes the TypeScript full-suite diagnostics.
-            // full: on top of gate, runs the full suite / baseline-accept / raw
-            //   baselines as diagnostics. For push to main, schedule, and dispatch.
+            // full: on top of gate, accepts the generated baselines and requires
+            //   the complete TypeScript suite to pass on the accepted state.
             if (args.mode === "gate" || args.mode === "full") {
                 runNpm(patchSummary.typescriptDir, ["run", "build:tests"]);
                 extendedResults.targetedHarness = runCommandAllowFailure(
@@ -89,7 +102,7 @@ async function main() {
             }
 
             if (args.mode === "full") {
-                extendedResults.fullSuite = runCommandAllowFailure(
+                extendedResults.fullSuiteBeforeBaselineAccept = runCommandAllowFailure(
                     "npm",
                     ["test"],
                     { cwd: patchSummary.typescriptDir },
@@ -103,6 +116,36 @@ async function main() {
                     ["hereby", "baseline-accept"],
                     { cwd: patchSummary.typescriptDir },
                 );
+                if (!extendedResults.baselineAccept.ok) {
+                    blockingFailure ??= new Error(
+                        extendedResults.baselineAccept.output.trim() || "TypeScript baseline-accept failed",
+                    );
+                }
+                else {
+                    const unexpectedPaths = findUnexpectedTypeScriptPatchPaths(
+                        patchSummary.typescriptDir,
+                        TYPESCRIPT_PROPOSAL_PATHS,
+                    );
+                    if (unexpectedPaths.length) {
+                        blockingFailure ??= new Error(
+                            `TypeScript baseline-accept changed files outside the proposal surface:\n`
+                                + unexpectedPaths.map(relativePath => `- ${relativePath}`).join("\n"),
+                        );
+                    }
+                    else {
+                        extendedResults.fullSuiteAfterBaselineAccept = runCommandAllowFailure(
+                            "npm",
+                            ["test"],
+                            { cwd: patchSummary.typescriptDir },
+                        );
+                        if (!extendedResults.fullSuiteAfterBaselineAccept.ok) {
+                            blockingFailure ??= new Error(
+                                extendedResults.fullSuiteAfterBaselineAccept.output.trim()
+                                    || "TypeScript full suite failed after baseline-accept",
+                            );
+                        }
+                    }
+                }
                 if (args.baselineDiffOut) {
                     fs.mkdirSync(path.dirname(args.baselineDiffOut), { recursive: true });
                     const diffText = extendedResults.baselineAccept.ok
@@ -265,7 +308,8 @@ function writeSmokeTsconfig(smokeRoot) {
  *   smokeResults: ReturnType<typeof runSmokeChecks> | undefined;
  *   extendedResults: {
  *     targetedHarness?: { ok: boolean; output: string; };
-     *     fullSuite?: { ok: boolean; output: string; };
+     *     fullSuiteBeforeBaselineAccept?: { ok: boolean; output: string; };
+     *     fullSuiteAfterBaselineAccept?: { ok: boolean; output: string; };
      *     baselineAccept?: { ok: boolean; output: string; };
      *     baselineDiffPath?: string;
      *     focusedBaselinesPath?: string;
@@ -304,8 +348,9 @@ function renderIntegrationSummary(options) {
 
     if (options.mode === "full") {
         lines.push(
-            `- Full TypeScript suite: ${formatDiagnosticResult(options.extendedResults.fullSuite)}`,
-            `- Baseline accept: ${formatDiagnosticResult(options.extendedResults.baselineAccept)}`,
+            `- Initial full TypeScript suite: ${formatInitialSuiteResult(options.extendedResults.fullSuiteBeforeBaselineAccept)}`,
+            `- Baseline accept: ${formatBlockingResult(options.extendedResults.baselineAccept)}`,
+            `- Post-accept full TypeScript suite: ${formatBlockingResult(options.extendedResults.fullSuiteAfterBaselineAccept)}`,
         );
         if (options.extendedResults.localBaselinesPath) {
             lines.push(`- Raw local baselines artifact: \`${options.extendedResults.localBaselinesPath}\``);
@@ -339,8 +384,9 @@ function renderIntegrationSummary(options) {
             "## Diagnostics",
             "",
             `- Targeted harness output: ${summarizeResult(options.extendedResults.targetedHarness)}`,
-            `- Full suite output: ${summarizeResult(options.extendedResults.fullSuite)}`,
+            `- Initial full suite output: ${summarizeResult(options.extendedResults.fullSuiteBeforeBaselineAccept)}`,
             `- Baseline accept output: ${summarizeResult(options.extendedResults.baselineAccept)}`,
+            `- Post-accept full suite output: ${summarizeResult(options.extendedResults.fullSuiteAfterBaselineAccept)}`,
         );
     }
 
@@ -392,11 +438,11 @@ function formatBlockingResult(result) {
 /**
  * @param {{ ok: boolean; output: string; } | undefined} result
  */
-function formatDiagnosticResult(result) {
+function formatInitialSuiteResult(result) {
     if (!result) {
         return "not run";
     }
-    return result.ok ? "passed" : "failed (diagnostic)";
+    return result.ok ? "passed (pre-accept)" : "failed (pre-accept baselines captured)";
 }
 
 /**
@@ -494,7 +540,7 @@ function printUsageAndExit() {
 Modes:
   smoke  only --lib baseline smoke with the built local tsc (blocking)
   gate   smoke + targeted libBaseline harness (blocking only, for PRs)
-  full   gate + TypeScript full suite / baseline-accept (diagnostic)
+  full   gate + baseline-accept + a blocking post-accept TypeScript full suite
 
 Examples:
   node scripts/test-typescript-integration.mjs --typescript-dir ../TypeScript
@@ -578,20 +624,8 @@ function copyFocusedBaselinesArtifact(options) {
     fs.rmSync(options.outputDirectory, { recursive: true, force: true });
     // Keep a reviewer-sized snapshot of the proposal-specific patch surface.
     fs.mkdirSync(options.outputDirectory, { recursive: true });
-    /** @type {string[]} */
-    const focusedRelativePaths = [
-        path.join("src", "compiler", "commandLineParser.ts"),
-        path.join("src", "lib", "baseline.d.ts"),
-        path.join("src", "lib", "libs.json"),
-        path.join("tests", "cases", "compiler", "libBaseline.ts"),
-        path.join("tests", "baselines", "reference", "libBaseline.errors.txt"),
-        path.join("tests", "baselines", "reference", "libBaseline.js"),
-        path.join("tests", "baselines", "reference", "libBaseline.symbols"),
-        path.join("tests", "baselines", "reference", "libBaseline.types"),
-    ];
-
     let copiedFileCount = 0;
-    for (const relativePath of focusedRelativePaths) {
+    for (const relativePath of TYPESCRIPT_PROPOSAL_PATHS) {
         const sourcePath = path.join(options.typescriptDir, relativePath);
         if (!fs.existsSync(sourcePath)) {
             continue;
@@ -620,8 +654,7 @@ function renderUnavailableDiffArtifact(options) {
     return [
         "# Accepted Diff Unavailable",
         "",
-        "The full TypeScript suite is diagnostic-only in this workflow.",
-        "The suite finished, but `hereby baseline-accept` did not succeed, so a post-accept `git diff` artifact could not be produced.",
+        "`hereby baseline-accept` did not succeed, so the blocking post-accept suite and accepted diff could not be produced.",
         "",
         `- Focused integration artifact: ${options.focusedBaselinesPath ?? "not written"}`,
         `- Raw local baselines artifact: ${options.localBaselinesPath ?? "not written"}`,

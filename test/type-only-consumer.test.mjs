@@ -28,6 +28,10 @@ test("generated lib supports erased utility types with strict library checking",
     );
     writeTextFile(path.join(tempDirectory, "third-party.d.ts"), [
         "declare const thirdPartyLabels: Record<string, string>;",
+        "declare const thirdPartyIterator: IterableIterator<string>;",
+        "declare const thirdPartyAsyncIterable: AsyncIterable<string>;",
+        "declare const thirdPartyAsyncIterator: AsyncIterableIterator<string>;",
+        "declare function thirdPartyTag(strings: TemplateStringsArray): string;",
         "",
     ].join("\n"));
     writeTextFile(path.join(tempDirectory, "consumer.ts"), [
@@ -63,6 +67,10 @@ test("generated lib supports erased utility types with strict library checking",
         "declare const promiseLike: PromiseLike<number>;",
         "declare const callableValue: ((this: { prefix: string }, value: number) => string) & CallableFunction;",
         "readonlyMap.get(thirdPartyLabels.baseline);",
+        "thirdPartyIterator.next();",
+        "thirdPartyAsyncIterable[Symbol.asyncIterator]();",
+        "thirdPartyAsyncIterator.next();",
+        "thirdPartyTag`baseline`;",
         "readonlySet.has(contextual.method());",
         "readonlyValues.findLast(value => value > 0);",
         "readonlyValues.toReversed();",

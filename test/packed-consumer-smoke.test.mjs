@@ -19,6 +19,7 @@ import {
     runTsc,
     runTscExpectFailure,
     runTscStrada,
+    runTscStradaExpectFailure,
     writeJsonFile,
     writeTextFile,
 } from "./helpers.mjs";
@@ -33,7 +34,9 @@ test.afterEach(() => {
 test("packed consumer smoke: npm-packed baseline package typechecks through compilerOptions.types", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const consumerDirectory = path.join(tempDirectory, "consumer");
-    const { tarballPath } = await createBaselinePackageTarball({ tempDirectories });
+    const tarballPath = process.env.BASELINE_PACKAGE_TARBALL
+        ? path.resolve(process.env.BASELINE_PACKAGE_TARBALL)
+        : (await createBaselinePackageTarball({ tempDirectories })).tarballPath;
 
     writeJsonFile(path.join(consumerDirectory, "package.json"), {
         name: "baseline-consumer-fixture",
@@ -64,8 +67,14 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
         "const reversed = [1, 2, 3].toReversed();",
         "const values = Intl.supportedValuesOf(\"currency\");",
         "const result = Promise.withResolvers<number>();",
+        "function* iterate(): IterableIterator<number> { yield 1; }",
+        "async function* iterateAsync(): AsyncIterableIterator<number> { yield 1; }",
+        "function tag(strings: TemplateStringsArray): string { return strings.raw[0] ?? \"\"; }",
         "reversed.length + values.length;",
         "result.promise;",
+        "iterate().next();",
+        "iterateAsync()[Symbol.asyncIterator]();",
+        "tag`baseline`;",
         REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION,
         "",
     ].join("\n"));
@@ -74,6 +83,22 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
     // and Strada (the 6.x series).
     runTsc(["-p", path.join(consumerDirectory, "tsconfig.json")], { cwd: consumerDirectory });
     runTscStrada(["-p", path.join(consumerDirectory, "tsconfig.json")], { cwd: consumerDirectory });
+
+    writeTextFile(path.join(consumerDirectory, "year-pass.ts"), [
+        "Promise.withResolvers<number>();",
+        "Array.fromAsync([1, 2, 3]);",
+        "",
+    ].join("\n"));
+    writeJsonFile(path.join(consumerDirectory, "tsconfig.year.json"), {
+        compilerOptions: {
+            noLib: true,
+            strict: true,
+            types: [`${baselinePackageName}/year/2024`],
+        },
+        files: ["year-pass.ts"],
+    });
+    runTsc(["-p", path.join(consumerDirectory, "tsconfig.year.json")], { cwd: consumerDirectory });
+    runTscStrada(["-p", path.join(consumerDirectory, "tsconfig.year.json")], { cwd: consumerDirectory });
 
     // Derive the currently excluded probes from the checked-in classification
     // rather than a hard-coded excluded-API list (auto-follows Baseline promotion).
@@ -88,9 +113,14 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
         files: ["consumer-fail.ts"],
     });
 
-    const failure = runTscExpectFailure(["-p", path.join(consumerDirectory, "tsconfig.fail.json")], { cwd: consumerDirectory });
-    assert.equal(failure.ok, false);
-    for (const probe of negativeProbes) {
-        assert.match(failure.output, probe.errorPattern, `expected excluded probe ${probe.compatKey} to fail compilation`);
+    const failures = [
+        runTscExpectFailure(["-p", path.join(consumerDirectory, "tsconfig.fail.json")], { cwd: consumerDirectory }),
+        runTscStradaExpectFailure(["-p", path.join(consumerDirectory, "tsconfig.fail.json")], { cwd: consumerDirectory }),
+    ];
+    for (const failure of failures) {
+        assert.equal(failure.ok, false);
+        for (const probe of negativeProbes) {
+            assert.match(failure.output, probe.errorPattern, `expected excluded probe ${probe.compatKey} to fail compilation`);
+        }
     }
 });

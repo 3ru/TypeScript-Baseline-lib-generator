@@ -2,24 +2,33 @@
 
 Generates `baseline.d.ts`, a TypeScript lib for TypeScript-declarable JavaScript features that are [Baseline widely available](https://web.dev/baseline). It currently classifies `javascript.builtins.*` and the `arguments` object from `web-features`.
 
-## Using the lib
+## Best-practice setup
 
-Stock TypeScript doesn't treat `"baseline"` as a built-in `lib` yet, so install the package and list it under `compilerOptions.types`:
+Stock TypeScript doesn't treat `"baseline"` as a built-in `lib` yet. Install the current supported TypeScript major with this package:
 
 ```sh
-npm install --save-dev typescript-baseline-lib
+npm install --save-dev typescript@^7 typescript-baseline-lib
 ```
+
+Use the package as the complete global lib:
 
 ```json
 {
   "compilerOptions": {
     "noLib": true,
+    "strict": true,
     "types": ["typescript-baseline-lib"]
   }
 }
 ```
 
+```sh
+npx tsc --noEmit
+```
+
 Now only the supported Baseline widely available JavaScript surfaces type-check. APIs that haven't reached Baseline yet (`Promise.withResolvers`, `Array.fromAsync` until it promotes, and so on) are reported as errors. The end goal is first-class `--lib baseline` support upstream in TypeScript.
+
+This package replaces TypeScript's default libs; do not set `compilerOptions.lib` or combine it with the standard `es*` libs. Add other ambient type packages to `types` only when the project needs them. Those packages can require APIs that are intentionally outside the selected Baseline target. The generator preserves audited erased compiler-support declarations, but it does not add unavailable runtime APIs merely to satisfy a third-party package.
 
 ## Allow a polyfilled feature
 

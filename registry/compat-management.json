@@ -53,6 +53,111 @@
             ]
         }
     },
+    "compilerSupport": [
+        {
+            "id": "language-protocol-interfaces",
+            "reason": "These erased global interfaces are referenced by TypeScript syntax and third-party declarations, but web-features has no runtime compatibility rows for them.",
+            "sourceUrls": [
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es5.d.ts",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es2015.iterable.d.ts",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es2018.asynciterable.d.ts"
+            ],
+            "surfaces": [
+                "AsyncIterable",
+                "AsyncIterableIterator",
+                "AsyncIterator",
+                "IterableIterator",
+                "Iterator",
+                "TemplateStringsArray"
+            ]
+        },
+        {
+            "id": "generator-function-shapes",
+            "reason": "TypeScript models generator function object structure through erased interfaces while the checker does not expose matching runtime constructor values.",
+            "sourceUrls": [
+                "https://github.com/microsoft/TypeScript/issues/45146",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es2015.generator.d.ts",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es2018.asyncgenerator.d.ts"
+            ],
+            "surfaces": [
+                "AsyncGeneratorFunction",
+                "GeneratorFunction"
+            ]
+        }
+    ],
+    "runtimeAliases": [
+        {
+            "id": "function-object-shape",
+            "reason": "Function.prototype is part of the standard Function object shape, but web-features does not provide a dedicated compatibility row for it.",
+            "sourceUrls": [
+                "https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-function-instances-prototype",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es5.d.ts"
+            ],
+            "surfaces": [
+                "Function.prototype"
+            ]
+        },
+        {
+            "id": "error-stack",
+            "reason": "TypeScript exposes Error.stack and the Stage 3 Error Stack Accessor proposal documents the cross-runtime surface, but web-features does not yet provide a compatibility row.",
+            "sourceUrls": [
+                "https://tc39.es/proposal-error-stack-accessor/",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es5.d.ts"
+            ],
+            "surfaces": [
+                "Error.stack"
+            ]
+        },
+        {
+            "id": "inherited-valueof-refinements",
+            "reason": "TypeScript refines Object.prototype.valueOf on typed-array interfaces, but these declarations do not represent separate runtime methods and web-features has no per-typed-array rows for them.",
+            "sourceUrls": [
+                "https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-object.prototype.valueof",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es5.d.ts",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es2020.bigint.d.ts"
+            ],
+            "surfaces": [
+                "BigInt64Array.valueOf",
+                "BigUint64Array.valueOf",
+                "Float16Array.valueOf",
+                "Float32Array.valueOf",
+                "Float64Array.valueOf",
+                "Int16Array.valueOf",
+                "Int32Array.valueOf",
+                "Int8Array.valueOf",
+                "Uint16Array.valueOf",
+                "Uint32Array.valueOf",
+                "Uint8Array.valueOf",
+                "Uint8ClampedArray.valueOf"
+            ]
+        },
+        {
+            "id": "well-known-symbol-tags",
+            "reason": "The ECMAScript specifications define these Symbol.toStringTag properties on otherwise classified runtime roots, but web-features has no dedicated compatibility rows for them.",
+            "sourceUrls": [
+                "https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-symbol.tostringtag",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es2015.symbol.wellknown.d.ts",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es2017.sharedmemory.d.ts",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es2020.bigint.d.ts",
+                "https://github.com/microsoft/TypeScript/blob/050880ce59e30b356b686bd3144efe24f875ebc8/src/lib/es2021.weakref.d.ts"
+            ],
+            "surfaces": [
+                "Atomics.@@toStringTag",
+                "BigInt.@@toStringTag",
+                "BigInt64Array.@@toStringTag",
+                "BigUint64Array.@@toStringTag",
+                "FinalizationRegistry.@@toStringTag",
+                "Float16Array.@@toStringTag",
+                "IteratorObject.@@toStringTag",
+                "Map.@@toStringTag",
+                "Set.@@toStringTag",
+                "SharedArrayBuffer.@@toStringTag",
+                "WeakMap.@@toStringTag",
+                "WeakRef.@@toStringTag",
+                "WeakSet.@@toStringTag"
+            ]
+        }
+    ],
     "groups": [
         {
             "id": "generator-function-partial-model",

@@ -9,7 +9,10 @@ import {
     cleanupTempDirectories,
     createTempDirectory,
 } from "./helpers.mjs";
-import { prepareTypeScriptBaselinePatch } from "../lib/typescript-upstream.mjs";
+import {
+    findUnexpectedTypeScriptPatchPaths,
+    prepareTypeScriptBaselinePatch,
+} from "../lib/typescript-upstream.mjs";
 
 /** @type {string[]} */
 const tempDirectories = [];
@@ -48,6 +51,7 @@ test("prepareTypeScriptBaselinePatch installs baseline.d.ts source and patches T
     const targetLibPath = path.join(typescriptDir, "src", "lib", "baseline.d.ts");
     const commandLineParserPath = path.join(typescriptDir, "src", "compiler", "commandLineParser.ts");
     const libsJsonPath = path.join(typescriptDir, "src", "lib", "libs.json");
+    const eslintConfigPath = path.join(typescriptDir, "eslint.config.mjs");
 
     assert.equal(fs.readFileSync(targetLibPath, "utf8"), "// generated baseline\n");
     assert.match(fs.readFileSync(commandLineParserPath, "utf8"), /\["baseline", "lib\.baseline\.d\.ts"\],/);
@@ -59,6 +63,10 @@ test("prepareTypeScriptBaselinePatch installs baseline.d.ts source and patches T
     assert.equal(
         [...fs.readFileSync(libsJsonPath, "utf8").matchAll(/"baseline"/g)].length,
         1,
+    );
+    assert.match(
+        fs.readFileSync(eslintConfigPath, "utf8"),
+        /files: \["src\/lib\/es2019\.array\.d\.ts", "src\/lib\/baseline\.d\.ts"\]/,
     );
     assert.ok(fs.existsSync(path.join(typescriptDir, "tests", "cases", "compiler", "libBaseline.ts")));
     assert.ok(fs.existsSync(path.join(typescriptDir, "tests", "baselines", "reference", "libBaseline.errors.txt")));
@@ -76,6 +84,7 @@ test("prepareTypeScriptBaselinePatch installs baseline.d.ts source and patches T
     assert.equal(secondSummary.copiedGeneratedLib.changed, false);
     assert.equal(secondSummary.patchedCommandLineParser.changed, false);
     assert.equal(secondSummary.patchedLibsJson.changed, false);
+    assert.equal(secondSummary.patchedEslintConfig.changed, false);
     // Second run reports the same fixture list, but zero files changed
     // (summary must not misreport unchanged files as "copied").
     assert.equal(secondSummary.fixtureFiles.length, 2);
@@ -113,6 +122,14 @@ function createFakeTypeScriptTree(tempDirectory) {
         "dom"
     ]
 }
+`,
+    );
+    fs.writeFileSync(
+        path.join(typescriptDir, "eslint.config.mjs"),
+        `export default [{
+        files: ["src/lib/es2019.array.d.ts"],
+        rules: { "@typescript-eslint/array-type": "off" },
+}];
 `,
     );
 
@@ -159,4 +176,47 @@ test("prepareTypeScriptBaselinePatch refuses to patch a clone that drifted from 
         allowUnpinned: true,
     });
     assert.equal(summary.copiedGeneratedLib.changed, true);
+});
+
+test("TypeScript patch auditing rejects changes outside the proposal surface", () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    execFileSync("git", ["init", "--quiet"], { cwd: tempDirectory });
+    execFileSync("git", ["config", "user.email", "test@example.com"], { cwd: tempDirectory });
+    execFileSync("git", ["config", "user.name", "Test"], { cwd: tempDirectory });
+    fs.writeFileSync(path.join(tempDirectory, "allowed.txt"), "before\n");
+    execFileSync("git", ["add", "allowed.txt"], { cwd: tempDirectory });
+    execFileSync("git", ["commit", "--quiet", "-m", "fixture"], { cwd: tempDirectory });
+
+    fs.writeFileSync(path.join(tempDirectory, "allowed.txt"), "after\n");
+    fs.writeFileSync(path.join(tempDirectory, "unexpected.txt"), "unexpected\n");
+    assert.deepEqual(
+        findUnexpectedTypeScriptPatchPaths(tempDirectory, ["allowed.txt"]),
+        ["unexpected.txt"],
+    );
+});
+
+test("TypeScript patch auditing accepts only mechanical lib-list baseline updates", () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const baselinePath = "tests/baselines/reference/config/lib-list.js";
+    const fullBaselinePath = path.join(tempDirectory, baselinePath);
+    const semanticPath = "tests/baselines/reference/config/semantic.js";
+    const fullSemanticPath = path.join(tempDirectory, semanticPath);
+    execFileSync("git", ["init", "--quiet"], { cwd: tempDirectory });
+    execFileSync("git", ["config", "user.email", "test@example.com"], { cwd: tempDirectory });
+    execFileSync("git", ["config", "user.name", "Test"], { cwd: tempDirectory });
+    fs.mkdirSync(path.dirname(fullBaselinePath), { recursive: true });
+    fs.writeFileSync(fullBaselinePath, "one or more: es5, esnext, dom\n//// [/file] Inode:: 10\n  {\"inode\":10}\n");
+    fs.writeFileSync(fullSemanticPath, "semantic result: alpha, omega\n");
+    execFileSync("git", ["add", baselinePath, semanticPath], { cwd: tempDirectory });
+    execFileSync("git", ["commit", "--quiet", "-m", "fixture"], { cwd: tempDirectory });
+
+    fs.writeFileSync(fullBaselinePath, "one or more: es5, esnext, baseline, dom\n//// [/file] Inode:: 11\n  {\"inode\":11}\n");
+    assert.deepEqual(findUnexpectedTypeScriptPatchPaths(tempDirectory, []), []);
+
+    fs.writeFileSync(fullSemanticPath, "semantic result: alpha, baseline, omega\n");
+    assert.deepEqual(findUnexpectedTypeScriptPatchPaths(tempDirectory, []), [semanticPath]);
+    fs.writeFileSync(fullSemanticPath, "semantic result: alpha, omega\n");
+
+    fs.appendFileSync(fullBaselinePath, "semantic change\n");
+    assert.deepEqual(findUnexpectedTypeScriptPatchPaths(tempDirectory, []), [baselinePath]);
 });

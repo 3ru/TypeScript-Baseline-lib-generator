@@ -36,14 +36,17 @@ jobs:
       - name: Validate compat-management schema
         run: npm run validate:registry
 
+      - name: Verify pinned web-features dataset
+        run: npm run verify:dataset
+
       - name: Regenerate baseline
         run: npm run generate
 
-      - name: Stage publishable baseline package and create npm tarball
-        run: npm run pack:baseline:tarball
+      - name: Compute release decision and prepare exact tarball
+        run: npm run release:dry-run
 
       - name: Run packed consumer smoke
+        if: ${{ hashFiles('release-artifact/package.tgz') != '' }}
+        env:
+          BASELINE_PACKAGE_TARBALL: release-artifact/package.tgz
         run: node --test test/packed-consumer-smoke.test.mjs
-
-      - name: Compute release decision
-        run: npm run release:dry-run
