@@ -1,16 +1,18 @@
 # TypeScript Baseline Lib Generator
 
-Generates `baseline.d.ts`, a TypeScript lib for TypeScript-declarable JavaScript features that are [Baseline widely available](https://web.dev/baseline). It currently classifies `javascript.builtins.*` and the `arguments` object from `web-features`.
+This project generates `baseline.d.ts`. This TypeScript lib contains declarations for JavaScript features that are [Baseline Widely available](https://web.dev/baseline).
+
+The generator currently classifies `javascript.builtins.*` and the `arguments` object from `web-features`.
 
 ## Best-practice setup
 
-Stock TypeScript doesn't treat `"baseline"` as a built-in `lib` yet. Install the current supported TypeScript major with this package:
+TypeScript does not yet include `"baseline"` as a built-in `lib`. Install this package and the supported TypeScript major:
 
 ```sh
 npm install --save-dev typescript@^7 typescript-baseline-lib
 ```
 
-Use the package as the complete global lib:
+Configure the package as the complete global lib:
 
 ```json
 {
@@ -22,17 +24,29 @@ Use the package as the complete global lib:
 }
 ```
 
+Run the compiler:
+
 ```sh
 npx tsc --noEmit
 ```
 
-Now only the supported Baseline widely available JavaScript surfaces type-check. APIs that haven't reached Baseline yet (`Promise.withResolvers`, `Array.fromAsync` until it promotes, and so on) are reported as errors. The end goal is first-class `--lib baseline` support upstream in TypeScript.
+With this configuration, TypeScript accepts supported JavaScript APIs that are Baseline Widely available. TypeScript reports APIs outside this target as errors.
 
-This package replaces TypeScript's default libs; do not set `compilerOptions.lib` or combine it with the standard `es*` libs. Add other ambient type packages to `types` only when the project needs them. Those packages can require APIs that are intentionally outside the selected Baseline target. The generator preserves audited erased compiler-support declarations, but it does not add unavailable runtime APIs merely to satisfy a third-party package.
+Examples include `Promise.withResolvers` and `Array.fromAsync` before they reach this Baseline status. The project goal is first-class `--lib baseline` support in TypeScript.
+
+For more configurations, read the [Usage Guide](docs/USAGE.md).
+
+This package replaces the default TypeScript libs. Do not set `compilerOptions.lib`. Do not combine this package with standard `es*` libs.
+
+If your project needs other ambient type packages, add them to `types`. Some packages require runtime APIs outside the selected Baseline target.
+
+The generator preserves audited declarations that support TypeScript. These declarations do not represent runtime APIs.
+
+The generator does not add unavailable runtime APIs to support third-party packages.
 
 ## Allow a polyfilled feature
 
-When the runtime loads an audited polyfill, add its generated web-features entry after the base package. For example, core-js can provide `Promise.withResolvers` at runtime:
+If the runtime loads an audited polyfill, add its generated `web-features` entry after the base package. For example, core-js can provide `Promise.withResolvers`:
 
 ```ts
 import "core-js/proposals/promise-with-resolvers";
@@ -50,11 +64,15 @@ import "core-js/proposals/promise-with-resolvers";
 }
 ```
 
-Only entries approved in `registry/allowlist.json` are public. The registry is a permanent path contract: after every registered compat key becomes Baseline widely available, the same entry remains as an alias to the base package. Limited availability features with `baselineStatus: false` are rejected.
+Only entries in `registry/allowlist.json` are public. The registry defines permanent public paths.
+
+Published entry paths remain valid. After all registered compat keys become Baseline Widely available, the entry refers to the base package.
+
+The generator rejects features with `baselineStatus: false`.
 
 ## Target a Baseline year
 
-Baseline year targets contain the cumulative JavaScript features that were Baseline newly available by the end of a completed calendar year. For example, Baseline 2024 includes `Promise.withResolvers`:
+Baseline year targets contain all JavaScript features that became Baseline Newly available by the end of a completed calendar year. For example, Baseline 2024 includes `Promise.withResolvers`:
 
 ```json
 {
@@ -65,18 +83,28 @@ Baseline year targets contain the cumulative JavaScript features that were Basel
 }
 ```
 
-Year entrypoints are generated from each compat row's `baselineLowDate`. They are independent alternatives to the widely available base entrypoint, not additions to it. The current year is omitted until it is complete. The package currently starts at 2020 because the generator cannot yet close the 2015-2019 TypeScript declaration graph without importing symbols from later years; this is an implementation limitation, not a Baseline specification boundary.
+The generator creates year entry points from the `baselineLowDate` of each compat row. Each entry is a complete alternative to the rolling base.
 
-Do not combine a `year/*` entrypoint with the base package or an `allow/*` entrypoint. Each year file is a complete historical target, while `allow/*` additions are generated only for the current widely available base.
+The generator omits the current year until that year is complete. The first generated year is 2020.
 
-Each year contract reports declaration-backed compat keys and explicitly managed upstream gaps in `derived/current/generation.json`. The generator never fabricates declarations for behavior that TypeScript cannot model.
+The generator cannot close the TypeScript declaration graphs for 2015 through 2019. Those graphs require symbols from later years.
 
-Year boundaries apply to runtime JavaScript APIs. Erased TypeScript helper types come from the pinned TypeScript toolchain and are not historical runtime features.
+This limit belongs to the implementation, not the Baseline specification.
+
+Do not combine a `year/*` entry point with the base package or an `allow/*` entry point. Each year file is a complete historical target.
+
+An `allow/*` entry applies only to the current rolling base. The generation report lists declaration-backed compat keys and managed upstream gaps.
+
+The report is in `derived/current/generation.json`. The generator does not create declarations for behavior that TypeScript cannot model.
+
+Year boundaries apply to runtime JavaScript APIs. The pinned TypeScript toolchain supplies helper declarations.
+
+These helper declarations are not historical runtime features.
 
 ## Current contract
 
-- Public targets are Baseline widely available, completed cumulative Baseline years from 2020 onward, and audited `allow/*` additions for explicitly polyfilled APIs.
-- Scope is TypeScript-declarable JavaScript surfaces: `javascript.builtins.*` plus the `arguments` object.
-- DOM, Web Worker, syntax, grammar, statements, and operators are out of scope.
-- Special compat rows are managed in `registry/compat-management.json` with a source URL for each.
-- The checked-in dataset, derived, and generated artifacts are overwritten with the rolling latest; history lives in Git.
+- The public targets include the rolling base, completed cumulative years from 2020, and audited `allow/*` additions.
+- The scope includes `javascript.builtins.*` and the `arguments` object.
+- DOM, Web Worker, syntax, grammar, statements, and operators are outside the scope.
+- `registry/compat-management.json` manages special compat rows and records a source URL for each row.
+- The repository stores one rolling dataset and one set of derived artifacts. Git stores the history.

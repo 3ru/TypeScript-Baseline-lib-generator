@@ -1,33 +1,47 @@
 # Contributing
 
-Thanks for your interest in improving this project.
+Thank you for your interest in this project.
 
 ## Getting started
+
+Before you open a pull request, run these commands:
 
 ```sh
 npm install
 npm run validate
 ```
 
-`npm run validate` runs the type checks, the registry schema check, a regeneration, and the test suite. It should pass before you open a pull request.
+`npm run validate` performs the type analysis and registry schema validation. It also regenerates artifacts and runs the test suite.
 
-Requirements: Node.js per the `engines` field, on macOS, Linux, or WSL. The TypeScript 7 integration gate additionally needs the Go toolchain.
+The command must pass before you open a pull request.
+
+Use the Node.js version in the `engines` field. The project supports macOS, Linux, and WSL.
+
+If you run the TypeScript 7 integration gate, install the Go toolchain.
 
 ## How the generator works
 
-The pipeline is deterministic: the same pinned inputs always produce the same `generated/current/baseline.d.ts`. Regenerate with:
+The pipeline is deterministic. The same pinned inputs always produce the same `generated/current/baseline.d.ts` file.
+
+To regenerate the artifacts, run:
 
 ```sh
 npm run generate
 ```
 
-The checked-in artifacts under `derived/current/` and `generated/current/` are part of the repo. If your change affects the output, commit the regenerated files too, since CI fails if they drift.
+Git tracks the artifacts in `derived/current/` and `generated/current/`. If your change modifies the output, commit the regenerated files.
 
-## Changing the compat-management registry
+If the tracked artifacts differ from the generated artifacts, CI fails.
 
-`registry/compat-management.json` is the ledger of special compat rows. The generator is fail-closed: when a feature reaches Baseline widely available but has no matching TypeScript lib surface, generation stops and asks for a registry entry rather than emitting something wrong.
+## Change the compat-management registry
 
-Every entry needs a reason, at least one source URL, and a typed upstream action. Validate the registry with:
+`registry/compat-management.json` is the ledger for special compat rows. The generator uses a fail-closed policy.
+
+If a Widely available feature has no matching TypeScript lib surface, the generator stops. It does not emit an unsupported declaration.
+
+Each entry must include a reason, a source URL, and a typed upstream action.
+
+Run the registry validation:
 
 ```sh
 npm run validate:registry
@@ -35,6 +49,12 @@ npm run validate:registry
 
 ## Tests
 
-Run the full suite with `npm test`. There are no aliases for individual test files; use `node --test <path>` when you want to run one.
+Run the full test suite:
 
-Add or extend tests for behavior you change. Tests should make the output safer for consumers, not just pass.
+```sh
+npm test
+```
+
+To run one test file, use `node --test <path>`. The project does not define aliases for individual test files.
+
+If your change modifies behavior, add or extend a test. Each test must protect consumer output or generator safety.
