@@ -52,12 +52,13 @@
         "validate": "npm run lint && npm run validate:registry && npm run verify:dataset && npm run generate && npm test"
     },
     "dependencies": {
-        "ajv": "8.17.1",
+        "ajv": "8.20.0",
         "typescript": "7.0.2",
         "typescript-strada": "npm:typescript@6.0.3",
         "web-features": "3.34.1"
     },
     "devDependencies": {
-        "@types/node": "24.10.0"
+        "@types/node": "24.10.0",
+        "yaml": "2.9.0"
     }
 }

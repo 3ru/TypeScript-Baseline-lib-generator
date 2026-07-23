@@ -79,7 +79,8 @@ jobs:
           BASELINE_PACKAGE_TARBALL: release-artifact/package.tgz
           RELEASE_NODE_EXECUTABLE: ${{ steps.release-tools.outputs.node }}
           RELEASE_NPM_EXECUTABLE: ${{ steps.release-tools.outputs.npm }}
-        run: "$RELEASE_NODE_EXECUTABLE" --test test/packed-consumer-smoke.test.mjs
+        run: |
+          "$RELEASE_NODE_EXECUTABLE" --test test/packed-consumer-smoke.test.mjs
 
       - name: Verify immutable release artifact
         id: release-plan
@@ -87,7 +88,8 @@ jobs:
           RELEASE_NODE_EXECUTABLE: ${{ steps.release-tools.outputs.node }}
           RELEASE_TAR_EXECUTABLE: ${{ steps.release-tools.outputs.tar }}
           EXPECTED_ARTIFACT_INTEGRITY: ${{ steps.prepare-artifact.outputs.artifact-integrity }}
-        run: "$RELEASE_NODE_EXECUTABLE" deploy/verifyReleaseArtifact.mjs --artifact-dir release-artifact
+        run: |
+          "$RELEASE_NODE_EXECUTABLE" deploy/verifyReleaseArtifact.mjs --artifact-dir release-artifact
 
       - name: Upload release artifact
         if: steps.release-plan.outputs.changed == 'true'

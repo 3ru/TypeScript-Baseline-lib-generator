@@ -2,9 +2,13 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import { parseDocument } from "yaml";
 import { repoRoot } from "./helpers.mjs";
 
 const workflowsDirectory = path.join(repoRoot, ".github", "workflows");
+const workflowFiles = readdirSync(workflowsDirectory)
+    .filter((fileName) => fileName.endsWith(".yml") || fileName.endsWith(".yaml"))
+    .sort();
 
 // Allow only a 40-hex commit SHA pin plus a human-readable tag comment.
 // Floating tags (like "@v4") and short SHAs are banned: they carry supply-chain
@@ -32,11 +36,33 @@ function collectActionReferences(fileName) {
     return references;
 }
 
-test("every workflow action is pinned to a full commit SHA with a version comment", () => {
-    const workflowFiles = readdirSync(workflowsDirectory)
-        .filter((fileName) => fileName.endsWith(".yml") || fileName.endsWith(".yaml"))
-        .sort();
+test("every workflow parses as YAML and declares triggers and jobs", () => {
+    const violations = [];
 
+    for (const fileName of workflowFiles) {
+        const document = parseDocument(readFileSync(path.join(workflowsDirectory, fileName), "utf8"));
+        if (document.errors.length > 0) {
+            violations.push(...document.errors.map(error => `${fileName}: ${error.message}`));
+            continue;
+        }
+
+        const workflow = document.toJS();
+        if (
+            workflow === null
+            || typeof workflow !== "object"
+            || Array.isArray(workflow)
+            || !Object.hasOwn(workflow, "on")
+            || !Object.hasOwn(workflow, "jobs")
+        ) {
+            violations.push(`${fileName}: expected a workflow mapping with on and jobs`);
+        }
+    }
+
+    assert.ok(workflowFiles.length > 0, "expected at least one workflow file");
+    assert.deepEqual(violations, [], `invalid workflows:\n${violations.join("\n")}`);
+});
+
+test("every workflow action is pinned to a full commit SHA with a version comment", () => {
     assert.ok(workflowFiles.length > 0, "expected at least one workflow file");
 
     const violations = [];
