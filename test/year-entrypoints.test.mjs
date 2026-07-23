@@ -305,6 +305,11 @@ test("year range and release guards fail closed", () => {
     );
     assert.doesNotThrow(() => assertYearContractsPreserved(JSON.stringify(contract), changedHashReport, {
         reviewedVersion: true,
+        publishedVersion: "0.0.4",
+        stagedVersion: "0.1.0",
+    }));
+    assert.doesNotThrow(() => assertYearContractsPreserved(JSON.stringify(contract), changedHashReport, {
+        reviewedVersion: true,
         publishedVersion: "1.2.3",
         stagedVersion: "2.0.0",
     }));
@@ -326,7 +331,10 @@ test("year range and release guards fail closed", () => {
 
     assert.doesNotThrow(() => assertExplicitVersionIncrease(undefined, "0.0.1"));
     assert.doesNotThrow(() => assertExplicitVersionIncrease("1.2.3", "1.2.4"));
-    assert.doesNotThrow(() => assertExplicitVersionIncrease("1.2.3-rc.2", "1.2.3-rc.10"));
+    assert.throws(
+        () => assertExplicitVersionIncrease("1.2.3-rc.2", "1.2.3-rc.10"),
+        /must be stable/,
+    );
     assert.throws(
         () => assertExplicitVersionIncrease("1.2.3", "1.2.3"),
         /must be greater than 1\.2\.3/,
@@ -337,7 +345,7 @@ test("year range and release guards fail closed", () => {
     );
     assert.throws(
         () => assertExplicitVersionIncrease("1.2.3", "1.2.3-rc.1"),
-        /must be greater than 1\.2\.3/,
+        /must be stable/,
     );
     for (const invalidVersion of [undefined, "not-semver", "01.2.3", "1.2.3-.", "1.2.3-01"]) {
         assert.throws(

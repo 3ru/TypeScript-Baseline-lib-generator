@@ -196,6 +196,8 @@ async function classifyFixture(options) {
         kind: "typescript-baseline-lib/compat-management-registry",
         schemaVersion: 1,
         ...(options.declarationMappings ? { declarationMappings: options.declarationMappings } : {}),
+        compilerSupport: [],
+        runtimeAliases: [],
         groups: options.registryGroups ?? [],
     });
 
@@ -205,8 +207,8 @@ async function classifyFixture(options) {
         ...(options.baselineTarget ? { baselineTarget: options.baselineTarget } : {}),
         dataset: "dataset.json",
         compatManagementRegistry: "registry.json",
-        classificationOutput: "out/classification.json",
-        compatManagementOutput: "out/compat-management-report.json",
+        classificationOutput: "derived/current/classification.json",
+        compatManagementOutput: "derived/current/compat-management-report.json",
     };
     writeJsonFile(manifestPath, manifest);
 

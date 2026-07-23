@@ -8,7 +8,7 @@
     "kind": "typescript-baseline-lib/compat-management-registry",
     "schemaVersion": 1,
     "sourcePath": "registry/compat-management.json",
-    "sourceHash": "sha256-fbebf10c03122d6fe78bafd62030a5842dabf0cf8f2800c3667b601ffee86133",
+    "sourceHash": "sha256-a2e0009acc49a898cb3154ab149fe75a1760643216e28e502d1d133a924f104a",
     "groupCount": 19,
     "managedCompatCount": 60
   },

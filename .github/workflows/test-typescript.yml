@@ -32,11 +32,14 @@ jobs:
           cache: "npm"
       - run: npm ci
 
+      - name: Verify pinned web-features dataset
+        run: npm run verify:dataset
+
       - name: Regenerate baseline
         run: npm run generate
 
-      # PRs run a gate of blocking checks only; push to main / dispatch runs the
-      # full suite with diagnostics.
+      # PRs run the focused gate; push to main / dispatch also requires the full
+      # suite to pass after accepting the generated baselines.
       - name: Select integration mode
         id: mode
         run: |
@@ -70,7 +73,7 @@ jobs:
         run: npm run checkout:typescript-source -- --out .tmp/TypeScript --force
 
       - name: Run TypeScript integration checks
-        run: npm run test:typescript:${{ steps.mode.outputs.mode }} -- --typescript-dir ./.tmp/TypeScript --summary-out .tmp/typescript-integration-summary.md --baseline-diff-out .tmp/typescript-baseline-changes.diff --focused-baselines-out .tmp/typescript-focused-artifact --local-baselines-out .tmp/typescript-raw-local-baselines
+        run: npm run test:typescript:${{ steps.mode.outputs.mode }} -- --typescript-dir ./.tmp/TypeScript --summary-out typescript-integration-artifacts/summary.md --baseline-diff-out typescript-integration-artifacts/baseline-changes.diff --focused-baselines-out typescript-integration-artifacts/focused --local-baselines-out typescript-integration-artifacts/raw-local-baselines
 
       - name: Upload integration summary and focused artifacts
         if: always()
@@ -78,15 +81,15 @@ jobs:
         with:
           name: typescript-integration
           path: |
-            .tmp/typescript-integration-summary.md
-            .tmp/typescript-baseline-changes.diff
-            .tmp/typescript-focused-artifact
-          if-no-files-found: ignore
+            typescript-integration-artifacts/summary.md
+            typescript-integration-artifacts/baseline-changes.diff
+            typescript-integration-artifacts/focused
+          if-no-files-found: error
 
       - name: Upload raw local baselines
-        if: always()
+        if: always() && steps.mode.outputs.mode == 'full'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: typescript-integration-raw-local-baselines
-          path: .tmp/typescript-raw-local-baselines
-          if-no-files-found: ignore
+          path: typescript-integration-artifacts/raw-local-baselines
+          if-no-files-found: error

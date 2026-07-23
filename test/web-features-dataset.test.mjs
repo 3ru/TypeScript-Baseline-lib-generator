@@ -14,6 +14,7 @@ import {
     buildWebFeaturesDataset,
     datasetsEqualIgnoringDate,
     resolveSnapshotDate,
+    verifyWebFeaturesDataset,
 } from "../lib/web-features-dataset.mjs";
 
 // Weekly-update noise suppression: in a week where web-features itself doesn't
@@ -137,6 +138,24 @@ test("web-features extractor accepts well-formed per-key statuses", async () => 
     assert.equal(dataset.compatRows[0].baselineStatus, "high");
 });
 
+test("checked-in dataset must exactly match the pinned package extraction", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    installWebFeaturesFixture(tempDirectory, { "widget-helpers": validFeature() });
+    const dataset = await buildWebFeaturesDataset({
+        repoRoot: tempDirectory,
+        snapshotDate: "2026-07-07",
+        snapshotName: "web-features-test",
+    });
+
+    await verifyWebFeaturesDataset({ repoRoot: tempDirectory, dataset });
+
+    dataset.compatRows[0].baselineStatus = "low";
+    await assert.rejects(
+        verifyWebFeaturesDataset({ repoRoot: tempDirectory, dataset }),
+        /does not match the pinned web-features package extraction/u,
+    );
+});
+
 test("web-features extractor fails closed when by_compat_key is missing instead of inheriting feature status", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const feature = validFeature();
@@ -153,6 +172,52 @@ test("web-features extractor fails closed when by_compat_key is missing instead 
             snapshotName: "web-features-test",
         }),
         /missing status\.by_compat_key\["javascript\.builtins\.Widget\.good"\]/,
+    );
+});
+
+test("web-features extractor fails closed when compat_features changes shape", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    installWebFeaturesFixture(tempDirectory, {
+        "widget-helpers": {
+            ...validFeature(),
+            compat_features: { widget: "javascript.builtins.Widget.good" },
+            snapshot: "ecmascript-2024",
+        },
+    });
+
+    await assert.rejects(
+        buildWebFeaturesDataset({
+            repoRoot: tempDirectory,
+            snapshotDate: "2026-07-07",
+            snapshotName: "web-features-test",
+        }),
+        /non-array compat_features/,
+    );
+
+    const renamedDirectory = createTempDirectory(tempDirectories);
+    const renamedFeature = validFeature();
+    renamedFeature.compatFeatures = renamedFeature.compat_features;
+    delete renamedFeature.compat_features;
+    renamedFeature.snapshot = "ecmascript-2024";
+    installWebFeaturesFixture(renamedDirectory, { "widget-helpers": renamedFeature });
+    await assert.rejects(
+        buildWebFeaturesDataset({
+            repoRoot: renamedDirectory,
+            snapshotDate: "2026-07-07",
+            snapshotName: "web-features-test",
+        }),
+        /missing compat_features for compatibility-backed data/,
+    );
+
+    const arrayDirectory = createTempDirectory(tempDirectories);
+    installWebFeaturesFixture(arrayDirectory, /** @type {any} */ ([]));
+    await assert.rejects(
+        buildWebFeaturesDataset({
+            repoRoot: arrayDirectory,
+            snapshotDate: "2026-07-07",
+            snapshotName: "web-features-test",
+        }),
+        /missing the features map/,
     );
 });
 
@@ -245,5 +310,24 @@ test("dataset loader requires the manifest and dataset Baseline dates to match",
     await assert.rejects(
         loadBaselineDataset(datasetPath, "web-features-test", "2026-07-07"),
         /Dataset baselineDate 2025-12-31 does not match expected 2026-07-07/,
+    );
+});
+
+test("dataset loader requires the manifest and dataset package versions to match", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const datasetPath = path.join(tempDirectory, "dataset.json");
+    writeJsonFile(datasetPath, {
+        snapshot: {
+            name: "web-features-test",
+            baselineDate: "2026-07-07",
+            webFeaturesPackageVersion: "1.0.0",
+        },
+        featureRows: [],
+        compatRows: [],
+    });
+
+    await assert.rejects(
+        loadBaselineDataset(datasetPath, "web-features-test", "2026-07-07", "2.0.0"),
+        /Dataset webFeaturesPackageVersion 1\.0\.0 does not match expected 2\.0\.0/u,
     );
 });

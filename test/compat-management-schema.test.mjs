@@ -25,9 +25,24 @@ test("compat-management registry accepts the canonical registry", async () => {
     assert.equal(registry.kind, "typescript-baseline-lib/compat-management-registry");
     assert.ok(registry.groups.length > 0);
     assert.ok(registry.entries.length > 0);
+    assert.ok(registry.compilerSupportSurfaces.includes("IterableIterator"));
+    assert.ok(registry.runtimeAliasSurfaces.includes("Function.prototype"));
     assert.deepEqual(
         registry.entryByCompatKey.get("javascript.builtins.RegExp.input")?.declarationMapping,
         { scope: "static", memberNames: ["input", "$_"] },
+    );
+});
+
+test("compat-management registry keeps compiler support and runtime aliases disjoint", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const registryPath = path.join(tempDirectory, "compat-management.overlap.json");
+    const registry = readJsonFile(repoRegistryPath);
+    registry.runtimeAliases[0].surfaces.push(registry.compilerSupport[0].surfaces[0]);
+    writeJsonFile(registryPath, registry);
+
+    await assert.rejects(
+        () => loadCompatManagementRegistry(registryPath),
+        /both compiler support and runtime aliases/u,
     );
 });
 

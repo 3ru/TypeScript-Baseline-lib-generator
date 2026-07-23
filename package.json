@@ -29,6 +29,7 @@
     },
     "scripts": {
         "generate": "node scripts/generate.mjs",
+        "verify:dataset": "node scripts/verify-web-features-dataset.mjs",
         "check:typescript-peer-latest": "node scripts/check-typescript-peer-latest.mjs",
         "update:typescript-toolchain": "node scripts/update-typescript-toolchain.mjs",
         "update:web-features": "node scripts/update-web-features.mjs",
@@ -44,10 +45,11 @@
         "test:typescript-go": "node scripts/test-typescript-go-integration.mjs",
         "pack:baseline": "node deploy/createPackage.mjs",
         "pack:baseline:tarball": "node deploy/createPackageTarball.mjs",
-        "release:dry-run": "node deploy/deployChangedPackage.mjs --dry-run --notes-out .tmp/package-release-notes.md --summary-out .tmp/package-release-summary.json",
-        "release:publish": "node deploy/deployChangedPackage.mjs --notes-out .tmp/package-release-notes.md --summary-out .tmp/package-release-summary.json --github-release",
+        "release:prepare": "node deploy/prepareReleaseArtifact.mjs",
+        "release:dry-run": "node deploy/prepareReleaseArtifact.mjs --preview",
+        "release:publish": "node deploy/publishReleaseArtifact.mjs",
         "test": "node --test test/*.test.mjs",
-        "validate": "npm run lint && npm run validate:registry && npm run generate && npm test"
+        "validate": "npm run lint && npm run validate:registry && npm run verify:dataset && npm run generate && npm test"
     },
     "dependencies": {
         "ajv": "8.17.1",

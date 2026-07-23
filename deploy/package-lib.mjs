@@ -13,9 +13,11 @@ import {
 } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import ts from "typescript-strada";
 import { retryAsync, retrySync } from "../lib/net-retry.mjs";
 import { compareYearContracts } from "../lib/year-contracts.mjs";
 import { packages, repoRoot } from "./package-registry.mjs";
+import { resolveReleaseExecutable } from "./trusted-executable.mjs";
 
 /**
  * @param {{
@@ -132,52 +134,6 @@ export async function collectReleasePlans(options = {}) {
     }
 
     return releasePlans;
-}
-
-/**
- * @param {ReleasePlan} releasePlan
- * @param {{ dryRun?: boolean; provenance?: boolean; createGitHubRelease?: boolean; githubRepository?: string; githubToken?: string; githubSha?: string; }} [options]
- */
-export async function publishReleasePlan(releasePlan, options = {}) {
-    if (!releasePlan.changed) {
-        return {
-            published: false,
-            releaseCreated: false,
-        };
-    }
-
-    if (options.dryRun) {
-        return {
-            published: false,
-            releaseCreated: false,
-        };
-    }
-
-    const publishArgs = ["publish", "--access", "public"];
-    if (options.provenance) {
-        // Use GitHub Actions OIDC to cryptographically bind the published
-        // artifact to its source repository, workflow, and commit.
-        publishArgs.push("--provenance");
-    }
-    execFileSync("npm", publishArgs, {
-        cwd: releasePlan.stageDirectory,
-        stdio: "inherit",
-    });
-
-    let releaseCreated = false;
-    if (options.createGitHubRelease && options.githubRepository && options.githubToken) {
-        releaseCreated = await createGitHubRelease({
-            releasePlan,
-            githubRepository: options.githubRepository,
-            githubToken: options.githubToken,
-            githubSha: options.githubSha,
-        });
-    }
-
-    return {
-        published: true,
-        releaseCreated,
-    };
 }
 
 /**
@@ -331,16 +287,20 @@ async function buildReleasePlan(stageSummary, reviewedVersion, preview) {
         stagedSnapshot.get("reports/generation.json"),
     );
     assertNoRemovedYearEntryPoints(removedFiles);
-    const requiredVersionBump = assertYearContractsPreserved(
+    const yearVersionBump = assertYearContractsPreserved(
         published.snapshot.get("reports/generation.json"),
         stagedSnapshot.get("reports/generation.json"),
-        {
-            reviewedVersion,
-            preview,
-            publishedVersion: published.version,
-            stagedVersion: stageSummary.packageVersion,
-        },
+        { preview: true },
     );
+    const declarationVersionBump = getDeclarationContractImpact(published.snapshot, stagedSnapshot);
+    const requiredVersionBump = maximumVersionBump(yearVersionBump, declarationVersionBump);
+    assertReleaseVersionReview({
+        requiredVersionBump,
+        reviewedVersion,
+        preview,
+        publishedVersion: published.version,
+        stagedVersion: stageSummary.packageVersion,
+    });
     const changed = !published.version || changedFiles.length > 0 || removedFiles.length > 0;
 
     return {
@@ -361,6 +321,265 @@ async function buildReleasePlan(stageSummary, reviewedVersion, preview) {
             removedFiles,
         }),
     };
+}
+
+/**
+ * @param {Map<string, string>} publishedSnapshot
+ * @param {Map<string, string>} stagedSnapshot
+ * @returns {"major" | "minor" | undefined}
+ */
+export function getDeclarationContractImpact(publishedSnapshot, stagedSnapshot) {
+    if (!publishedSnapshot.size) {
+        return undefined;
+    }
+    /** @type {"minor" | undefined} */
+    let additiveImpact;
+    for (const [relativePath, publishedText] of publishedSnapshot) {
+        if (!relativePath.endsWith(".d.ts")) {
+            continue;
+        }
+        const stagedText = stagedSnapshot.get(relativePath);
+        if (stagedText === undefined) {
+            return "major";
+        }
+        if (stagedText !== publishedText) {
+            if (!isSafeDeclarationAddition(publishedText, stagedText)) {
+                return "major";
+            }
+            additiveImpact = "minor";
+        }
+    }
+    if (publicTypeRoutingChanged(publishedSnapshot.get("package.json"), stagedSnapshot.get("package.json"))) {
+        return "major";
+    }
+    if (additiveImpact) {
+        return additiveImpact;
+    }
+    return [...stagedSnapshot.keys()].some(
+        relativePath => relativePath.endsWith(".d.ts") && !publishedSnapshot.has(relativePath),
+    )
+        ? "minor"
+        : undefined;
+}
+
+/**
+ * @param {string} previousText
+ * @param {string} nextText
+ */
+function isSafeDeclarationAddition(previousText, nextText) {
+    if (!isLineSubsequence(previousText, nextText)) {
+        return false;
+    }
+    const previousSourceFile = ts.createSourceFile("previous.d.ts", previousText, ts.ScriptTarget.Latest, true);
+    const nextSourceFile = ts.createSourceFile("next.d.ts", nextText, ts.ScriptTarget.Latest, true);
+    if (
+        ts.isExternalModule(previousSourceFile) !== ts.isExternalModule(nextSourceFile)
+        || previousSourceFile.hasNoDefaultLib !== nextSourceFile.hasNoDefaultLib
+    ) {
+        return false;
+    }
+
+    return declarationListPreserved(
+        previousSourceFile.statements,
+        nextSourceFile.statements,
+        previousSourceFile,
+        nextSourceFile,
+    );
+}
+
+/**
+ * @param {readonly import("typescript-strada").Node[]} previousNodes
+ * @param {readonly import("typescript-strada").Node[]} nextNodes
+ * @param {import("typescript-strada").SourceFile} previousSourceFile
+ * @param {import("typescript-strada").SourceFile} nextSourceFile
+ */
+function declarationListPreserved(previousNodes, nextNodes, previousSourceFile, nextSourceFile) {
+    const unmatchedNodes = [...nextNodes];
+    for (const previousNode of previousNodes) {
+        const key = getDeclarationNodeKey(previousNode, previousSourceFile);
+        const exactIndex = unmatchedNodes.findIndex(nextNode => (
+            getDeclarationNodeKey(nextNode, nextSourceFile) === key
+            && previousNode.getText(previousSourceFile) === nextNode.getText(nextSourceFile)
+        ));
+        const compatibleIndex = exactIndex >= 0
+            ? exactIndex
+            : unmatchedNodes.findIndex(nextNode => (
+                getDeclarationNodeKey(nextNode, nextSourceFile) === key
+                && declarationNodePreserved(previousNode, nextNode, previousSourceFile, nextSourceFile)
+            ));
+        if (compatibleIndex < 0) {
+            return false;
+        }
+        unmatchedNodes.splice(compatibleIndex, 1);
+    }
+    return true;
+}
+
+/**
+ * @param {import("typescript-strada").Node} previousNode
+ * @param {import("typescript-strada").Node} nextNode
+ * @param {import("typescript-strada").SourceFile} previousSourceFile
+ * @param {import("typescript-strada").SourceFile} nextSourceFile
+ */
+function declarationNodePreserved(previousNode, nextNode, previousSourceFile, nextSourceFile) {
+    if (previousNode.kind !== nextNode.kind) {
+        return false;
+    }
+    const previousContainer = getDeclarationContainer(previousNode, previousSourceFile);
+    const nextContainer = getDeclarationContainer(nextNode, nextSourceFile);
+    return Boolean(
+        previousContainer
+        && nextContainer
+        && previousContainer.prefix === nextContainer.prefix
+        && previousContainer.suffix === nextContainer.suffix
+        && declarationListPreserved(
+            previousContainer.children,
+            nextContainer.children,
+            previousSourceFile,
+            nextSourceFile,
+        ),
+    );
+}
+
+/**
+ * @param {import("typescript-strada").Node} node
+ * @param {import("typescript-strada").SourceFile} sourceFile
+ */
+function getDeclarationContainer(node, sourceFile) {
+    if (ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node)) {
+        return createDeclarationContainer(node, node.members, node.members.pos, node.members.end, sourceFile);
+    }
+    if (ts.isEnumDeclaration(node)) {
+        return createDeclarationContainer(node, node.members, node.members.pos, node.members.end, sourceFile);
+    }
+    if (ts.isModuleDeclaration(node) && node.body) {
+        if (ts.isModuleBlock(node.body)) {
+            return createDeclarationContainer(node, node.body.statements, node.body.statements.pos, node.body.statements.end, sourceFile);
+        }
+        return createDeclarationContainer(node, [node.body], node.body.getStart(sourceFile), node.body.end, sourceFile);
+    }
+    if (ts.isVariableStatement(node) && node.declarationList.declarations.length === 1) {
+        const type = node.declarationList.declarations[0].type;
+        if (type && ts.isTypeLiteralNode(type)) {
+            return createDeclarationContainer(node, type.members, type.members.pos, type.members.end, sourceFile);
+        }
+    }
+    return undefined;
+}
+
+/**
+ * @param {import("typescript-strada").Node} node
+ * @param {readonly import("typescript-strada").Node[]} children
+ * @param {number} childrenStart
+ * @param {number} childrenEnd
+ * @param {import("typescript-strada").SourceFile} sourceFile
+ */
+function createDeclarationContainer(node, children, childrenStart, childrenEnd, sourceFile) {
+    return {
+        children,
+        prefix: sourceFile.text.slice(node.getStart(sourceFile), childrenStart),
+        suffix: sourceFile.text.slice(childrenEnd, node.end),
+    };
+}
+
+/**
+ * @param {import("typescript-strada").Node} node
+ * @param {import("typescript-strada").SourceFile} sourceFile
+ */
+function getDeclarationNodeKey(node, sourceFile) {
+    if (
+        ts.isClassDeclaration(node)
+        || ts.isEnumDeclaration(node)
+        || ts.isFunctionDeclaration(node)
+        || ts.isInterfaceDeclaration(node)
+        || ts.isModuleDeclaration(node)
+        || ts.isTypeAliasDeclaration(node)
+    ) {
+        return `${node.kind}:${node.name?.getText(sourceFile) ?? "<anonymous>"}`;
+    }
+    if (ts.isVariableStatement(node)) {
+        return `${node.kind}:${node.declarationList.declarations
+            .map(declaration => declaration.name.getText(sourceFile))
+            .join(",")}`;
+    }
+    return `${node.kind}:${node.getText(sourceFile)}`;
+}
+
+/**
+ * @param {string} previousText
+ * @param {string} nextText
+ */
+function isLineSubsequence(previousText, nextText) {
+    const previousLines = previousText.split("\n");
+    const nextLines = nextText.split("\n");
+    let previousIndex = 0;
+    for (const line of nextLines) {
+        if (line === previousLines[previousIndex]) {
+            previousIndex++;
+        }
+    }
+    return previousIndex === previousLines.length;
+}
+
+/**
+ * @param {string | undefined} publishedPackageJsonText
+ * @param {string | undefined} stagedPackageJsonText
+ */
+function publicTypeRoutingChanged(publishedPackageJsonText, stagedPackageJsonText) {
+    if (!publishedPackageJsonText || !stagedPackageJsonText) {
+        return publishedPackageJsonText !== stagedPackageJsonText;
+    }
+    const selectRouting = (/** @type {string} */ packageJsonText) => {
+        const packageJson = JSON.parse(packageJsonText);
+        return JSON.stringify({
+            types: packageJson.types,
+            typesVersions: packageJson.typesVersions,
+            exports: packageJson.exports,
+        });
+    };
+    return selectRouting(publishedPackageJsonText) !== selectRouting(stagedPackageJsonText);
+}
+
+/**
+ * @param {"major" | "minor" | undefined} left
+ * @param {"major" | "minor" | undefined} right
+ * @returns {"major" | "minor" | undefined}
+ */
+function maximumVersionBump(left, right) {
+    return left === "major" || right === "major"
+        ? "major"
+        : left === "minor" || right === "minor"
+            ? "minor"
+            : undefined;
+}
+
+/**
+ * @param {{
+ *   requiredVersionBump: "major" | "minor" | undefined;
+ *   reviewedVersion: boolean;
+ *   preview: boolean;
+ *   publishedVersion: string | undefined;
+ *   stagedVersion: string;
+ * }} options
+ */
+function assertReleaseVersionReview(options) {
+    if (!options.requiredVersionBump) {
+        return;
+    }
+    if (!options.reviewedVersion) {
+        if (options.preview) {
+            return;
+        }
+        throw new Error(
+            `Published declaration contracts require review (${options.requiredVersionBump}); `
+                + "pass an explicit --version after inspecting the package diff",
+        );
+    }
+    assertVersionBump(
+        options.publishedVersion,
+        options.stagedVersion,
+        options.requiredVersionBump,
+    );
 }
 
 /**
@@ -455,12 +674,14 @@ function assertVersionBump(publishedVersion, stagedVersion, requiredBump) {
     const published = parseVersion(publishedVersion);
     const staged = parseVersion(stagedVersion);
     const sufficient = requiredBump === "major"
-        ? staged.major > published.major
+        ? published.major === 0
+            ? staged.major > 0 || (staged.major === 0 && staged.minor > published.minor)
+            : staged.major > published.major
         : staged.major > published.major
             || (staged.major === published.major && staged.minor > published.minor);
     if (!sufficient) {
         throw new Error(
-            `Baseline year contract changes require a ${requiredBump} version increase from ${publishedVersion}; got ${stagedVersion}`,
+            `Public declaration contract changes require a ${requiredBump} version increase from ${publishedVersion}; got ${stagedVersion}`,
         );
     }
 }
@@ -474,6 +695,9 @@ export function assertExplicitVersionIncrease(publishedVersion, stagedVersion) {
         throw new Error("Explicit package version is missing");
     }
     const staged = parseVersion(stagedVersion);
+    if (staged.prerelease) {
+        throw new Error(`Explicit release versions must be stable; got ${stagedVersion}`);
+    }
     if (!publishedVersion) {
         return;
     }
@@ -633,18 +857,22 @@ async function getPublishedPackageState(packageConfig) {
     const tempDirectory = await mkdtemp(path.join(os.tmpdir(), "ts-baseline-published-package-"));
     try {
         // Fetching the published tarball is read-only, so it's safe to retry through registry flake.
-        const packOutput = retrySync(`npm pack ${packageConfig.name}@${version}`, () => execFileSync("npm", ["pack", `${packageConfig.name}@${version}`, "--silent"], {
+        const npm = resolveReleaseExecutable(repoRoot, "RELEASE_NPM_EXECUTABLE", "npm");
+        const packOutput = retrySync(`npm pack ${packageConfig.name}@${version}`, () => execFileSync(npm.executable, ["pack", `${packageConfig.name}@${version}`, "--silent"], {
             cwd: tempDirectory,
             encoding: "utf8",
+            env: npm.environment,
         })).trim();
         const tarballName = packOutput.split(/\r?\n/).filter(Boolean).at(-1);
         if (!tarballName) {
             throw new Error(`npm pack did not return a tarball name for ${packageConfig.name}@${version}`);
         }
 
-        execFileSync("tar", ["-xzf", tarballName], {
+        const tar = resolveReleaseExecutable(repoRoot, "RELEASE_TAR_EXECUTABLE", "tar");
+        execFileSync(tar.executable, ["-xzf", tarballName], {
             cwd: tempDirectory,
             stdio: "ignore",
+            env: tar.environment,
         });
 
         const packageDirectory = path.join(tempDirectory, "package");
@@ -690,9 +918,14 @@ export async function createPackageTarball(directoryPath) {
     const tarballRoot = path.join(repoRoot, ".tmp", "release-tarballs");
     await mkdir(tarballRoot, { recursive: true });
     const tarballDirectory = await mkdtemp(path.join(tarballRoot, "pack-"));
-    const packOutput = execFileSync("npm", ["pack", directoryPath, "--pack-destination", tarballDirectory, "--silent"], {
+    const npm = resolveReleaseExecutable(repoRoot, "RELEASE_NPM_EXECUTABLE", "npm");
+    const packOutput = execFileSync(npm.executable, ["pack", directoryPath, "--pack-destination", tarballDirectory, "--silent"], {
         cwd: repoRoot,
         encoding: "utf8",
+        env: {
+            ...npm.environment,
+            npm_config_cache: path.join(tarballDirectory, "npm-cache"),
+        },
     }).trim();
     const tarballName = packOutput.split(/\r?\n/).filter(Boolean).at(-1);
     if (!tarballName) {
@@ -826,50 +1059,6 @@ function renderReleaseNotes(options) {
         ...fileLines,
         "",
     ].join("\n");
-}
-
-/**
- * @param {{ releasePlan: ReleasePlan; githubRepository: string; githubToken: string; githubSha?: string; }} options
- */
-async function createGitHubRelease(options) {
-    const {
-        releasePlan,
-        githubRepository,
-        githubToken,
-        githubSha,
-    } = options;
-
-    const [owner, repo] = githubRepository.split("/");
-    if (!owner || !repo) {
-        throw new Error(`Invalid GitHub repository value: ${githubRepository}`);
-    }
-
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases`, {
-        method: "POST",
-        headers: {
-            "authorization": `Bearer ${githubToken}`,
-            "accept": "application/vnd.github+json",
-            "content-type": "application/json",
-            "user-agent": "typescript-baseline-lib-generator",
-        },
-        body: JSON.stringify({
-            tag_name: `${releasePlan.packageConfig.name}@${releasePlan.packageVersion}`,
-            target_commitish: githubSha,
-            name: `${releasePlan.packageConfig.name}@${releasePlan.packageVersion}`,
-            body: releasePlan.notesMarkdown,
-        }),
-    });
-
-    if (response.ok) {
-        return true;
-    }
-
-    if (response.status === 422) {
-        return false;
-    }
-
-    const responseText = await response.text();
-    throw new Error(`Failed to create GitHub release for ${releasePlan.packageConfig.name}: ${response.status} ${response.statusText}\n${responseText}`);
 }
 
 /**

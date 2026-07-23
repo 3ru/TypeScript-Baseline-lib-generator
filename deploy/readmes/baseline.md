@@ -15,28 +15,37 @@ Current snapshot:
 - Selected declaration units: `{{SELECTED_UNIT_COUNT}}`
 - Transformed units: `{{TRANSFORMED_UNIT_COUNT}}`
 
-## Usage
+## Best-practice setup
 
-Stock TypeScript doesn't treat `"baseline"` as a built-in `lib` yet, so install the package and list it under `compilerOptions.types`:
+Stock TypeScript doesn't treat `"baseline"` as a built-in `lib` yet. Install the current supported TypeScript major with this package:
 
 ```sh
-npm install --save-dev {{PACKAGE_NAME}}
+npm install --save-dev typescript@^7 {{PACKAGE_NAME}}
 ```
 
-TypeScript is an optional peer dependency. Install a supported TypeScript 6.x or 7.x compiler separately if your project does not already provide one.
+The package also supports existing TypeScript 6.x projects within `{{TYPESCRIPT_PEER_DEPENDENCY_RANGE}}`. TypeScript remains an optional peer dependency.
 
 The same snapshot facts are available to tools through `{{PACKAGE_NAME}}/snapshot.json`.
+
+Use the package as the complete global lib:
 
 ```json
 {
   "compilerOptions": {
     "noLib": true,
+    "strict": true,
     "types": ["{{PACKAGE_NAME}}"]
   }
 }
 ```
 
+```sh
+npx tsc --noEmit
+```
+
 Now only the supported Baseline widely available JavaScript surfaces type-check; APIs that haven't reached Baseline yet are reported as errors.
+
+This package replaces TypeScript's default libs; do not set `compilerOptions.lib` or combine it with the standard `es*` libs. Add other ambient type packages to `types` only when the project needs them. Those packages can require runtime APIs outside the selected Baseline target. The package preserves erased declarations needed by TypeScript, but it does not expose unavailable APIs merely to satisfy a third-party package.
 
 ## Allow a polyfilled feature
 

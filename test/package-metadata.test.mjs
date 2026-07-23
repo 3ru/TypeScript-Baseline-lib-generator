@@ -5,8 +5,10 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import {
+    assertExplicitVersionIncrease,
     assertTypeScriptPeerRange,
     countIncludedCompatRows,
+    getDeclarationContractImpact,
 } from "../deploy/package-lib.mjs";
 import { resolveInstalledPackageRoot } from "../lib/installed-package.mjs";
 import {
@@ -116,6 +118,69 @@ test("TypeScript peer range contains every pinned compiler line", () => {
     assert.throws(
         () => assertTypeScriptPeerRange(">=6 <8", ["07.0.2"]),
         /Unsupported TypeScript version: 07\.0\.2/,
+    );
+});
+
+test("package declaration snapshots require reviewed semantic versions", () => {
+    const packageJson = JSON.stringify({
+        types: "./index.d.ts",
+        typesVersions: { "*": { "allow/*": ["allow/*/index.d.ts"] } },
+    });
+    const published = new Map([
+        ["package.json", packageJson],
+        ["index.d.ts", "/// <reference path=\"./baseline.d.ts\" />\n"],
+        ["baseline.d.ts", "interface Stable { value: string; }\n"],
+    ]);
+
+    assert.equal(getDeclarationContractImpact(published, new Map(published)), undefined);
+    assert.equal(getDeclarationContractImpact(published, new Map([
+        ...published,
+        ["allow/new/index.d.ts", "interface NewFeature {}\n"],
+    ])), "minor");
+    assert.equal(getDeclarationContractImpact(published, new Map([
+        ...published,
+        ["baseline.d.ts", "interface Stable { value: string; }\ninterface Added {}\n"],
+    ])), "minor");
+    const multilinePublished = new Map([
+        ["baseline.d.ts", "interface Stable {\n    value: string;\n}\n"],
+    ]);
+    assert.equal(getDeclarationContractImpact(multilinePublished, new Map([
+        ["baseline.d.ts", "interface Stable {\n    value: string;\n    added(): void;\n}\n"],
+    ])), "minor");
+    assert.equal(getDeclarationContractImpact(published, new Map([
+        ...published,
+        ["baseline.d.ts", "export {};\ninterface Stable { value: string; }\n"],
+    ])), "major");
+    assert.equal(getDeclarationContractImpact(published, new Map([
+        ...published,
+        ["baseline.d.ts", "declare namespace Wrapped {\ninterface Stable { value: string; }\n}\n"],
+    ])), "major");
+    const nestedPublished = new Map([
+        ["baseline.d.ts", "declare namespace Outer {\ninterface Stable { value: string; }\n}\n"],
+    ]);
+    assert.equal(getDeclarationContractImpact(nestedPublished, new Map([
+        ["baseline.d.ts", "declare namespace Outer {\nnamespace Nested {\ninterface Stable { value: string; }\n}\n}\n"],
+    ])), "major");
+    const typeAliasPublished = new Map([
+        ["baseline.d.ts", "type Stable =\n    | string;\n"],
+    ]);
+    assert.equal(getDeclarationContractImpact(typeAliasPublished, new Map([
+        ["baseline.d.ts", "type Stable =\n    & number\n    | string;\n"],
+    ])), "major");
+    assert.equal(getDeclarationContractImpact(published, new Map([
+        ...published,
+        ["baseline.d.ts", "interface Stable { value: number; }\n"],
+    ])), "major");
+    assert.equal(getDeclarationContractImpact(published, new Map(
+        [...published].filter(([relativePath]) => relativePath !== "baseline.d.ts"),
+    )), "major");
+    assert.equal(getDeclarationContractImpact(published, new Map([
+        ...published,
+        ["package.json", JSON.stringify({ types: "./other.d.ts" })],
+    ])), "major");
+    assert.throws(
+        () => assertExplicitVersionIncrease("0.0.1", "0.1.0-rc.0"),
+        /must be stable/u,
     );
 });
 

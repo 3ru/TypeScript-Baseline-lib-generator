@@ -6,6 +6,8 @@
     "required": [
         "kind",
         "schemaVersion",
+        "compilerSupport",
+        "runtimeAliases",
         "groups"
     ],
     "additionalProperties": false,
@@ -29,6 +31,18 @@
                 "$ref": "#/$defs/declarationMapping"
             }
         },
+        "compilerSupport": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/supportGroup"
+            }
+        },
+        "runtimeAliases": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/supportGroup"
+            }
+        },
         "groups": {
             "type": "array",
             "items": {
@@ -37,6 +51,43 @@
         }
     },
     "$defs": {
+        "supportGroup": {
+            "type": "object",
+            "required": [
+                "id",
+                "reason",
+                "sourceUrls",
+                "surfaces"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "reason": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "sourceUrls": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "surfaces": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+        },
         "declarationMapping": {
             "type": "object",
             "required": [

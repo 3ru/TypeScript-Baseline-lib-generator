@@ -37,6 +37,9 @@ jobs:
       - name: Pin latest TypeScript toolchain
         run: npm run update:typescript-toolchain
 
+      - name: Verify pinned web-features dataset
+        run: npm run verify:dataset
+
       - name: Regenerate baseline
         run: npm run generate
 

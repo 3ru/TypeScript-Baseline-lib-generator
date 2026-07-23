@@ -17,14 +17,14 @@
   "summary": {
     "sourceLibCount": 84,
     "classifiedCompatCount": 1150,
-    "selectedUnitCount": 1901,
-    "completeContainerCount": 172,
+    "selectedUnitCount": 1909,
+    "completeContainerCount": 176,
     "excludedUnitCount": 414,
     "preservedTypeOnlyUnitCount": 29,
     "transformedUnitCount": 2,
     "allowEntryCount": 15,
     "allowEntryUnitCount": 126,
-    "allowSupportUnitCount": 79,
+    "allowSupportUnitCount": 77,
     "yearLibCount": 6
   },
   "sourceLibs": [
@@ -600,10 +600,6 @@
     },
     {
       "kind": "allow-support",
-      "outputPath": "generated/current/allow/_support/array-fromasync.d.ts"
-    },
-    {
-      "kind": "allow-support",
       "outputPath": "generated/current/allow/_support/intl-duration-format.d.ts"
     },
     {
@@ -690,10 +686,7 @@
         "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::2",
         "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::3"
       ],
-      "supportUnitIds": [
-        "lib.es2018.asynciterable.d.ts::AsyncIterable.@@asyncIterator::10",
-        "lib.es2018.asynciterable.d.ts::AsyncIterable::9"
-      ]
+      "supportUnitIds": []
     },
     {
       "kind": "active",
@@ -1099,7 +1092,7 @@
     {
       "year": 2020,
       "outputPath": "generated/current/year/2020/index.d.ts",
-      "contentHash": "sha256-a211ab22eb9752333b9c614a57eeb1689b97a116d2a7d8f9eb44130ae63d576f",
+      "contentHash": "sha256-7f66eaec52ccad3d4870c33071c0e9e227becdadd2f2f61725ee5cd9fcee70df",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -1723,14 +1716,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1542,
+      "selectedUnitCount": 1550,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 1
     },
     {
       "year": 2021,
       "outputPath": "generated/current/year/2021/index.d.ts",
-      "contentHash": "sha256-d5eae27351671819ee1bbf892a62f6a181c0f2509a648c0a307e9c6ad0ff1fef",
+      "contentHash": "sha256-9d910337717de9eb085908983fb7b95b14daa2a019805947aaff9d6f2b6bceed",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -2418,14 +2411,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1783,
+      "selectedUnitCount": 1791,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 2
     },
     {
       "year": 2022,
       "outputPath": "generated/current/year/2022/index.d.ts",
-      "contentHash": "sha256-afea5cbf913cdcc885b448ca6d75908546346bc368a99089a0365aff70a5d400",
+      "contentHash": "sha256-ebf80adec1d38790ab32677574c22971e2fdfab97bd0bb3c2706822254aa8cfb",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -3123,14 +3116,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1838,
+      "selectedUnitCount": 1846,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 2
     },
     {
       "year": 2023,
       "outputPath": "generated/current/year/2023/index.d.ts",
-      "contentHash": "sha256-41b12b45750e6ea6c38804e6f885ea82e307e2a290f18550f1fcfa58aa80548f",
+      "contentHash": "sha256-7713c5b7bb9ec55b967f04ad05931baf43001c1064a2e818e21dfbf24851add9",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -3850,14 +3843,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1901,
+      "selectedUnitCount": 1909,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 2
     },
     {
       "year": 2024,
       "outputPath": "generated/current/year/2024/index.d.ts",
-      "contentHash": "sha256-28acaad2d01790d586ab9aa39d8e22b22755e00da10afdca60828954609752d5",
+      "contentHash": "sha256-32d89c1cf963d5b3d3dc83024a3fa741d9cba39006812e8197ab2cdf1f11b0a0",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -4607,14 +4600,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1962,
+      "selectedUnitCount": 1968,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 0
     },
     {
       "year": 2025,
       "outputPath": "generated/current/year/2025/index.d.ts",
-      "contentHash": "sha256-2371b7fc8f777f6ba6832eb35bf5aae17d004df7663722983a1fb54814cb3cb3",
+      "contentHash": "sha256-85a9499d1c70e8b1e1b88265b92731b1877c324ab79bad7c895ab8bbfc97d520",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -5404,7 +5397,7 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 2119,
+      "selectedUnitCount": 2125,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 0
     }

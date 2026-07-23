@@ -10,6 +10,7 @@ import {
 } from "./helpers.mjs";
 import {
     assertExclusionInvariants,
+    assertRuntimeDeclarationProvenance,
     resolveExcludedUnits,
     resolveUnclaimedTypeOnlyUnitIds,
 } from "../lib/generator.mjs";
@@ -253,4 +254,167 @@ test("assertExclusionInvariants rejects selections that intersect excluded units
         excludedUnitIds: new Set([badMember.id]),
         excludedRowsByUnitId: new Map([[badMember.id, ["javascript.builtins.Widget.bad"]]]),
     });
+});
+
+test("runtime provenance rejects unclaimed members and accepts explicit compiler support", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const inventory = await createFixtureInventory(tempDirectory, {
+        "lib.es5.d.ts": [
+            "interface Widget {",
+            "    supported(): void;",
+            "    unknown(): void;",
+            "}",
+            "interface WidgetConstructor {",
+            "    new(): Widget;",
+            "}",
+            "declare var Widget: WidgetConstructor;",
+            "",
+        ].join("\n"),
+    });
+    const widgetDeclaration = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])
+        .find(unit => unit.declarationKind === "interface");
+    const widgetValue = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])
+        .find(unit => unit.declarationKind === "var");
+    const supportedMember = requireMemberUnit(inventory, "Widget::supported");
+    const unknownMember = requireMemberUnit(inventory, "Widget::unknown");
+    assert.ok(widgetDeclaration && widgetValue);
+    const selectedUnitIds = [widgetDeclaration.id, widgetValue.id, supportedMember.id, unknownMember.id];
+    const classifiedCompatRows = [
+        {
+            compatKey: "javascript.builtins.Widget",
+            compatRoot: "Widget",
+            includeInTarget: true,
+            resolutionKind: "root-availability",
+            resolvedUnitIds: [widgetDeclaration.id, widgetValue.id],
+        },
+        {
+            compatKey: "javascript.builtins.Widget.supported",
+            compatRoot: "Widget",
+            includeInTarget: true,
+            resolutionKind: "member",
+            resolvedUnitIds: [supportedMember.id],
+        },
+    ];
+
+    assert.throws(
+        () => assertRuntimeDeclarationProvenance({
+            inventory,
+            selectedUnitIds,
+            completeContainerUnitIds: new Set(),
+            excludedUnitIds: new Set(),
+            classifiedCompatRows,
+            compilerSupportUnitIds: new Set(),
+            runtimeAliasUnitIds: new Set(),
+        }),
+        /Widget\.unknown/u,
+    );
+    assertRuntimeDeclarationProvenance({
+        inventory,
+        selectedUnitIds,
+        completeContainerUnitIds: new Set(),
+        excludedUnitIds: new Set(),
+        classifiedCompatRows,
+        compilerSupportUnitIds: new Set([unknownMember.id]),
+        runtimeAliasUnitIds: new Set(),
+    });
+});
+
+test("runtime provenance audits every unit emitted from a whole-file lib", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const inventory = await createFixtureInventory(tempDirectory, {
+        "lib.esnext.widget.d.ts": [
+            "export {};",
+            "declare global {",
+            "    interface Widget {",
+            "        supported(): void;",
+            "        unknown(): void;",
+            "    }",
+            "    interface WidgetConstructor {",
+            "        new(): Widget;",
+            "    }",
+            "    var Widget: WidgetConstructor;",
+            "}",
+            "",
+        ].join("\n"),
+    });
+    const widgetDeclaration = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])
+        .find(unit => unit.declarationKind === "interface");
+    const widgetValue = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])
+        .find(unit => unit.declarationKind === "var");
+    const supportedMember = requireMemberUnit(inventory, "Widget::supported");
+    assert.ok(widgetDeclaration && widgetValue);
+
+    assert.throws(
+        () => assertRuntimeDeclarationProvenance({
+            inventory,
+            selectedUnitIds: [widgetDeclaration.id, widgetValue.id, supportedMember.id],
+            completeContainerUnitIds: new Set(),
+            excludedUnitIds: new Set(),
+            classifiedCompatRows: [
+                {
+                    compatKey: "javascript.builtins.Widget",
+                    compatRoot: "Widget",
+                    includeInTarget: true,
+                    resolutionKind: "root-availability",
+                    resolvedUnitIds: [widgetDeclaration.id, widgetValue.id],
+                },
+                {
+                    compatKey: "javascript.builtins.Widget.supported",
+                    compatRoot: "Widget",
+                    includeInTarget: true,
+                    resolutionKind: "member",
+                    resolvedUnitIds: [supportedMember.id],
+                },
+            ],
+            compilerSupportUnitIds: new Set(),
+            runtimeAliasUnitIds: new Set(),
+        }),
+        /Widget\.unknown/u,
+    );
+});
+
+test("surface inventory rejects module boundaries in built-in lib inputs", async () => {
+    for (const moduleExport of [
+        "export declare const Surprise: number;",
+        "declare const Surprise: number; export { Surprise };",
+        "declare const Surprise: number; export default Surprise;",
+        "declare const Surprise: number; export = Surprise;",
+        "export as namespace Surprise;",
+        "export {}; declare module \"typescript\" { export const Surprise: unique symbol; }",
+        "import \"./allow/poison\";",
+        "type Poison = import(\"./allow/poison\").Poison;",
+        "/// <reference path=\"./allow/poison/index.d.ts\" />",
+        "/// <reference types=\"poison\" />",
+        "/// <amd-dependency path=\"poison\" />",
+    ]) {
+        const tempDirectory = createTempDirectory(tempDirectories);
+        await assert.rejects(
+            createFixtureInventory(tempDirectory, {
+                "lib.esnext.widget.d.ts": `${moduleExport}\n`,
+            }),
+            /(?:exposes a module export|contains an ambient module|contains a module import|contains a path reference|contains a types reference|contains AMD metadata)/u,
+        );
+    }
+});
+
+test("surface inventory parses and strips TypeScript-valid lib reference syntax", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const inventory = await createFixtureInventory(tempDirectory, {
+        "lib.esnext.widget.d.ts": [
+            "/// <reference LIB = 'es2015.iterable' />",
+            "interface Widget {}",
+            "",
+        ].join("\n"),
+    });
+    const fileRecord = inventory.fileByLibFileName.get("lib.esnext.widget.d.ts");
+    const widget = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])[0];
+    assert.deepEqual(fileRecord?.referenceLibs, ["es2015.iterable"]);
+    assert.ok(widget);
+
+    const output = emitSelectedUnits({
+        inventory,
+        selectedUnitIds: [widget.id],
+    });
+    assert.match(output, /interface Widget/u);
+    assert.doesNotMatch(output, /reference\s+LIB/iu);
 });

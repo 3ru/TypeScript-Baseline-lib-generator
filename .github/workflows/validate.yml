@@ -36,6 +36,9 @@ jobs:
       - name: Validate compat-management schema
         run: npm run validate:registry
 
+      - name: Verify pinned web-features dataset
+        run: npm run verify:dataset
+
       - name: Regenerate baseline
         run: npm run generate
 

@@ -18,6 +18,7 @@ import {
     readJsonFile,
     repoAllowlistRegistryPath,
     repoDatasetPath,
+    repoRoot,
     runGenerate,
     runGenerateExpectFailure,
     runNpm,
@@ -477,7 +478,10 @@ test("a registered path becomes a permanent baseline alias after promotion", () 
     assert.deepEqual(promotedGeneration.allowEntries[0], {
         kind: "alias",
         entryName: "promise-withresolvers",
-        outputPath: path.join(fixture.outputRoot, "generated", "allow", "promise-withresolvers", "index.d.ts"),
+        outputPath: path.relative(
+            repoRoot,
+            path.join(fixture.outputRoot, "generated", "allow", "promise-withresolvers", "index.d.ts"),
+        ).replaceAll(path.sep, "/"),
         compatKeys: [compatKey],
         unitIds: [],
         supportUnitIds: [],
