@@ -3,10 +3,14 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: "Explicit version for reviewed declaration or year contract changes"
-        required: false
-        type: string
+      bump:
+        description: "Semantic version bump"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 concurrency:
   group: release
@@ -61,17 +65,13 @@ jobs:
       - name: Prepare immutable release artifact
         id: prepare-artifact
         env:
-          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_BUMP: ${{ inputs.bump }}
           RELEASE_GIT_EXECUTABLE: /usr/bin/git
           RELEASE_NODE_EXECUTABLE: ${{ steps.release-tools.outputs.node }}
           RELEASE_NPM_EXECUTABLE: ${{ steps.release-tools.outputs.npm }}
           RELEASE_TAR_EXECUTABLE: ${{ steps.release-tools.outputs.tar }}
         run: |
-          args=()
-          if [[ -n "$RELEASE_VERSION" ]]; then
-            args+=(--version "$RELEASE_VERSION")
-          fi
-          "$RELEASE_NODE_EXECUTABLE" deploy/prepareReleaseArtifact.mjs "${args[@]}"
+          "$RELEASE_NODE_EXECUTABLE" deploy/prepareReleaseArtifact.mjs --bump "$RELEASE_BUMP"
 
       - name: Test exact release tarball
         if: ${{ hashFiles('release-artifact/package.tgz') != '' }}

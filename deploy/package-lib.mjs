@@ -13,9 +13,7 @@ import {
 } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import ts from "typescript-strada";
 import { retryAsync, retrySync } from "../lib/net-retry.mjs";
-import { compareYearContracts } from "../lib/year-contracts.mjs";
 import { packages, repoRoot } from "./package-registry.mjs";
 import { resolveReleaseExecutable } from "./trusted-executable.mjs";
 
@@ -23,10 +21,14 @@ import { resolveReleaseExecutable } from "./trusted-executable.mjs";
  * @param {{
  *   packageId?: string;
  *   versionOverride?: string;
+ *   versionBump?: ReleaseBump;
  *   stageDirectoryRoot?: string;
  * }} [options]
  */
 export async function createPackageStages(options = {}) {
+    if (options.versionOverride !== undefined && options.versionBump !== undefined) {
+        throw new Error("Package staging accepts either versionOverride or versionBump, not both");
+    }
     const selectedPackages = selectPackages(options.packageId);
     const snapshot = await readCurrentSnapshot();
 
@@ -37,6 +39,7 @@ export async function createPackageStages(options = {}) {
             packageConfig,
             snapshot,
             options.versionOverride,
+            options.versionBump ?? "patch",
             getStageDirectory(packageConfig, options.stageDirectoryRoot),
         ));
     }
@@ -116,8 +119,8 @@ export function assertTypeScriptPeerRange(range, versions) {
  * @param {{
  *   packageId?: string;
  *   versionOverride?: string;
+ *   versionBump?: ReleaseBump;
  *   stageDirectoryRoot?: string;
- *   preview?: boolean;
  * }} [options]
  */
 export async function collectReleasePlans(options = {}) {
@@ -126,11 +129,7 @@ export async function collectReleasePlans(options = {}) {
     /** @type {ReleasePlan[]} */
     const releasePlans = [];
     for (const stageSummary of stageSummaries) {
-        releasePlans.push(await buildReleasePlan(
-            stageSummary,
-            options.versionOverride !== undefined,
-            options.preview === true,
-        ));
+        releasePlans.push(await buildReleasePlan(stageSummary));
     }
 
     return releasePlans;
@@ -140,9 +139,10 @@ export async function collectReleasePlans(options = {}) {
  * @param {PackageRegistryEntry} packageConfig
  * @param {CurrentSnapshot} snapshot
  * @param {string | undefined} versionOverride
+ * @param {ReleaseBump} versionBump
  * @param {string} stageDirectory
  */
-async function createPackageStage(packageConfig, snapshot, versionOverride, stageDirectory) {
+async function createPackageStage(packageConfig, snapshot, versionOverride, versionBump, stageDirectory) {
     assertTypeScriptPeerRange(packageConfig.typescriptPeerDependencyRange, [
         snapshot.manifest.snapshot.typescriptStradaVersion,
         snapshot.manifest.snapshot.typescriptVersion,
@@ -156,7 +156,7 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
         await cp(file.from, destinationPath, { recursive: true });
     }
 
-    const packageVersion = versionOverride ?? await resolveNextPackageVersion(packageConfig);
+    const packageVersion = versionOverride ?? await resolveNextPackageVersion(packageConfig, versionBump);
     const includedCompatCount = countIncludedCompatRows(snapshot.classification.classifiedCompatRows);
     const snapshotMetadata = {
         schemaVersion: 1,
@@ -255,10 +255,8 @@ async function createPackageStage(packageConfig, snapshot, versionOverride, stag
 
 /**
  * @param {PackageStageSummary} stageSummary
- * @param {boolean} reviewedVersion
- * @param {boolean} preview
  */
-async function buildReleasePlan(stageSummary, reviewedVersion, preview) {
+async function buildReleasePlan(stageSummary) {
     const published = await getPublishedPackageState(stageSummary.packageConfig);
     const stagedSnapshot = await readComparablePackageSnapshot(stageSummary.stageDirectory);
 
@@ -278,29 +276,12 @@ async function buildReleasePlan(stageSummary, reviewedVersion, preview) {
     }
 
     const removedFiles = [...publishedPaths].sort(compareStrings);
-    if (reviewedVersion) {
-        assertExplicitVersionIncrease(published.version, stageSummary.packageVersion);
-    }
     assertNoRemovedAllowEntries(removedFiles);
     assertAllowEntryContractsPreserved(
         published.snapshot.get("reports/generation.json"),
         stagedSnapshot.get("reports/generation.json"),
     );
     assertNoRemovedYearEntryPoints(removedFiles);
-    const yearVersionBump = assertYearContractsPreserved(
-        published.snapshot.get("reports/generation.json"),
-        stagedSnapshot.get("reports/generation.json"),
-        { preview: true },
-    );
-    const declarationVersionBump = getDeclarationContractImpact(published.snapshot, stagedSnapshot);
-    const requiredVersionBump = maximumVersionBump(yearVersionBump, declarationVersionBump);
-    assertReleaseVersionReview({
-        requiredVersionBump,
-        reviewedVersion,
-        preview,
-        publishedVersion: published.version,
-        stagedVersion: stageSummary.packageVersion,
-    });
     const changed = !published.version || changedFiles.length > 0 || removedFiles.length > 0;
 
     return {
@@ -312,7 +293,6 @@ async function buildReleasePlan(stageSummary, reviewedVersion, preview) {
         changedFiles,
         unchangedFiles,
         removedFiles,
-        requiredVersionBump,
         notesMarkdown: renderReleaseNotes({
             stageSummary,
             publishedVersion: published.version,
@@ -321,265 +301,6 @@ async function buildReleasePlan(stageSummary, reviewedVersion, preview) {
             removedFiles,
         }),
     };
-}
-
-/**
- * @param {Map<string, string>} publishedSnapshot
- * @param {Map<string, string>} stagedSnapshot
- * @returns {"major" | "minor" | undefined}
- */
-export function getDeclarationContractImpact(publishedSnapshot, stagedSnapshot) {
-    if (!publishedSnapshot.size) {
-        return undefined;
-    }
-    /** @type {"minor" | undefined} */
-    let additiveImpact;
-    for (const [relativePath, publishedText] of publishedSnapshot) {
-        if (!relativePath.endsWith(".d.ts")) {
-            continue;
-        }
-        const stagedText = stagedSnapshot.get(relativePath);
-        if (stagedText === undefined) {
-            return "major";
-        }
-        if (stagedText !== publishedText) {
-            if (!isSafeDeclarationAddition(publishedText, stagedText)) {
-                return "major";
-            }
-            additiveImpact = "minor";
-        }
-    }
-    if (publicTypeRoutingChanged(publishedSnapshot.get("package.json"), stagedSnapshot.get("package.json"))) {
-        return "major";
-    }
-    if (additiveImpact) {
-        return additiveImpact;
-    }
-    return [...stagedSnapshot.keys()].some(
-        relativePath => relativePath.endsWith(".d.ts") && !publishedSnapshot.has(relativePath),
-    )
-        ? "minor"
-        : undefined;
-}
-
-/**
- * @param {string} previousText
- * @param {string} nextText
- */
-function isSafeDeclarationAddition(previousText, nextText) {
-    if (!isLineSubsequence(previousText, nextText)) {
-        return false;
-    }
-    const previousSourceFile = ts.createSourceFile("previous.d.ts", previousText, ts.ScriptTarget.Latest, true);
-    const nextSourceFile = ts.createSourceFile("next.d.ts", nextText, ts.ScriptTarget.Latest, true);
-    if (
-        ts.isExternalModule(previousSourceFile) !== ts.isExternalModule(nextSourceFile)
-        || previousSourceFile.hasNoDefaultLib !== nextSourceFile.hasNoDefaultLib
-    ) {
-        return false;
-    }
-
-    return declarationListPreserved(
-        previousSourceFile.statements,
-        nextSourceFile.statements,
-        previousSourceFile,
-        nextSourceFile,
-    );
-}
-
-/**
- * @param {readonly import("typescript-strada").Node[]} previousNodes
- * @param {readonly import("typescript-strada").Node[]} nextNodes
- * @param {import("typescript-strada").SourceFile} previousSourceFile
- * @param {import("typescript-strada").SourceFile} nextSourceFile
- */
-function declarationListPreserved(previousNodes, nextNodes, previousSourceFile, nextSourceFile) {
-    const unmatchedNodes = [...nextNodes];
-    for (const previousNode of previousNodes) {
-        const key = getDeclarationNodeKey(previousNode, previousSourceFile);
-        const exactIndex = unmatchedNodes.findIndex(nextNode => (
-            getDeclarationNodeKey(nextNode, nextSourceFile) === key
-            && previousNode.getText(previousSourceFile) === nextNode.getText(nextSourceFile)
-        ));
-        const compatibleIndex = exactIndex >= 0
-            ? exactIndex
-            : unmatchedNodes.findIndex(nextNode => (
-                getDeclarationNodeKey(nextNode, nextSourceFile) === key
-                && declarationNodePreserved(previousNode, nextNode, previousSourceFile, nextSourceFile)
-            ));
-        if (compatibleIndex < 0) {
-            return false;
-        }
-        unmatchedNodes.splice(compatibleIndex, 1);
-    }
-    return true;
-}
-
-/**
- * @param {import("typescript-strada").Node} previousNode
- * @param {import("typescript-strada").Node} nextNode
- * @param {import("typescript-strada").SourceFile} previousSourceFile
- * @param {import("typescript-strada").SourceFile} nextSourceFile
- */
-function declarationNodePreserved(previousNode, nextNode, previousSourceFile, nextSourceFile) {
-    if (previousNode.kind !== nextNode.kind) {
-        return false;
-    }
-    const previousContainer = getDeclarationContainer(previousNode, previousSourceFile);
-    const nextContainer = getDeclarationContainer(nextNode, nextSourceFile);
-    return Boolean(
-        previousContainer
-        && nextContainer
-        && previousContainer.prefix === nextContainer.prefix
-        && previousContainer.suffix === nextContainer.suffix
-        && declarationListPreserved(
-            previousContainer.children,
-            nextContainer.children,
-            previousSourceFile,
-            nextSourceFile,
-        ),
-    );
-}
-
-/**
- * @param {import("typescript-strada").Node} node
- * @param {import("typescript-strada").SourceFile} sourceFile
- */
-function getDeclarationContainer(node, sourceFile) {
-    if (ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node)) {
-        return createDeclarationContainer(node, node.members, node.members.pos, node.members.end, sourceFile);
-    }
-    if (ts.isEnumDeclaration(node)) {
-        return createDeclarationContainer(node, node.members, node.members.pos, node.members.end, sourceFile);
-    }
-    if (ts.isModuleDeclaration(node) && node.body) {
-        if (ts.isModuleBlock(node.body)) {
-            return createDeclarationContainer(node, node.body.statements, node.body.statements.pos, node.body.statements.end, sourceFile);
-        }
-        return createDeclarationContainer(node, [node.body], node.body.getStart(sourceFile), node.body.end, sourceFile);
-    }
-    if (ts.isVariableStatement(node) && node.declarationList.declarations.length === 1) {
-        const type = node.declarationList.declarations[0].type;
-        if (type && ts.isTypeLiteralNode(type)) {
-            return createDeclarationContainer(node, type.members, type.members.pos, type.members.end, sourceFile);
-        }
-    }
-    return undefined;
-}
-
-/**
- * @param {import("typescript-strada").Node} node
- * @param {readonly import("typescript-strada").Node[]} children
- * @param {number} childrenStart
- * @param {number} childrenEnd
- * @param {import("typescript-strada").SourceFile} sourceFile
- */
-function createDeclarationContainer(node, children, childrenStart, childrenEnd, sourceFile) {
-    return {
-        children,
-        prefix: sourceFile.text.slice(node.getStart(sourceFile), childrenStart),
-        suffix: sourceFile.text.slice(childrenEnd, node.end),
-    };
-}
-
-/**
- * @param {import("typescript-strada").Node} node
- * @param {import("typescript-strada").SourceFile} sourceFile
- */
-function getDeclarationNodeKey(node, sourceFile) {
-    if (
-        ts.isClassDeclaration(node)
-        || ts.isEnumDeclaration(node)
-        || ts.isFunctionDeclaration(node)
-        || ts.isInterfaceDeclaration(node)
-        || ts.isModuleDeclaration(node)
-        || ts.isTypeAliasDeclaration(node)
-    ) {
-        return `${node.kind}:${node.name?.getText(sourceFile) ?? "<anonymous>"}`;
-    }
-    if (ts.isVariableStatement(node)) {
-        return `${node.kind}:${node.declarationList.declarations
-            .map(declaration => declaration.name.getText(sourceFile))
-            .join(",")}`;
-    }
-    return `${node.kind}:${node.getText(sourceFile)}`;
-}
-
-/**
- * @param {string} previousText
- * @param {string} nextText
- */
-function isLineSubsequence(previousText, nextText) {
-    const previousLines = previousText.split("\n");
-    const nextLines = nextText.split("\n");
-    let previousIndex = 0;
-    for (const line of nextLines) {
-        if (line === previousLines[previousIndex]) {
-            previousIndex++;
-        }
-    }
-    return previousIndex === previousLines.length;
-}
-
-/**
- * @param {string | undefined} publishedPackageJsonText
- * @param {string | undefined} stagedPackageJsonText
- */
-function publicTypeRoutingChanged(publishedPackageJsonText, stagedPackageJsonText) {
-    if (!publishedPackageJsonText || !stagedPackageJsonText) {
-        return publishedPackageJsonText !== stagedPackageJsonText;
-    }
-    const selectRouting = (/** @type {string} */ packageJsonText) => {
-        const packageJson = JSON.parse(packageJsonText);
-        return JSON.stringify({
-            types: packageJson.types,
-            typesVersions: packageJson.typesVersions,
-            exports: packageJson.exports,
-        });
-    };
-    return selectRouting(publishedPackageJsonText) !== selectRouting(stagedPackageJsonText);
-}
-
-/**
- * @param {"major" | "minor" | undefined} left
- * @param {"major" | "minor" | undefined} right
- * @returns {"major" | "minor" | undefined}
- */
-function maximumVersionBump(left, right) {
-    return left === "major" || right === "major"
-        ? "major"
-        : left === "minor" || right === "minor"
-            ? "minor"
-            : undefined;
-}
-
-/**
- * @param {{
- *   requiredVersionBump: "major" | "minor" | undefined;
- *   reviewedVersion: boolean;
- *   preview: boolean;
- *   publishedVersion: string | undefined;
- *   stagedVersion: string;
- * }} options
- */
-function assertReleaseVersionReview(options) {
-    if (!options.requiredVersionBump) {
-        return;
-    }
-    if (!options.reviewedVersion) {
-        if (options.preview) {
-            return;
-        }
-        throw new Error(
-            `Published declaration contracts require review (${options.requiredVersionBump}); `
-                + "pass an explicit --version after inspecting the package diff",
-        );
-    }
-    assertVersionBump(
-        options.publishedVersion,
-        options.stagedVersion,
-        options.requiredVersionBump,
-    );
 }
 
 /**
@@ -625,86 +346,22 @@ export function assertAllowEntryContractsPreserved(publishedReportText, stagedRe
 }
 
 /**
- * @param {string | undefined} publishedReportText
- * @param {string | undefined} stagedReportText
- * @param {{ reviewedVersion?: boolean; preview?: boolean; publishedVersion?: string; stagedVersion?: string; }} [options]
+ * @param {string} currentVersion
+ * @param {ReleaseBump} bump
  */
-export function assertYearContractsPreserved(publishedReportText, stagedReportText, options = {}) {
-    if (!publishedReportText) {
-        return undefined;
-    }
-    if (!stagedReportText) {
-        throw new Error("The staged package is missing reports/generation.json");
-    }
-
-    const comparison = compareYearContracts(publishedReportText, stagedReportText);
-    const removedYear = comparison.changes.find(change => change.kind === "removed");
-    if (removedYear) {
-        throw new Error(`Published Baseline year contract is missing: year/${removedYear.year}`);
-    }
-    if (!comparison.requiredVersionBump) {
-        return undefined;
-    }
-    if (!options.reviewedVersion) {
-        if (options.preview) {
-            return comparison.requiredVersionBump;
-        }
-        throw new Error(
-            `Baseline year contracts require review (${comparison.changes.map(change => change.year).join(", ")}); `
-                + "pass an explicit --version after inspecting the generated diff",
-        );
-    }
-    assertVersionBump(
-        options.publishedVersion,
-        options.stagedVersion,
-        comparison.requiredVersionBump,
-    );
-    return comparison.requiredVersionBump;
-}
-
-/**
- * @param {string | undefined} publishedVersion
- * @param {string | undefined} stagedVersion
- * @param {"major" | "minor"} requiredBump
- */
-function assertVersionBump(publishedVersion, stagedVersion, requiredBump) {
-    if (!publishedVersion || !stagedVersion) {
-        throw new Error("Reviewed Baseline year changes require published and staged package versions");
-    }
-    const published = parseVersion(publishedVersion);
-    const staged = parseVersion(stagedVersion);
-    const sufficient = requiredBump === "major"
-        ? published.major === 0
-            ? staged.major > 0 || (staged.major === 0 && staged.minor > published.minor)
-            : staged.major > published.major
-        : staged.major > published.major
-            || (staged.major === published.major && staged.minor > published.minor);
-    if (!sufficient) {
-        throw new Error(
-            `Public declaration contract changes require a ${requiredBump} version increase from ${publishedVersion}; got ${stagedVersion}`,
-        );
-    }
-}
-
-/**
- * @param {string | undefined} publishedVersion
- * @param {string | undefined} stagedVersion
- */
-export function assertExplicitVersionIncrease(publishedVersion, stagedVersion) {
-    if (!stagedVersion) {
-        throw new Error("Explicit package version is missing");
-    }
-    const staged = parseVersion(stagedVersion);
-    if (staged.prerelease) {
-        throw new Error(`Explicit release versions must be stable; got ${stagedVersion}`);
-    }
-    if (!publishedVersion) {
-        return;
-    }
-    if (compareVersion(staged, parseVersion(publishedVersion)) <= 0) {
-        throw new Error(
-            `Explicit package version must be greater than ${publishedVersion}; got ${stagedVersion}`,
-        );
+export function incrementPackageVersion(currentVersion, bump) {
+    const current = parseVersion(currentVersion);
+    switch (bump) {
+        case "major":
+            return `${current.major + 1}.0.0`;
+        case "minor":
+            return `${current.major}.${current.minor + 1}.0`;
+        case "patch":
+            return current.prerelease
+                ? `${current.major}.${current.minor}.${current.patch}`
+                : `${current.major}.${current.minor}.${current.patch + 1}`;
+        default:
+            throw new Error(`Unsupported release bump: ${bump}`);
     }
 }
 
@@ -737,56 +394,6 @@ function parseVersion(value) {
 }
 
 /**
- * @param {ReturnType<typeof parseVersion>} left
- * @param {ReturnType<typeof parseVersion>} right
- */
-function compareVersion(left, right) {
-    const coreDifference = left.major - right.major
-        || left.minor - right.minor
-        || left.patch - right.patch;
-    if (coreDifference) {
-        return coreDifference;
-    }
-    if (left.prerelease === right.prerelease) {
-        return 0;
-    }
-    if (!left.prerelease) {
-        return 1;
-    }
-    if (!right.prerelease) {
-        return -1;
-    }
-    const leftParts = left.prerelease.split(".");
-    const rightParts = right.prerelease.split(".");
-    for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index++) {
-        const leftPart = leftParts[index];
-        const rightPart = rightParts[index];
-        if (leftPart === undefined) {
-            return -1;
-        }
-        if (rightPart === undefined) {
-            return 1;
-        }
-        if (leftPart === rightPart) {
-            continue;
-        }
-        const leftNumeric = /^\d+$/.test(leftPart);
-        const rightNumeric = /^\d+$/.test(rightPart);
-        if (leftNumeric && rightNumeric) {
-            if (leftPart.length !== rightPart.length) {
-                return leftPart.length - rightPart.length;
-            }
-            return leftPart < rightPart ? -1 : 1;
-        }
-        if (leftNumeric !== rightNumeric) {
-            return leftNumeric ? -1 : 1;
-        }
-        return leftPart < rightPart ? -1 : 1;
-    }
-    return 0;
-}
-
-/**
  * @param {string} reportText
  * @param {string} label
  */
@@ -810,27 +417,16 @@ function readAllowEntryContracts(reportText, label) {
 
 /**
  * @param {PackageRegistryEntry} packageConfig
+ * @param {ReleaseBump} bump
  */
-async function resolveNextPackageVersion(packageConfig) {
+async function resolveNextPackageVersion(packageConfig, bump) {
     const currentVersion = await getLatestPublishedVersion(packageConfig.name);
     if (!currentVersion) {
-        return packageConfig.initialVersion;
+        return bump === "patch"
+            ? packageConfig.initialVersion
+            : incrementPackageVersion("0.0.0", bump);
     }
-
-    const match = currentVersion.match(/^(\d+)\.(\d+)\.(\d+)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/);
-    if (!match) {
-        throw new Error(`Unsupported published version format for ${packageConfig.name}: ${currentVersion}`);
-    }
-
-    // When latest is a prerelease (e.g. 0.0.2-rc.0), use its base version
-    // (0.0.2) as the next stable release. This keeps a prerelease on latest from
-    // permanently wedging the release job, and preserves semver ordering.
-    const hasPrerelease = currentVersion.includes("-");
-    if (hasPrerelease) {
-        return `${match[1]}.${match[2]}.${match[3]}`;
-    }
-
-    return `${match[1]}.${match[2]}.${Number(match[3]) + 1}`;
+    return incrementPackageVersion(currentVersion, bump);
 }
 
 /**
@@ -1128,6 +724,10 @@ function compareStrings(left, right) {
 }
 
 /**
+ * @typedef {"major" | "minor" | "patch"} ReleaseBump
+ */
+
+/**
  * @typedef {{
  *   id: string;
  *   name: string;
@@ -1176,7 +776,6 @@ function compareStrings(left, right) {
  *   changedFiles: string[];
  *   unchangedFiles: string[];
  *   removedFiles: string[];
- *   requiredVersionBump?: "major" | "minor";
  *   notesMarkdown: string;
  * }} ReleasePlan
  */

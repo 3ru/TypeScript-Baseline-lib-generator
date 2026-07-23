@@ -46,8 +46,7 @@
         "pack:baseline": "node deploy/createPackage.mjs",
         "pack:baseline:tarball": "node deploy/createPackageTarball.mjs",
         "release:prepare": "node deploy/prepareReleaseArtifact.mjs",
-        "release:dry-run": "node deploy/prepareReleaseArtifact.mjs --preview",
-        "release:publish": "node deploy/publishReleaseArtifact.mjs",
+        "release:dry-run": "node deploy/prepareReleaseArtifact.mjs --bump patch",
         "test": "node --test test/*.test.mjs",
         "validate": "npm run lint && npm run validate:registry && npm run verify:dataset && npm run generate && npm test"
     },

@@ -179,9 +179,7 @@ export function buildUpdateSummary(options) {
         reviewFlags.push("Allow entry state or compat contract changed. Verify the polyfill contract and generated declaration diff before merging.");
     }
     if (yearContractComparison.changes.length) {
-        reviewFlags.push(
-            `Baseline year contract changed. Inspect every year declaration diff and use at least a ${yearContractComparison.requiredVersionBump} package version bump.`,
-        );
+        reviewFlags.push("Baseline year contract changed. Inspect every year declaration diff before selecting the release bump.");
     }
     if (!reviewFlags.length) {
         reviewFlags.push("No special review flags beyond the normal generated diff review.");
@@ -220,7 +218,6 @@ export function buildUpdateSummary(options) {
         yearEntries: {
             count: (currentState.generation.yearEntries ?? []).length,
             changes: yearContractComparison.changes.map(formatYearContractChange),
-            requiredVersionBump: yearContractComparison.requiredVersionBump,
         },
         reviewFlags,
     };
@@ -261,7 +258,6 @@ export function renderUpdateMarkdown(summary) {
         `- Allow entry changes: ${summary.allowEntries.changes.length ? summary.allowEntries.changes.join("; ") : "none"}`,
         `- Baseline year entries: ${summary.yearEntries.count}`,
         `- Year contract changes: ${summary.yearEntries.changes.length ? summary.yearEntries.changes.join("; ") : "none"}`,
-        `- Required package version bump: ${summary.yearEntries.requiredVersionBump ?? "none"}`,
         "",
         "## Compat Management",
         `- Registry hash: \`${summary.currentState.compatManagement.registry.sourceHash}\``,
@@ -285,7 +281,7 @@ export function renderUpdateMarkdown(summary) {
 }
 
 /**
- * @param {{ year: number; kind: "added" | "removed" | "expanded" | "changed"; requiredVersionBump: "major" | "minor"; }} change
+ * @param {{ year: number; kind: "added" | "removed" | "expanded" | "changed"; }} change
  */
 function formatYearContractChange(change) {
     switch (change.kind) {

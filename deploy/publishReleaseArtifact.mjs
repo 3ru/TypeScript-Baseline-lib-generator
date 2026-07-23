@@ -5,11 +5,13 @@ import path from "node:path";
 import { repoRoot } from "./package-registry.mjs";
 import {
     assertExistingGitHubRelease,
+    assertReleaseWorkflowContext,
     hashPreparedReleaseArtifact,
     readPreparedReleaseArtifact,
 } from "./release-artifact.mjs";
 import { resolveReleaseExecutable } from "./trusted-executable.mjs";
 
+assertReleaseWorkflowContext(process.env);
 const args = parseArgs(process.argv.slice(2));
 const { plan, tarballPath, notesMarkdown } = await readPreparedReleaseArtifact(args.artifactDirectory);
 const artifactIntegrity = await hashPreparedReleaseArtifact(args.artifactDirectory, plan.changed);

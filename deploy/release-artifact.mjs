@@ -146,6 +146,21 @@ export function assertExistingGitHubRelease(release, tag, sourceCommit) {
 }
 
 /**
+ * @param {NodeJS.ProcessEnv} environment
+ */
+export function assertReleaseWorkflowContext(environment) {
+    if (
+        environment.GITHUB_ACTIONS !== "true"
+        || environment.GITHUB_EVENT_NAME !== "workflow_dispatch"
+        || environment.GITHUB_REF !== "refs/heads/main"
+        || environment.GITHUB_JOB !== "publish"
+        || !/^[^/]+\/[^/]+\/\.github\/workflows\/release\.yml@refs\/heads\/main$/u.test(environment.GITHUB_WORKFLOW_REF ?? "")
+    ) {
+        throw new Error("Publishing is restricted to the Release workflow dispatch on main");
+    }
+}
+
+/**
  * @param {{
  *   outputDirectory: string;
  *   sourceCommit: string;
@@ -154,7 +169,6 @@ export function assertExistingGitHubRelease(release, tag, sourceCommit) {
  *     packageConfig: { name: string; };
  *     packageVersion: string;
  *     publishedVersion?: string;
- *     requiredVersionBump?: "major" | "minor";
  *     notesMarkdown: string;
  *   };
  *   tarballPath?: string;
@@ -173,13 +187,12 @@ export async function writePreparedReleaseArtifact(options) {
         ? await copyAndHashTarball(options.tarballPath, targetTarballPath)
         : null;
     const plan = {
-        schemaVersion: 1,
+        schemaVersion: 2,
         sourceCommit: options.sourceCommit,
         changed: releasePlan.changed,
         packageName: releasePlan.packageConfig.name,
         packageVersion: releasePlan.packageVersion,
         publishedVersion: releasePlan.publishedVersion ?? null,
-        requiredVersionBump: releasePlan.requiredVersionBump ?? null,
         tarballIntegrity,
     };
     validateReleasePlan(plan);
@@ -264,7 +277,6 @@ function validateReleasePlan(plan) {
         "packageName",
         "packageVersion",
         "publishedVersion",
-        "requiredVersionBump",
         "schemaVersion",
         "sourceCommit",
         "tarballIntegrity",
@@ -273,13 +285,12 @@ function validateReleasePlan(plan) {
         !plan
         || typeof plan !== "object"
         || JSON.stringify(Object.keys(plan).sort()) !== JSON.stringify(expectedKeys)
-        || plan.schemaVersion !== 1
+        || plan.schemaVersion !== 2
         || typeof plan.changed !== "boolean"
         || typeof plan.packageName !== "string"
         || typeof plan.packageVersion !== "string"
         || !/^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/u.test(plan.packageVersion)
         || (plan.publishedVersion !== null && typeof plan.publishedVersion !== "string")
-        || (plan.requiredVersionBump !== null && plan.requiredVersionBump !== "major" && plan.requiredVersionBump !== "minor")
         || !/^[0-9a-f]{40}$/u.test(plan.sourceCommit)
         || (plan.changed !== (typeof plan.tarballIntegrity === "string"))
         || (typeof plan.tarballIntegrity === "string" && !/^sha512-[A-Za-z0-9+/]+={0,2}$/u.test(plan.tarballIntegrity))

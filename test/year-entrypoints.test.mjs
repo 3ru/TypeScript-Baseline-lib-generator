@@ -6,9 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import {
-    assertExplicitVersionIncrease,
     assertNoRemovedYearEntryPoints,
-    assertYearContractsPreserved,
 } from "../deploy/package-lib.mjs";
 import { baselinePackageName } from "../deploy/package-registry.mjs";
 import { resolveBaselineYears } from "../lib/generator.mjs";
@@ -217,7 +215,7 @@ test("packed year entrypoints enforce API boundaries under TypeScript 6 and 7", 
     assertCompilerFailuresContain(consumerDirectory, "year-2023-set", /union/);
 });
 
-test("year range and release guards fail closed", () => {
+test("year range and published entrypoint guards fail closed", () => {
     assert.deepEqual(resolveBaselineYears("2024-12-31", 2020), [2020, 2021, 2022, 2023]);
     assert.throws(() => resolveBaselineYears("2024-02-30", 2020), /Invalid Baseline snapshot date/);
     assert.throws(() => resolveBaselineYears("2024-12-31", 2014), /Invalid first Baseline year/);
@@ -227,135 +225,9 @@ test("year range and release guards fail closed", () => {
         () => assertNoRemovedYearEntryPoints(["year/2024/index.d.ts"]),
         /Published Baseline year entrypoints cannot be removed/,
     );
-    const contract = {
-        yearEntries: [{
-            year: 2023,
-            contentHash: `sha256-${"a".repeat(64)}`,
-            includedCompatKeys: ["javascript.builtins.Array"],
-            notModeledUpstreamCompatKeys: [],
-        }],
-    };
-    const addedYearReport = JSON.stringify({ yearEntries: [...contract.yearEntries, {
-        year: 2024,
-        contentHash: `sha256-${"b".repeat(64)}`,
-        includedCompatKeys: ["javascript.builtins.Array", "javascript.builtins.Promise.withResolvers"],
-        notModeledUpstreamCompatKeys: [],
-    }] });
-    assert.throws(
-        () => assertYearContractsPreserved(JSON.stringify(contract), addedYearReport),
-        /require review.*explicit --version/,
-    );
-    assert.equal(
-        assertYearContractsPreserved(JSON.stringify(contract), addedYearReport, { preview: true }),
-        "minor",
-    );
-    assert.throws(
-        () => assertYearContractsPreserved(JSON.stringify(contract), addedYearReport, {
-            reviewedVersion: true,
-            publishedVersion: "0.0.4",
-            stagedVersion: "0.0.5",
-        }),
-        /require a minor version increase/,
-    );
-    assert.doesNotThrow(() => assertYearContractsPreserved(JSON.stringify(contract), addedYearReport, {
-        reviewedVersion: true,
-        publishedVersion: "0.0.4",
-        stagedVersion: "0.1.0",
-    }));
-
-    const twoChangedYears = JSON.stringify({
-        yearEntries: [2022, 2023].map((year, index) => ({
-            year,
-            contentHash: `sha256-${String(index + 1).repeat(64)}`,
-            includedCompatKeys: ["javascript.builtins.Array"],
-            notModeledUpstreamCompatKeys: [],
-        })),
-    });
-    const twoExpandedYears = JSON.stringify({
-        yearEntries: [2022, 2023].map((year, index) => ({
-            year,
-            contentHash: `sha256-${String(index + 3).repeat(64)}`,
-            includedCompatKeys: ["javascript.builtins.Array", `javascript.builtins.Example${year}`],
-            notModeledUpstreamCompatKeys: [],
-        })),
-    });
-    assert.equal(
-        assertYearContractsPreserved(twoChangedYears, twoExpandedYears, { preview: true }),
-        "minor",
-    );
-
-    const changedHashReport = JSON.stringify({
-        yearEntries: [{
-            ...contract.yearEntries[0],
-            contentHash: `sha256-${"c".repeat(64)}`,
-        }],
-    });
-    assert.throws(
-        () => assertYearContractsPreserved(JSON.stringify(contract), changedHashReport),
-        /require review/,
-    );
-    assert.throws(() => assertYearContractsPreserved(JSON.stringify(contract), changedHashReport, {
-        reviewedVersion: true,
-        publishedVersion: "1.2.3",
-        stagedVersion: "1.2.4",
-    }), /require a major version increase/);
-    assert.equal(
-        assertYearContractsPreserved(JSON.stringify(contract), changedHashReport, { preview: true }),
-        "major",
-    );
-    assert.doesNotThrow(() => assertYearContractsPreserved(JSON.stringify(contract), changedHashReport, {
-        reviewedVersion: true,
-        publishedVersion: "0.0.4",
-        stagedVersion: "0.1.0",
-    }));
-    assert.doesNotThrow(() => assertYearContractsPreserved(JSON.stringify(contract), changedHashReport, {
-        reviewedVersion: true,
-        publishedVersion: "1.2.3",
-        stagedVersion: "2.0.0",
-    }));
-
-    const removedDeclarationReport = JSON.stringify({
-        yearEntries: [{
-            ...contract.yearEntries[0],
-            includedCompatKeys: [],
-        }],
-    });
-    assert.throws(
-        () => assertYearContractsPreserved(JSON.stringify(contract), removedDeclarationReport, {
-            reviewedVersion: true,
-            publishedVersion: "1.2.3",
-            stagedVersion: "1.3.0",
-        }),
-        /require a major version increase/,
-    );
-
-    assert.doesNotThrow(() => assertExplicitVersionIncrease(undefined, "0.0.1"));
-    assert.doesNotThrow(() => assertExplicitVersionIncrease("1.2.3", "1.2.4"));
-    assert.throws(
-        () => assertExplicitVersionIncrease("1.2.3-rc.2", "1.2.3-rc.10"),
-        /must be stable/,
-    );
-    assert.throws(
-        () => assertExplicitVersionIncrease("1.2.3", "1.2.3"),
-        /must be greater than 1\.2\.3/,
-    );
-    assert.throws(
-        () => assertExplicitVersionIncrease("1.2.3", "1.2.2"),
-        /must be greater than 1\.2\.3/,
-    );
-    assert.throws(
-        () => assertExplicitVersionIncrease("1.2.3", "1.2.3-rc.1"),
-        /must be stable/,
-    );
-    for (const invalidVersion of [undefined, "not-semver", "01.2.3", "1.2.3-.", "1.2.3-01"]) {
-        assert.throws(
-            () => assertExplicitVersionIncrease(undefined, invalidVersion),
-            /Explicit package version is missing|Unsupported package version format/,
-        );
-    }
 });
 
-test("weekly update summary reports year contract changes and the required bump", () => {
+test("weekly update summary reports year contract changes for manual review", () => {
     const previousState = createUpdateState([{
         year: 2024,
         contentHash: `sha256-${"a".repeat(64)}`,
@@ -388,12 +260,11 @@ test("weekly update summary reports year contract changes and the required bump"
     assert.deepEqual(summary.yearEntries, {
         count: 1,
         changes: ["year/2024 declaration contract changed"],
-        requiredVersionBump: "major",
     });
-    assert.ok(summary.reviewFlags.some(flag => flag.includes("at least a major package version bump")));
+    assert.ok(summary.reviewFlags.some(flag => flag.includes("before selecting the release bump")));
     const markdown = renderUpdateMarkdown(summary);
     assert.match(markdown, /Year contract changes: year\/2024 declaration contract changed/);
-    assert.match(markdown, /Required package version bump: major/);
+    assert.doesNotMatch(markdown, /Required package version bump/);
 });
 
 /**
