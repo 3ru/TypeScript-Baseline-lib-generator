@@ -1,33 +1,77 @@
 // @ts-check
 
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 import test from "node:test";
-import { repoManifest } from "./helpers.mjs";
 import {
-    readStradaSourcePin,
-    readTypeScriptGoSourcePin,
-    resolveStradaSourceTag,
-    resolveTypeScriptGoSourceTag,
+    applyTypeScriptSourcePin,
+    checkoutTypeScriptSource,
+    readTypeScriptSourcePin,
 } from "../lib/typescript-source.mjs";
+import {
+    cleanupTempDirectories,
+    createTempDirectory,
+    repoManifest,
+} from "./helpers.mjs";
 
-// Pin the exhaustive consistency of the pins (tag <-> snapshot version, commit
-// format) offline. That the commit matches the tag's actual object is verified at checkout.
+/** @type {string[]} */
+const tempDirectories = [];
 
-test("repo manifest pins a frozen Strada source tag that matches the strada package version", () => {
-    const pin = readStradaSourcePin(repoManifest);
+test.afterEach(() => {
+    cleanupTempDirectories(tempDirectories);
+});
+
+test("repo manifest pins the unified TypeScript source", () => {
+    const pin = readTypeScriptSourcePin(repoManifest);
 
     assert.equal(pin.repository, "https://github.com/microsoft/TypeScript.git");
-    assert.equal(pin.tag, resolveStradaSourceTag(repoManifest.snapshot.typescriptStradaVersion));
+    assert.equal(pin.ref, "main");
     assert.match(pin.commit, /^[0-9a-f]{40}$/u);
 });
 
-test("repo manifest pins a typescript-go source tag that matches the typescript package version", () => {
-    const pin = readTypeScriptGoSourcePin(repoManifest);
+test("source pinning and checkout remain exact after the tracked branch advances", () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const sourceDirectory = path.join(tempDirectory, "source");
+    const checkoutDirectory = path.join(tempDirectory, "checkout");
 
-    assert.equal(pin.repository, "https://github.com/microsoft/typescript-go.git");
-    assert.equal(pin.tag, resolveTypeScriptGoSourceTag(repoManifest.snapshot.typescriptVersion));
-    assert.match(pin.commit, /^[0-9a-f]{40}$/u);
-    assert.match(pin.stradaSubmoduleCommit, /^[0-9a-f]{40}$/u);
+    initializeRepository(sourceDirectory);
+    fs.writeFileSync(path.join(sourceDirectory, "value.txt"), "first\n");
+    commitAll(sourceDirectory, "first");
+
+    const manifest = {};
+    const pin = applyTypeScriptSourcePin({
+        manifest,
+        repository: sourceDirectory,
+    });
+    assert.equal(pin.ref, "main");
+
+    fs.writeFileSync(path.join(sourceDirectory, "value.txt"), "second\n");
+    commitAll(sourceDirectory, "second");
+
+    const result = checkoutTypeScriptSource({
+        manifest,
+        outDirectory: checkoutDirectory,
+    });
+    assert.equal(result.commit, pin.commit);
+    assert.equal(execFileSync("git", ["rev-parse", "HEAD"], { cwd: checkoutDirectory, encoding: "utf8" }).trim(), pin.commit);
+    assert.equal(fs.readFileSync(path.join(checkoutDirectory, "value.txt"), "utf8"), "first\n");
+
+    fs.writeFileSync(path.join(checkoutDirectory, "local.txt"), "dirty\n");
+    assert.throws(
+        () => checkoutTypeScriptSource({ manifest, outDirectory: checkoutDirectory }),
+        /checkout has local changes/u,
+    );
+
+    const refreshed = checkoutTypeScriptSource({
+        manifest,
+        outDirectory: checkoutDirectory,
+        force: true,
+    });
+    assert.equal(refreshed.reusedExistingCheckout, false);
+    assert.ok(!fs.existsSync(path.join(checkoutDirectory, "local.txt")));
+    assert.equal(fs.readFileSync(path.join(checkoutDirectory, "value.txt"), "utf8"), "first\n");
 });
 
 test("repo manifest pins a cross-platform verified lib source", () => {
@@ -39,3 +83,22 @@ test("repo manifest pins a cross-platform verified lib source", () => {
     assert.match(libSource.libContentHash, /^sha256-[0-9a-f]{64}$/u);
     assert.ok(Number.isInteger(libSource.libFileCount) && libSource.libFileCount > 0);
 });
+
+/**
+ * @param {string} directory
+ */
+function initializeRepository(directory) {
+    fs.mkdirSync(directory, { recursive: true });
+    execFileSync("git", ["init", "--quiet", "--initial-branch=main"], { cwd: directory });
+    execFileSync("git", ["config", "user.email", "test@example.com"], { cwd: directory });
+    execFileSync("git", ["config", "user.name", "Test"], { cwd: directory });
+}
+
+/**
+ * @param {string} directory
+ * @param {string} message
+ */
+function commitAll(directory, message) {
+    execFileSync("git", ["add", "."], { cwd: directory });
+    execFileSync("git", ["commit", "--quiet", "-m", message], { cwd: directory });
+}

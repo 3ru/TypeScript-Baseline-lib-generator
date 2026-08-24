@@ -46,6 +46,21 @@ jobs:
       - name: Run standalone validation
         run: npm test
 
+      - name: Checkout updated TypeScript source
+        run: npm run checkout:typescript-source -- --out .tmp/TypeScript --force
+
+      - name: Read required Go version
+        id: go-version
+        run: echo "version=$(awk '/^go / { print $2; exit }' .tmp/TypeScript/tsc/go.mod)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: "${{ steps.go-version.outputs.version }}"
+          cache-dependency-path: .tmp/TypeScript/tsc/go.sum
+
+      - name: Test updated TypeScript source
+        run: npm run test:typescript:gate -- --typescript-dir ./.tmp/TypeScript
+
       - name: Prepare pull request body
         run: npm run write:update-pr-body -- --out .tmp/typescript-toolchain-update-pr.md --summary-out .tmp/typescript-toolchain-update-summary.json
 

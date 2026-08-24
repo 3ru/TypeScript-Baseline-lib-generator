@@ -72,6 +72,15 @@ jobs:
       - name: Checkout pinned TypeScript source
         run: npm run checkout:typescript-source -- --out .tmp/TypeScript --force
 
+      - name: Read required Go version
+        id: go-version
+        run: echo "version=$(awk '/^go / { print $2; exit }' .tmp/TypeScript/tsc/go.mod)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: "${{ steps.go-version.outputs.version }}"
+          cache-dependency-path: .tmp/TypeScript/tsc/go.sum
+
       - name: Run TypeScript integration checks
         run: npm run test:typescript:${{ steps.mode.outputs.mode }} -- --typescript-dir ./.tmp/TypeScript --summary-out typescript-integration-artifacts/summary.md --baseline-diff-out typescript-integration-artifacts/baseline-changes.diff --focused-baselines-out typescript-integration-artifacts/focused --local-baselines-out typescript-integration-artifacts/raw-local-baselines
 

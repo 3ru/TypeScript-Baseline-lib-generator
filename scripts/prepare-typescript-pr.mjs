@@ -7,7 +7,8 @@ import {
     prepareTypeScriptBaselinePatch,
     renderTypeScriptPatchSummary,
 } from "../lib/typescript-upstream.mjs";
-import { readStradaSourcePin } from "../lib/typescript-source.mjs";
+import { generateTypeScriptProposalLib } from "../lib/typescript-proposal.mjs";
+import { readTypeScriptSourcePin } from "../lib/typescript-source.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const scriptDirectory = path.dirname(scriptPath);
@@ -17,13 +18,29 @@ const manifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
 
 const args = parseArgs(process.argv.slice(2));
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-
-const summary = prepareTypeScriptBaselinePatch({
+const expectedCommit = readTypeScriptSourcePin(manifest).commit;
+const proposal = await generateTypeScriptProposalLib({
     repoRoot,
+    manifestPath,
+    manifest,
     typescriptDir: args.typescriptDir,
-    expectedCommit: readStradaSourcePin(manifest).commit,
+    expectedCommit,
     allowUnpinned: args.allowUnpinned,
 });
+
+let summary;
+try {
+    summary = prepareTypeScriptBaselinePatch({
+        repoRoot,
+        typescriptDir: args.typescriptDir,
+        generatedLibPath: proposal.outputPath,
+        expectedCommit,
+        allowUnpinned: args.allowUnpinned,
+    });
+}
+finally {
+    proposal.cleanup();
+}
 const summaryText = renderTypeScriptPatchSummary(summary);
 
 if (args.out) {

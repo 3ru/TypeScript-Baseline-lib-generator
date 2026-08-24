@@ -17,9 +17,7 @@ The generator reads only these four inputs:
 
 Before the generator reads the lib files, it compares their file count and content hash with `libSource` in the manifest.
 
-`typescript-strada` parses declarations and performs compiler self-tests. It is an npm alias for the frozen TypeScript 6 Strada release.
-
-The generator uses this package because the TypeScript 7 JavaScript API differs from the Strada compiler API.
+`typescript-strada` parses declarations and performs compiler self-tests. It is an npm alias for the frozen TypeScript 6 release because the native TypeScript package does not expose the same JavaScript compiler API.
 
 ## Determinism and fail-closed layers
 
@@ -29,12 +27,11 @@ Identical inputs produce byte-identical artifacts on each supported operating sy
 - The lib-source layer requires the pinned content hash and file count.
 - The classification layer rejects unmanaged keys, stale registry entries, and resolution-kind changes. A strict JSON Schema validates the registry.
 - The generation layer rejects excluded declarations in the output. It also compiles the complete output as a self-test.
-- The packaging layer installs staged and packed packages. It compiles consumer fixtures with TypeScript 7 and Strada.
+- The packaging layer installs staged and packed packages. It compiles consumer fixtures with TypeScript 7 and TypeScript 6.
 
 ## Toolchain pins
 
-`npm run update:typescript-toolchain` refreshes these three pins in `manifests/baseline-js.json`:
+`npm run update:typescript-toolchain` refreshes these two pins in `manifests/baseline-js.json`:
 
 - `libSource` records the platform package and one content hash. The update requires identical files on Linux, macOS, and Windows.
-- `typescriptSource` records the frozen Strada tag and commit for the Strada integration gate.
-- `typescriptGoSource` records the `typescript/vX.Y.Z` tag and the `_submodules/TypeScript` commit.
+- `typescriptSource` records the exact `microsoft/TypeScript` `main` commit used by proposal preparation and integration tests. Proposal artifacts are generated from that checkout's declaration corpus.
