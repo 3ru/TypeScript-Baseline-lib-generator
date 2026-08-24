@@ -12,10 +12,13 @@ import {
 } from "../lib/negative-probes.mjs";
 import {
     findUnexpectedTypeScriptPatchPaths,
+    hasPassingGoTestEvent,
     prepareTypeScriptBaselinePatch,
+    renderTypeScriptPatchDiff,
     renderTypeScriptPatchSummary,
 } from "../lib/typescript-upstream.mjs";
-import { readStradaSourcePin } from "../lib/typescript-source.mjs";
+import { generateTypeScriptProposalLib } from "../lib/typescript-proposal.mjs";
+import { readTypeScriptSourcePin } from "../lib/typescript-source.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const scriptDirectory = path.dirname(scriptPath);
@@ -27,15 +30,17 @@ const defaultDiffPath = path.join(repoRoot, ".tmp", "typescript-baseline-changes
 const defaultFocusedBaselinesDirectory = path.join(repoRoot, ".tmp", "typescript-focused-artifact");
 const defaultLocalBaselinesDirectory = path.join(repoRoot, ".tmp", "typescript-raw-local-baselines");
 const TYPESCRIPT_PROPOSAL_PATHS = [
-    "eslint.config.mjs",
-    path.join("src", "compiler", "commandLineParser.ts"),
-    path.join("src", "lib", "baseline.d.ts"),
-    path.join("src", "lib", "libs.json"),
-    path.join("tests", "cases", "compiler", "libBaseline.ts"),
-    path.join("tests", "baselines", "reference", "libBaseline.errors.txt"),
-    path.join("tests", "baselines", "reference", "libBaseline.js"),
-    path.join("tests", "baselines", "reference", "libBaseline.symbols"),
-    path.join("tests", "baselines", "reference", "libBaseline.types"),
+    path.join("tsc", "internal", "bundled", "source", "baseline.d.ts"),
+    path.join("tsc", "internal", "bundled", "source", "libs.json"),
+    path.join("tsc", "internal", "bundled", "libs", "lib.baseline.d.ts"),
+    path.join("tsc", "internal", "bundled", "libs_generated.go"),
+    path.join("tsc", "internal", "bundled", "embed_generated.go"),
+    path.join("tsc", "internal", "tsoptions", "enummaps.go"),
+    path.join("tsc", "testdata", "tests", "cases", "compiler", "libBaseline.ts"),
+    path.join("tsc", "testdata", "baselines", "reference", "compiler", "libBaseline.errors.txt"),
+    path.join("tsc", "testdata", "baselines", "reference", "compiler", "libBaseline.js"),
+    path.join("tsc", "testdata", "baselines", "reference", "compiler", "libBaseline.symbols"),
+    path.join("tsc", "testdata", "baselines", "reference", "compiler", "libBaseline.types"),
 ];
 
 const args = parseArgs(process.argv.slice(2));
@@ -44,13 +49,29 @@ await main();
 
 async function main() {
     const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-    const patchSummary = prepareTypeScriptBaselinePatch({
+    const expectedCommit = readTypeScriptSourcePin(manifest).commit;
+    const proposal = await generateTypeScriptProposalLib({
         repoRoot,
+        manifestPath,
+        manifest,
         typescriptDir: args.typescriptDir,
-        fixturesRoot,
-        expectedCommit: readStradaSourcePin(manifest).commit,
+        expectedCommit,
         allowUnpinned: args.allowUnpinned,
     });
+    let patchSummary;
+    try {
+        patchSummary = prepareTypeScriptBaselinePatch({
+            repoRoot,
+            typescriptDir: args.typescriptDir,
+            fixturesRoot,
+            generatedLibPath: proposal.outputPath,
+            expectedCommit,
+            allowUnpinned: args.allowUnpinned,
+        });
+    }
+    finally {
+        proposal.cleanup();
+    }
     const integrationDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "ts-baseline-ts-integration-"));
     /** @type {ReturnType<typeof runSmokeChecks> | undefined} */
     let smokeResults;
@@ -75,7 +96,8 @@ async function main() {
                 installTypeScriptDependencies(patchSummary.typescriptDir);
             }
 
-            runNpm(patchSummary.typescriptDir, ["run", "build:compiler"]);
+            runNpm(patchSummary.typescriptDir, ["run", "generate"]);
+            runNpm(patchSummary.typescriptDir, ["run", "build"]);
             smokeResults = runSmokeChecks(patchSummary.typescriptDir, integrationDirectory);
 
             // gate: blocking checks only (smoke + targeted harness). Meant to run
@@ -83,12 +105,7 @@ async function main() {
             // full: on top of gate, accepts the generated baselines and requires
             //   the complete TypeScript suite to pass on the accepted state.
             if (args.mode === "gate" || args.mode === "full") {
-                runNpm(patchSummary.typescriptDir, ["run", "build:tests"]);
-                extendedResults.targetedHarness = runCommandAllowFailure(
-                    "npx",
-                    ["hereby", "runtests", "--tests=libBaseline", "--light=false"],
-                    { cwd: patchSummary.typescriptDir },
-                );
+                extendedResults.targetedHarness = runTargetedHarness(patchSummary.typescriptDir);
                 if (!extendedResults.targetedHarness.ok) {
                     blockingFailure = new Error(
                         extendedResults.targetedHarness.output.trim() ||
@@ -99,6 +116,18 @@ async function main() {
                     typescriptDir: patchSummary.typescriptDir,
                     outputDirectory: args.focusedBaselinesOut,
                 });
+                const unexpectedPaths = findUnexpectedTypeScriptPatchPaths(
+                    patchSummary.typescriptDir,
+                    TYPESCRIPT_PROPOSAL_PATHS,
+                );
+                if (unexpectedPaths.length) {
+                    blockingFailure ??= createUnexpectedPathsError("TypeScript generation", unexpectedPaths);
+                }
+                if (args.baselineDiffOut) {
+                    fs.mkdirSync(path.dirname(args.baselineDiffOut), { recursive: true });
+                    fs.writeFileSync(args.baselineDiffOut, renderTypeScriptPatchDiff(patchSummary.typescriptDir));
+                    extendedResults.baselineDiffPath = args.baselineDiffOut;
+                }
             }
 
             if (args.mode === "full") {
@@ -127,10 +156,7 @@ async function main() {
                         TYPESCRIPT_PROPOSAL_PATHS,
                     );
                     if (unexpectedPaths.length) {
-                        blockingFailure ??= new Error(
-                            `TypeScript baseline-accept changed files outside the proposal surface:\n`
-                                + unexpectedPaths.map(relativePath => `- ${relativePath}`).join("\n"),
-                        );
+                        blockingFailure ??= createUnexpectedPathsError("TypeScript baseline-accept", unexpectedPaths);
                     }
                     else {
                         extendedResults.fullSuiteAfterBaselineAccept = runCommandAllowFailure(
@@ -149,10 +175,7 @@ async function main() {
                 if (args.baselineDiffOut) {
                     fs.mkdirSync(path.dirname(args.baselineDiffOut), { recursive: true });
                     const diffText = extendedResults.baselineAccept.ok
-                        ? execFileSync("git", ["diff"], {
-                            cwd: patchSummary.typescriptDir,
-                            encoding: "utf8",
-                        })
+                        ? renderTypeScriptPatchDiff(patchSummary.typescriptDir)
                         : renderUnavailableDiffArtifact({
                             baselineAccept: extendedResults.baselineAccept,
                             focusedBaselinesPath: extendedResults.focusedBaselinesPath,
@@ -212,20 +235,25 @@ function runSmokeChecks(typescriptDir, integrationDirectory) {
     const negativeProbes = loadActiveNegativeProbes();
     const negativeFlagPath = writeNegativeSmokeFixture(smokeRoot, negativeProbes);
     const tsconfigPath = writeSmokeTsconfig(smokeRoot);
-    const localTscPath = path.join(typescriptDir, "built", "local", "tsc.js");
+    const localTscPath = path.join(
+        typescriptDir,
+        "built",
+        "local",
+        process.platform === "win32" ? "tsc.exe" : "tsc",
+    );
 
     assert.ok(fs.existsSync(localTscPath), `Expected built local tsc at ${localTscPath}`);
 
-    runCommand(process.execPath, [localTscPath, "--strict", "--noEmit", "--lib", "baseline", positiveFlagPath], {
+    runCommand(localTscPath, ["--strict", "--noEmit", "--lib", "baseline", positiveFlagPath], {
         cwd: typescriptDir,
     });
-    runCommand(process.execPath, [localTscPath, "-p", tsconfigPath], {
+    runCommand(localTscPath, ["-p", tsconfigPath], {
         cwd: typescriptDir,
     });
 
     const negativeResult = runCommandAllowFailure(
-        process.execPath,
-        [localTscPath, "--strict", "--noEmit", "--lib", "baseline", negativeFlagPath],
+        localTscPath,
+        ["--strict", "--noEmit", "--lib", "baseline", negativeFlagPath],
         { cwd: typescriptDir },
     );
     assert.equal(negativeResult.ok, false, "Expected negative baseline smoke to fail");
@@ -355,9 +383,9 @@ function renderIntegrationSummary(options) {
         if (options.extendedResults.localBaselinesPath) {
             lines.push(`- Raw local baselines artifact: \`${options.extendedResults.localBaselinesPath}\``);
         }
-        if (options.extendedResults.baselineDiffPath) {
-            lines.push(`- Baseline diff artifact: \`${options.extendedResults.baselineDiffPath}\``);
-        }
+    }
+    if (options.extendedResults.baselineDiffPath) {
+        lines.push(`- Baseline diff artifact: \`${options.extendedResults.baselineDiffPath}\``);
     }
 
     lines.push(
@@ -559,6 +587,36 @@ function runNpm(cwd, args) {
 }
 
 /**
+ * @param {string} typescriptDir
+ */
+function runTargetedHarness(typescriptDir) {
+    const testName = "TestLocal/libBaseline.ts";
+    const result = runCommandAllowFailure(
+        "go",
+        ["test", "-json", "./internal/testrunner", "-run", "^TestLocal$/^libBaseline\\.ts$"],
+        { cwd: path.join(typescriptDir, "tsc") },
+    );
+    if (result.ok && !hasPassingGoTestEvent(result.output, testName)) {
+        return {
+            ok: false,
+            output: `${result.output}\nExpected a passing Go test event for ${testName}.`,
+        };
+    }
+    return result;
+}
+
+/**
+ * @param {string} phase
+ * @param {string[]} paths
+ */
+function createUnexpectedPathsError(phase, paths) {
+    return new Error(
+        `${phase} changed files outside the proposal surface:\n`
+            + paths.map(relativePath => `- ${relativePath}`).join("\n"),
+    );
+}
+
+/**
  * @param {string} file
  * @param {string[]} args
  * @param {{ cwd: string; }} options
@@ -603,7 +661,7 @@ function runCommandAllowFailure(file, args, options) {
  * }} options
  */
 function copyLocalBaselinesArtifact(options) {
-    const sourceDirectory = path.join(options.typescriptDir, "tests", "baselines", "local");
+    const sourceDirectory = path.join(options.typescriptDir, "tsc", "testdata", "baselines", "local");
     if (!fs.existsSync(sourceDirectory)) {
         return undefined;
     }

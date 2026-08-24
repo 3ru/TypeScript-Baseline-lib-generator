@@ -79,8 +79,7 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
         "",
     ].join("\n"));
 
-    // Pin that the npm-packed artifact reads under both TypeScript 7 (tsgo)
-    // and Strada (the 6.x series).
+    // Pin that the npm-packed artifact reads under both TypeScript 7 and 6.
     runTsc(["-p", path.join(consumerDirectory, "tsconfig.json")], { cwd: consumerDirectory });
     runTscStrada(["-p", path.join(consumerDirectory, "tsconfig.json")], { cwd: consumerDirectory });
 

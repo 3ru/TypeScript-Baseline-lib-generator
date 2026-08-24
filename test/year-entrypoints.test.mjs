@@ -248,7 +248,6 @@ test("weekly update summary reports year contract changes for manual review", ()
         },
         libSource: {},
         typescriptSource: {},
-        typescriptGoSource: {},
     };
     const summary = buildUpdateSummary({
         currentManifest: manifest,

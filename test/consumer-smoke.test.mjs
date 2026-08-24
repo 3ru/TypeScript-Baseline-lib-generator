@@ -83,7 +83,7 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
         "",
     ].join("\n"));
 
-    // Consumers will run a mix of TypeScript 6 (Strada) and 7 (tsgo) for now,
+    // Consumers will run a mix of TypeScript 6 and 7 for now,
     // so pin that the staged package passes under both toolchains.
     runTsc(["-p", path.join(consumerDirectory, "tsconfig.json")], { cwd: consumerDirectory });
     runTscStrada(["-p", path.join(consumerDirectory, "tsconfig.json")], { cwd: consumerDirectory });

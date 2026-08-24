@@ -15,8 +15,8 @@
     },
     "typescriptSource": {
         "repository": "https://github.com/microsoft/TypeScript.git",
-        "tag": "v6.0.3",
-        "commit": "050880ce59e30b356b686bd3144efe24f875ebc8"
+        "ref": "main",
+        "commit": "d6c4afddb2c55f4a9dea7b59293a99a8fdea1799"
     },
     "baselineTarget": "high",
     "dataset": "../datasets/web-features-js-compat.json",
@@ -43,11 +43,5 @@
         ],
         "libContentHash": "sha256-bc4de3c01fd5e0499aa13f277bc88818adb4cb549935e8b15b5ecb86b9c73f0a",
         "libFileCount": 108
-    },
-    "typescriptGoSource": {
-        "repository": "https://github.com/microsoft/typescript-go.git",
-        "tag": "typescript/v7.0.2",
-        "commit": "2bd066d87f5bafd315be9f40889d0a60b9e58e0b",
-        "stradaSubmoduleCommit": "4d4f005c8541e0255a9d8791205fdce326e462bc"
     }
 }

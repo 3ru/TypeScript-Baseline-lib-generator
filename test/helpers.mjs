@@ -154,11 +154,11 @@ export function runGenerateExpectFailure(manifestPath, label = manifestPath) {
 }
 
 // Compiler runs resolve the in-package bin explicitly instead of node_modules/.bin.
-// typescript (7.x, tsgo) and typescript-strada (6.x alias) both expose a tsc bin
+// TypeScript 7 and the TypeScript 6 compatibility alias both expose a tsc bin.
 // of the same name, and which one the .bin symlink wins is non-deterministic.
 
 /**
- * Run the tsc from TypeScript 7 (tsgo). The primary toolchain.
+ * Run the tsc from TypeScript 7. The primary toolchain.
  *
  * @param {string[]} args
  * @param {{ allowFailure?: boolean; cwd?: string; }} [options]

@@ -11,10 +11,7 @@ import {
 import { npmViewField } from "../lib/installed-package.mjs";
 import { retrySync } from "../lib/net-retry.mjs";
 import { computeLibDirectoryContentHash } from "../lib/toolchain-libs.mjs";
-import {
-    applyStradaSourcePin,
-    applyTypeScriptGoSourcePin,
-} from "../lib/typescript-source.mjs";
+import { applyTypeScriptSourcePin } from "../lib/typescript-source.mjs";
 import { assertTypeScriptPeerRange } from "../deploy/package-lib.mjs";
 import { baselinePackage } from "../deploy/package-registry.mjs";
 
@@ -24,16 +21,17 @@ const repoRoot = path.resolve(scriptDirectory, "..");
 const manifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
 const workRoot = path.join(repoRoot, ".tmp", "toolchain-update");
 
-// TypeScript 7 (tsgo) is the primary toolchain. The lib.*.d.ts files ship in
+// TypeScript 7 is the primary toolchain. The lib.*.d.ts files ship in
 // per-platform packages (@typescript/typescript-<os>-<arch>), so at pin time we
 // cross-check tarballs from multiple platforms, record a content hash, and use it
 // as the basis for the fail-closed comparison at generate time (lib/toolchain-libs.mjs).
 //
 // Strada (TypeScript 6) is feature-frozen on the 6.0 line. We keep
-// `typescript-strada` (npm alias: typescript@6.x) for three roles:
+// `typescript-strada` (npm alias: typescript@6.x) for two roles:
 // 1. The generator's .d.ts parser / self-check compiler API (TS7's JS API is different)
 // 2. Compat smoke for TS6-line consumers
-// 3. The version anchor for the existing Strada integration gate (hereby + libBaseline)
+// The source integration separately pins the current microsoft/TypeScript main
+// commit, where the compiler implementation and test harness now live together.
 const libSourcePlatformPackagePrefix = "@typescript/typescript-";
 const libSourceReferencePlatforms = ["linux-x64", "darwin-arm64", "win32-x64"];
 
@@ -80,15 +78,7 @@ async function main() {
     };
     manifest.libSource = libSource;
 
-    const stradaSource = applyStradaSourcePin({
-        manifest,
-        stradaVersion,
-    });
-    const goSource = applyTypeScriptGoSourcePin({
-        manifest,
-        typescriptVersion,
-        workDirectory: workRoot,
-    });
+    const typescriptSource = applyTypeScriptSourcePin({ manifest });
 
     await writeManifest({
         manifestPath,
@@ -97,11 +87,10 @@ async function main() {
 
     console.log([
         `Pinned TypeScript toolchain:`,
-        `- typescript@${typescriptVersion} (tsgo)`,
+        `- typescript@${typescriptVersion}`,
         `- typescript-strada@npm:typescript@${stradaVersion}`,
         `- lib source: ${libSource.libFileCount} files, ${libSource.libContentHash} (verified across ${libSource.referencePlatforms.join(", ")})`,
-        `- Strada source: ${stradaSource.tag} (${stradaSource.commit})`,
-        `- typescript-go source: ${goSource.tag} (${goSource.commit}, strada submodule ${goSource.stradaSubmoduleCommit})`,
+        `- TypeScript source: ${typescriptSource.ref} (${typescriptSource.commit})`,
     ].join("\n"));
 }
 
