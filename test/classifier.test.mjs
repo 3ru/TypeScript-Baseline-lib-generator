@@ -646,7 +646,7 @@ test("classifier fails closed on unmanaged, stale, and kind-drifted registry sta
     );
 });
 
-test("dataset loader rejects duplicate compat keys before classification", async () => {
+test("dataset loader rejects repeated compat keys in the same feature before classification", async () => {
     await assert.rejects(
         classifyFixture({
             rows: [
@@ -654,7 +654,7 @@ test("dataset loader rejects duplicate compat keys before classification", async
                 row("javascript.builtins.Widget.configure", "high"),
             ],
         }),
-        /duplicate compatKey javascript\.builtins\.Widget\.configure/,
+        /Duplicate compat key membership javascript\.builtins\.Widget\.configure in feature widget-fixture/,
     );
 });
 
