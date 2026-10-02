@@ -35,3 +35,13 @@ Identical inputs produce byte-identical artifacts on each supported operating sy
 
 - `libSource` records the platform package and one content hash. The update requires identical files on Linux, macOS, and Windows.
 - `typescriptSource` records the exact `microsoft/TypeScript` `main` commit used by proposal preparation and integration tests. Proposal artifacts are generated from that checkout's declaration corpus.
+
+## Failed updates
+
+Weekly data and TypeScript toolchain updates save an `update-diagnostics` workflow artifact, including command logs, `summary.md`, and `summary.json`. The job summary shows the failed step, candidate input pins, and added, removed, or changed compat keys. Reports use the input dataset even if generation fails; existing derived files are not evidence that the candidate passed.
+
+For registry drift, inspect each named compat key and its upstream declaration before changing `registry/compat-management.json`. Keep missing declarations separate from newly implemented declarations. Do not relax the checks just to make an update pass.
+
+For a TypeScript layout change, update the integration adapter and its fixtures. Keep proposal generation pinned to the recorded commit. Run `npm run validate`, then run `npm run test:typescript:gate` against that commit before retrying the toolchain workflow.
+
+Failed update jobs do not create pull requests. Repair the cause and rerun the workflow. Diagnostic collection does not change the release gates or publish a package.
