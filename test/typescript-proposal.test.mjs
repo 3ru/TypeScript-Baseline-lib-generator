@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { generateTypeScriptProposalLib } from "../lib/typescript-proposal.mjs";
-import { typescriptGeneratedLibDirectory } from "../lib/typescript-upstream.mjs";
+import { typescriptLibSourceDirectory } from "../lib/typescript-upstream.mjs";
 import { verifyLibSource } from "../lib/toolchain-libs.mjs";
 import {
     cleanupTempDirectories,
@@ -27,13 +27,14 @@ test.afterEach(() => {
 test("proposal generation follows the pinned TypeScript checkout declaration corpus", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const typescriptDir = path.join(tempDirectory, "TypeScript");
-    const targetLibDirectory = path.join(typescriptDir, typescriptGeneratedLibDirectory);
+    const targetLibDirectory = path.join(typescriptDir, typescriptLibSourceDirectory);
     const proposalRepoRoot = path.join(tempDirectory, "repo");
     const externalDirectory = path.join(tempDirectory, "external");
     const sentinelPath = path.join(externalDirectory, "libs", "sentinel.txt");
     const packageLibSource = await verifyLibSource({ repoRoot, manifest: repoManifest });
 
     fs.cpSync(packageLibSource.libDirectory, targetLibDirectory, { recursive: true });
+    addUpstreamJsonDeclarations(targetLibDirectory);
     removePluralRulesCallSignature(path.join(targetLibDirectory, "lib.es2018.intl.d.ts"));
     removePluralRulesCallSignature(path.join(targetLibDirectory, "lib.es2020.intl.d.ts"));
     fs.mkdirSync(path.dirname(sentinelPath), { recursive: true });
@@ -54,6 +55,11 @@ test("proposal generation follows the pinned TypeScript checkout declaration cor
         assert.doesNotMatch(proposalOutputs[0], /\n\s*\(locales\?: [^\n]+PluralRulesOptions\): PluralRules;/u);
         assert.match(proposalOutputs[0], /new \(locales\?: LocalesArgument, options\?: PluralRulesOptions\): PluralRules;/u);
         assert.equal(fs.readFileSync(sentinelPath, "utf8"), "keep\n");
+        assert.doesNotMatch(proposalOutputs[0], /rawJSON\(text|isRawJSON\(value|context: \{ source/u);
+        const yearOutput = fs.readFileSync(path.join(path.dirname(proposals[0].outputPath), "year", "2025", "index.d.ts"), "utf8");
+        assert.match(yearOutput, /#isRawJson: unknown/u);
+        assert.match(yearOutput, /rawJSON\(text: string\): RawJSON/u);
+        assert.match(yearOutput, /context: \{ source\?: string \}/u);
     }
     finally {
         for (const proposal of proposals) {
@@ -65,10 +71,11 @@ test("proposal generation follows the pinned TypeScript checkout declaration cor
 test("pinned proposal generation reads commit blobs instead of hidden working-tree changes", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const typescriptDir = path.join(tempDirectory, "TypeScript");
-    const targetLibDirectory = path.join(typescriptDir, typescriptGeneratedLibDirectory);
+    const targetLibDirectory = path.join(typescriptDir, typescriptLibSourceDirectory);
     const packageLibSource = await verifyLibSource({ repoRoot, manifest: repoManifest });
 
     fs.cpSync(packageLibSource.libDirectory, targetLibDirectory, { recursive: true });
+    addUpstreamJsonDeclarations(targetLibDirectory);
     execFileSync("git", ["init", "--quiet", "--initial-branch=main"], { cwd: typescriptDir });
     execFileSync("git", ["config", "user.email", "test@example.com"], { cwd: typescriptDir });
     execFileSync("git", ["config", "user.name", "Test"], { cwd: typescriptDir });
@@ -137,4 +144,24 @@ function removePluralRulesCallSignature(filePath) {
     const updated = source.replace(/^\s*\(locales\?: .*PluralRulesOptions\): PluralRules;\r?\n/gmu, "");
     assert.notEqual(updated, source, `expected a PluralRules call signature in ${filePath}`);
     fs.writeFileSync(filePath, updated);
+}
+
+/** @param {string} libDirectory */
+function addUpstreamJsonDeclarations(libDirectory) {
+    fs.writeFileSync(path.join(libDirectory, "lib.es2026.json.d.ts"), [
+        "export {};",
+        "declare class RawJSONInstance {",
+        "    #isRawJson: unknown;",
+        "    readonly rawJSON: string;",
+        "}",
+        "declare global {",
+        "    interface RawJSON extends RawJSONInstance {}",
+        "    interface JSON {",
+        "        parse(text: string, reviver: (this: any, key: string, value: any, context: { source?: string }) => any): any;",
+        "        rawJSON(text: string): RawJSON;",
+        "        isRawJSON(value: unknown): value is RawJSON;",
+        "    }",
+        "}",
+        "",
+    ].join("\n"));
 }

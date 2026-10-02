@@ -703,7 +703,7 @@ test("JSON.parse reviver verdict fails closed once TypeScript models the context
     ].join("\n");
 
     await assert.rejects(
-        () => classifyFixture({ rows: [row(JSON_PARSE_KEY, "low")], libSource }),
-        /reviver context argument[\s\S]*stale|now appears to model the reviver context/u,
+        () => classifyFixture({ rows: [row(JSON_PARSE_KEY, "low")], libSource, registryGroups: [jsonParseRegistryGroup()] }),
+        /resolution kind no longer matches registry expectations/u,
     );
 });

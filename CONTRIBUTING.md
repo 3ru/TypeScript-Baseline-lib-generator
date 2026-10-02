@@ -17,7 +17,7 @@ The command must pass before you open a pull request.
 
 Use the Node.js version in the `engines` field. The project supports macOS, Linux, and WSL.
 
-If you run the TypeScript 7 integration gate, install the Go toolchain.
+The upstream TypeScript integration gate requires Node.js 24 and the Go version in the pinned checkout's `tsc/go.mod`.
 
 ## How the generator works
 

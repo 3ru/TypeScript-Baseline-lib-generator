@@ -563,16 +563,20 @@
                 "not-modeled-upstream",
                 "already-excluded-upstream"
             ],
-            "reason": "proposal-json-parse-with-source is tracked upstream, but the current TypeScript lib still lacks JSON.rawJSON, JSON.isRawJSON, and the reviver context parameter surface required by web-features.",
+            "expectedResolutionKindsBySource": {
+                "microsoft/TypeScript": ["member"]
+            },
+            "reason": "TypeScript 7.0 lacks these declarations. The pinned upstream source includes all three in lib.es2026.json.d.ts.",
             "sourceUrls": [
                 "https://github.com/microsoft/TypeScript/issues/61330",
+                "https://github.com/microsoft/TypeScript/pull/64096",
                 "https://github.com/tc39/proposal-json-parse-with-source"
             ],
             "externalAction": {
                 "kind": "watch-existing",
                 "repo": "microsoft/TypeScript",
                 "targetUrl": "https://github.com/microsoft/TypeScript/issues/61330",
-                "note": "Watch the existing Domain: lib.d.ts issue and promote once the canonical lib surface lands."
+                "note": "Watch the next TypeScript release and remove the source-specific expectation once the published declarations include these APIs."
             },
             "compatKeys": [
                 "javascript.builtins.JSON.isRawJSON",
