@@ -177,24 +177,45 @@ test("every registered allow entry exposes its complete API surface under TypeSc
     }
 });
 
-test("allow entries preserve isolation under TypeScript 6 and 7", async () => {
+test("allow entries preserve isolation under TypeScript 6 and 7", () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const consumerDirectory = path.join(tempDirectory, "consumer");
-    const { tarballPath } = await createBaselinePackageTarball({ tempDirectories });
-    const promiseEntry = `${baselinePackageName}/allow/promise-withresolvers`;
+    const datasetPath = path.join(tempDirectory, "dataset.json");
+    const dataset = readJsonFile(repoDatasetPath);
+    for (const compatKey of [
+        "javascript.builtins.Promise.withResolvers",
+        "javascript.builtins.Array.fromAsync",
+    ]) {
+        const row = dataset.compatRows.find(
+            /** @param {{ compatKey: string; }} row */
+            row => row.compatKey === compatKey,
+        );
+        assert.ok(row);
+        row.baselineStatus = "low";
+        delete row.baselineHighDate;
+    }
+    writeJsonFile(datasetPath, dataset);
+    const fixture = createManifest(tempDirectory, { datasetPath });
+    runGenerate(fixture.manifestPath);
+    const declarationFiles = [
+        path.join(fixture.outputRoot, "generated", "baseline.d.ts"),
+        path.join(fixture.outputRoot, "generated", "allow", "promise-withresolvers", "index.d.ts"),
+    ];
 
-    writeJsonFile(path.join(consumerDirectory, "package.json"), {
-        name: "baseline-allow-isolation-fixture",
-        private: true,
+    writeDirectConsumerConfig({
+        directory: consumerDirectory,
+        name: "promise-only-fail",
+        source: "Array.fromAsync([1, 2, 3]);\n",
+        declarationFiles,
     });
-    runNpm(["install", "--no-package-lock", "--no-save", tarballPath], { cwd: consumerDirectory });
-
-    writeTextFile(path.join(consumerDirectory, "promise-only-fail.ts"), "Array.fromAsync([1, 2, 3]);\n");
-    writeConsumerConfig(consumerDirectory, "promise-only-fail", [baselinePackageName, promiseEntry]);
     assertCompilerFailuresContain(consumerDirectory, "promise-only-fail", /fromAsync/);
 
-    writeTextFile(path.join(consumerDirectory, "limited-fail.ts"), "\"legacy\".substr(1);\n");
-    writeConsumerConfig(consumerDirectory, "limited-fail", [baselinePackageName, promiseEntry]);
+    writeDirectConsumerConfig({
+        directory: consumerDirectory,
+        name: "limited-fail",
+        source: "\"legacy\".substr(1);\n",
+        declarationFiles,
+    });
     assertCompilerFailuresContain(consumerDirectory, "limited-fail", /substr/);
 });
 
@@ -453,6 +474,13 @@ test("a registered path becomes a permanent baseline alias after promotion", () 
     const allowlistRegistryPath = path.join(tempDirectory, "allowlist.json");
     const dataset = readJsonFile(repoDatasetPath);
     const compatKey = "javascript.builtins.Promise.withResolvers";
+    const compatRow = dataset.compatRows.find(
+        /** @param {{ compatKey: string; }} row */
+        row => row.compatKey === compatKey,
+    );
+    assert.ok(compatRow);
+    compatRow.baselineStatus = "low";
+    delete compatRow.baselineHighDate;
     writeJsonFile(datasetPath, dataset);
     writeJsonFile(allowlistRegistryPath, {
         schemaVersion: 1,
@@ -465,11 +493,6 @@ test("a registered path becomes a permanent baseline alias after promotion", () 
     assert.equal(activeGeneration.allowEntries[0].kind, "active");
     assert.ok(activeGeneration.allowEntries[0].unitIds.length);
 
-    const compatRow = dataset.compatRows.find(
-        /** @param {{ compatKey: string; }} row */
-        row => row.compatKey === compatKey,
-    );
-    assert.ok(compatRow);
     compatRow.baselineStatus = "high";
     writeJsonFile(datasetPath, dataset);
     runGenerate(fixture.manifestPath);
@@ -501,12 +524,12 @@ test("a registered path becomes a permanent baseline alias after promotion", () 
     runTsc(["-p", path.join(consumerDirectory, "tsconfig.pass.json")], { cwd: consumerDirectory });
     runTscStrada(["-p", path.join(consumerDirectory, "tsconfig.pass.json")], { cwd: consumerDirectory });
 
-    writeTextFile(path.join(consumerDirectory, "fail.ts"), "Array.fromAsync([1, 2, 3]);\n");
+    writeTextFile(path.join(consumerDirectory, "fail.ts"), "\"legacy\".substr(1);\n");
     writeJsonFile(path.join(consumerDirectory, "tsconfig.fail.json"), {
         compilerOptions: { noLib: true, strict: true },
         files: ["fail.ts", aliasPath],
     });
-    assertCompilerFailuresContain(consumerDirectory, "fail", /fromAsync/);
+    assertCompilerFailuresContain(consumerDirectory, "fail", /substr/);
 });
 
 test("shared declaration units cannot unlock unregistered or Limited availability behavior", () => {

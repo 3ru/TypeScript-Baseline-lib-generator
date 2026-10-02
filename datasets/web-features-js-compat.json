@@ -1,10 +1,10 @@
 {
   "snapshot": {
     "name": "baseline-js",
-    "baselineDate": "2026-07-21",
-    "extractedDate": "2026-07-21",
+    "baselineDate": "2026-10-02",
+    "extractedDate": "2026-10-02",
     "webFeaturesPackageName": "web-features",
-    "webFeaturesPackageVersion": "3.34.1"
+    "webFeaturesPackageVersion": "3.40.1"
   },
   "featureRows": [
     {
@@ -225,8 +225,9 @@
     {
       "featureId": "array-fromasync",
       "featureName": "Array.fromAsync()",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-01-25",
+      "baselineHighDate": "2026-07-25",
       "snapshot": [],
       "group": [
         "arrays"
@@ -239,8 +240,9 @@
     {
       "featureId": "array-group",
       "featureName": "Array grouping",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "snapshot": [],
       "group": [
         "maps"
@@ -762,6 +764,19 @@
       ]
     },
     {
+      "featureId": "import-defer",
+      "featureName": "import defer",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "js-modules"
+      ],
+      "hasCompatRows": true,
+      "spec": [
+        "https://tc39.es/proposal-defer-import-eval/"
+      ]
+    },
+    {
       "featureId": "intl",
       "featureName": "Intl",
       "baselineStatus": "high",
@@ -838,7 +853,8 @@
     {
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "snapshot": [],
       "group": [
         "intl"
@@ -917,6 +933,19 @@
       "hasCompatRows": true,
       "spec": [
         "https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-iterator.concat"
+      ]
+    },
+    {
+      "featureId": "iterator-join",
+      "featureName": "Iterator join()",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "iterators"
+      ],
+      "hasCompatRows": true,
+      "spec": [
+        "https://tc39.es/proposal-iterator-join/#sec-iterator.prototype.join"
       ]
     },
     {
@@ -1321,8 +1350,9 @@
     {
       "featureId": "promise-withresolvers",
       "featureName": "Promise.withResolvers()",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "snapshot": [],
       "group": [
         "promises"
@@ -1675,6 +1705,19 @@
       ]
     },
     {
+      "featureId": "string-trim-leftright",
+      "featureName": "String trimLeft() and trimRight()",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "string"
+      ],
+      "hasCompatRows": true,
+      "spec": [
+        "https://tc39.es/ecma262/multipage/additional-ecmascript-features-for-web-browsers.html#String.prototype.trimleft"
+      ]
+    },
+    {
       "featureId": "string-trim-startend",
       "featureName": "String trimStart() and trimEnd()",
       "baselineStatus": "high",
@@ -1763,9 +1806,23 @@
       ]
     },
     {
+      "featureId": "text-modules",
+      "featureName": "Text import attributes",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "js-modules"
+      ],
+      "hasCompatRows": true,
+      "spec": [
+        "https://tc39.es/proposal-import-text/"
+      ]
+    },
+    {
       "featureId": "top-level-await",
       "featureName": "Top-level await",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-09-14",
       "snapshot": [],
       "group": [
         "javascript"
@@ -1778,8 +1835,9 @@
     {
       "featureId": "transferable-arraybuffer",
       "featureName": "Transferable ArrayBuffer",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "snapshot": [],
       "group": [
         "javascript"
@@ -2380,8 +2438,9 @@
       "compatKey": "javascript.builtins.Array.fromAsync",
       "featureId": "array-fromasync",
       "featureName": "Array.fromAsync()",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-01-25",
+      "baselineHighDate": "2026-07-25",
       "snapshot": [],
       "group": [
         "arrays"
@@ -2988,8 +3047,9 @@
       "compatKey": "javascript.builtins.ArrayBuffer.detached",
       "featureId": "transferable-arraybuffer",
       "featureName": "Transferable ArrayBuffer",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "snapshot": [],
       "group": [
         "javascript"
@@ -3078,8 +3138,9 @@
       "compatKey": "javascript.builtins.ArrayBuffer.transfer",
       "featureId": "transferable-arraybuffer",
       "featureName": "Transferable ArrayBuffer",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "snapshot": [],
       "group": [
         "javascript"
@@ -3092,8 +3153,9 @@
       "compatKey": "javascript.builtins.ArrayBuffer.transferToFixedLength",
       "featureId": "transferable-arraybuffer",
       "featureName": "Transferable ArrayBuffer",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "snapshot": [],
       "group": [
         "javascript"
@@ -5670,7 +5732,8 @@
       "compatKey": "javascript.builtins.FinalizationRegistry.unregister.symbol_as_target",
       "featureId": "weak-references",
       "featureName": "Weak references",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2025-12-09",
       "snapshot": [
         "ecmascript-2021"
       ],
@@ -7285,7 +7348,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getCalendars",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "snapshot": [],
       "group": [
         "intl"
@@ -7298,7 +7362,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getCollations",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "snapshot": [],
       "group": [
         "intl"
@@ -7311,7 +7376,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getHourCycles",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "snapshot": [],
       "group": [
         "intl"
@@ -7324,7 +7390,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getNumberingSystems",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "snapshot": [],
       "group": [
         "intl"
@@ -7337,7 +7404,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getTextInfo",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "snapshot": [],
       "group": [
         "intl"
@@ -7350,7 +7418,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getTimeZones",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "snapshot": [],
       "group": [
         "intl"
@@ -7363,7 +7432,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getWeekInfo",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "snapshot": [],
       "group": [
         "intl"
@@ -8657,6 +8727,19 @@
       ]
     },
     {
+      "compatKey": "javascript.builtins.Iterator.join",
+      "featureId": "iterator-join",
+      "featureName": "Iterator join()",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "iterators"
+      ],
+      "sourceRefs": [
+        "javascript.builtins.Iterator.join"
+      ]
+    },
+    {
       "compatKey": "javascript.builtins.Iterator.map",
       "featureId": "iterator-methods",
       "featureName": "Iterator methods",
@@ -9062,8 +9145,9 @@
       "compatKey": "javascript.builtins.Map.groupBy",
       "featureId": "array-group",
       "featureName": "Array grouping",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "snapshot": [],
       "group": [
         "maps"
@@ -10492,8 +10576,9 @@
       "compatKey": "javascript.builtins.Object.groupBy",
       "featureId": "array-group",
       "featureName": "Array grouping",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "snapshot": [],
       "group": [
         "maps"
@@ -11033,8 +11118,9 @@
       "compatKey": "javascript.builtins.Promise.withResolvers",
       "featureId": "promise-withresolvers",
       "featureName": "Promise.withResolvers()",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "snapshot": [],
       "group": [
         "promises"
@@ -13531,6 +13617,32 @@
       ],
       "sourceRefs": [
         "javascript.builtins.String.trimEnd"
+      ]
+    },
+    {
+      "compatKey": "javascript.builtins.String.trimLeft",
+      "featureId": "string-trim-leftright",
+      "featureName": "String trimLeft() and trimRight()",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "string"
+      ],
+      "sourceRefs": [
+        "javascript.builtins.String.trimLeft"
+      ]
+    },
+    {
+      "compatKey": "javascript.builtins.String.trimRight",
+      "featureId": "string-trim-leftright",
+      "featureName": "String trimLeft() and trimRight()",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "string"
+      ],
+      "sourceRefs": [
+        "javascript.builtins.String.trimRight"
       ]
     },
     {
@@ -19859,7 +19971,8 @@
       "compatKey": "javascript.operators.await.top_level",
       "featureId": "top-level-await",
       "featureName": "Top-level await",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-09-14",
       "snapshot": [],
       "group": [
         "javascript"
@@ -20321,6 +20434,19 @@
       ],
       "sourceRefs": [
         "javascript.operators.import"
+      ]
+    },
+    {
+      "compatKey": "javascript.operators.import.defer",
+      "featureId": "import-defer",
+      "featureName": "import defer",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "js-modules"
+      ],
+      "sourceRefs": [
+        "javascript.operators.import.defer"
       ]
     },
     {
@@ -21909,6 +22035,19 @@
       ]
     },
     {
+      "compatKey": "javascript.statements.import.defer",
+      "featureId": "import-defer",
+      "featureName": "import defer",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "js-modules"
+      ],
+      "sourceRefs": [
+        "javascript.statements.import.defer"
+      ]
+    },
+    {
       "compatKey": "javascript.statements.import.import_assertions",
       "featureId": "import-assertions",
       "featureName": "Import assertions",
@@ -21986,6 +22125,19 @@
       ],
       "sourceRefs": [
         "javascript.statements.import.import_attributes.type_json"
+      ]
+    },
+    {
+      "compatKey": "javascript.statements.import.import_attributes.type_text",
+      "featureId": "text-modules",
+      "featureName": "Text import attributes",
+      "baselineStatus": false,
+      "snapshot": [],
+      "group": [
+        "js-modules"
+      ],
+      "sourceRefs": [
+        "javascript.statements.import.import_attributes.type_text"
       ]
     },
     {

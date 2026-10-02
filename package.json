@@ -52,7 +52,7 @@
         "ajv": "8.20.0",
         "typescript": "7.0.2",
         "typescript-strada": "npm:typescript@6.0.3",
-        "web-features": "3.34.1"
+        "web-features": "3.40.1"
     },
     "devDependencies": {
         "@types/node": "24.10.0",

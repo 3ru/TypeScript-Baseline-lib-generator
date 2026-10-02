@@ -79,6 +79,11 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
         "const reversed = [1, 2, 3].toReversed();",
         "Intl.supportedValuesOf(\"currency\");",
         "reversed.length;",
+        "Promise.withResolvers<number>();",
+        "Array.fromAsync([1, 2, 3]);",
+        "Object.groupBy([1, 2, 3], value => String(value));",
+        "Map.groupBy([1, 2, 3], value => value % 2);",
+        "new ArrayBuffer(8).transfer().transferToFixedLength().detached;",
         REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION,
         "",
     ].join("\n"));

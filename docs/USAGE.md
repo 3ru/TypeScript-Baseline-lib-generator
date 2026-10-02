@@ -156,9 +156,9 @@ npm install --save-dev typescript@^7 typescript-baseline-lib
 Load the polyfill from the application entry point:
 
 ```ts
-import "core-js/proposals/promise-with-resolvers";
+import "core-js/proposals/promise-try";
 
-const deferred = Promise.withResolvers<void>();
+const result = Promise.try(() => 42);
 ```
 
 Then add its audited declaration entry:
@@ -170,7 +170,7 @@ Then add its audited declaration entry:
     "strict": true,
     "types": [
       "typescript-baseline-lib",
-      "typescript-baseline-lib/allow/promise-withresolvers"
+      "typescript-baseline-lib/allow/promise-try"
     ],
     "noEmit": true
   }
@@ -272,4 +272,4 @@ The output must include `typescript-baseline-lib`. It must not include standard 
 - [Browserslist Baseline queries](https://github.com/browserslist/browserslist#queries)
 - [Choosing a Baseline target](https://web.dev/articles/how-to-choose-your-baseline-target)
 - [Baseline and polyfills](https://web.dev/articles/baseline-and-polyfills)
-- [`Promise.withResolvers` in core-js](https://core-js.io/docs/features/proposals/promise-withresolvers)
+- [`Promise.try` in core-js](https://github.com/zloirock/core-js/blob/master/packages/core-js/proposals/promise-try.js)

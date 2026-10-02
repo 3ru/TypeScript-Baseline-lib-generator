@@ -32,7 +32,7 @@ npx tsc --noEmit
 
 With this configuration, TypeScript accepts supported JavaScript APIs that are Baseline Widely available. TypeScript reports APIs outside this target as errors.
 
-Examples include `Promise.withResolvers` and `Array.fromAsync` before they reach this Baseline status. The project goal is first-class `--lib baseline` support in TypeScript.
+Examples include `Promise.try` and `Intl.Segmenter` before they reach this Baseline status. The project goal is first-class `--lib baseline` support in TypeScript.
 
 For more configurations, read the [Usage Guide](docs/USAGE.md).
 
@@ -46,10 +46,10 @@ The generator does not add unavailable runtime APIs to support third-party packa
 
 ## Allow a polyfilled feature
 
-If the runtime loads an audited polyfill, add its generated `web-features` entry after the base package. For example, core-js can provide `Promise.withResolvers`:
+If the runtime loads an audited polyfill, add its generated `web-features` entry after the base package. For example, core-js can provide `Promise.try`:
 
 ```ts
-import "core-js/proposals/promise-with-resolvers";
+import "core-js/proposals/promise-try";
 ```
 
 ```json
@@ -58,7 +58,7 @@ import "core-js/proposals/promise-with-resolvers";
     "noLib": true,
     "types": [
       "typescript-baseline-lib",
-      "typescript-baseline-lib/allow/promise-withresolvers"
+      "typescript-baseline-lib/allow/promise-try"
     ]
   }
 }
