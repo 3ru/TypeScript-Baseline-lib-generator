@@ -11,14 +11,21 @@ import { generateTypeScriptProposalLib } from "../lib/typescript-proposal.mjs";
 import { readTypeScriptSourcePin } from "../lib/typescript-source.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
+
 const scriptDirectory = path.dirname(scriptPath);
+
 const repoRoot = path.resolve(scriptDirectory, "..");
+
 const defaultSummaryPath = path.join(repoRoot, ".tmp", "typescript-pr-summary.md");
+
 const manifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
 
 const args = parseArgs(process.argv.slice(2));
+
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+
 const expectedCommit = readTypeScriptSourcePin(manifest).commit;
+
 const proposal = await generateTypeScriptProposalLib({
     repoRoot,
     manifestPath,
@@ -29,6 +36,7 @@ const proposal = await generateTypeScriptProposalLib({
 });
 
 let summary;
+
 try {
     summary = prepareTypeScriptBaselinePatch({
         repoRoot,
@@ -41,6 +49,7 @@ try {
 finally {
     proposal.cleanup();
 }
+
 const summaryText = renderTypeScriptPatchSummary(summary);
 
 if (args.out) {
@@ -63,6 +72,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--allow-unpinned":
                 args.allowUnpinned = true;
@@ -93,6 +103,7 @@ function requireArgValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 

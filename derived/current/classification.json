@@ -5,44 +5,44 @@
   "classificationOutputPath": "derived/current/classification.json",
   "compatManagementOutputPath": "derived/current/compat-management-report.json",
   "summary": {
-    "featureCount": 121,
-    "compatCount": 1356,
-    "libCompatCount": 1150,
-    "highCompatCount": 750,
-    "lowCompatCount": 77,
-    "falseCompatCount": 323,
-    "includedCompatCount": 750,
-    "emitCompatCount": 997,
-    "notModeledUpstreamCount": 51,
+    "featureCount": 125,
+    "compatCount": 1362,
+    "libCompatCount": 1153,
+    "highCompatCount": 757,
+    "lowCompatCount": 78,
+    "falseCompatCount": 318,
+    "includedCompatCount": 757,
+    "emitCompatCount": 1000,
+    "notModeledUpstreamCount": 52,
     "alreadyExcludedUpstreamCount": 1,
-    "managedCompatCount": 60,
+    "managedCompatCount": 61,
     "managedCategoryCounts": {
       "actionable_upstream_gap": 12,
       "handled_outside_lib": 3,
       "legacy_excluded": 14,
-      "tracked_by_canonical_lib": 27,
+      "tracked_by_canonical_lib": 28,
       "ts_settled_limitation": 4
     },
     "managedDeliveryCounts": {
       "cover-checker": 2,
-      "defer-upstream": 43,
+      "defer-upstream": 44,
       "exclude": 15
     },
     "managedUpstreamStateCounts": {
       "actionable": 7,
       "settled": 21,
-      "tracked": 32
+      "tracked": 33
     },
-    "selectedUnitCount": 1444,
+    "selectedUnitCount": 1454,
     "transformedUnitCount": 2
   },
   "compatManagementRegistryPath": "registry/compat-management.json",
   "compatManagementRegistrySummary": {
     "kind": "typescript-baseline-lib/compat-management-registry",
     "schemaVersion": 1,
-    "sourceHash": "sha256-a2e0009acc49a898cb3154ab149fe75a1760643216e28e502d1d133a924f104a",
-    "groupCount": 19,
-    "managedCompatCount": 60
+    "sourceHash": "sha256-11588342536d409110b0237bcfe2a83a7588c122398f0bc6168217cd786b4603",
+    "groupCount": 20,
+    "managedCompatCount": 61
   },
   "classifiedCompatRows": [
     {
@@ -613,14 +613,15 @@
       "compatKey": "javascript.builtins.Array.fromAsync",
       "featureId": "array-fromasync",
       "featureName": "Array.fromAsync()",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-01-25",
+      "baselineHighDate": "2026-07-25",
       "sourceRefs": [
         "javascript.builtins.Array.fromAsync"
       ],
       "snapshot": [],
       "compatRoot": "Array",
-      "includeInTarget": false,
+      "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::2",
@@ -1331,7 +1332,8 @@
       "resolvedUnitIds": [
         "lib.es5.d.ts::ArrayBuffer::490",
         "lib.es5.d.ts::ArrayBuffer::502",
-        "lib.es5.d.ts::ArrayBufferConstructor::498"
+        "lib.es5.d.ts::ArrayBufferConstructor::498",
+        "lib.es5.d.ts::ArrayBufferTypes.ArrayBuffer::495"
       ],
       "transforms": [],
       "notes": "compat root ArrayBuffer selects standalone declaration units"
@@ -1433,14 +1435,15 @@
       "compatKey": "javascript.builtins.ArrayBuffer.detached",
       "featureId": "transferable-arraybuffer",
       "featureName": "Transferable ArrayBuffer",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "sourceRefs": [
         "javascript.builtins.ArrayBuffer.detached"
       ],
       "snapshot": [],
       "compatRoot": "ArrayBuffer",
-      "includeInTarget": false,
+      "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es2024.arraybuffer.d.ts::ArrayBuffer.detached::5"
@@ -1553,14 +1556,15 @@
       "compatKey": "javascript.builtins.ArrayBuffer.transfer",
       "featureId": "transferable-arraybuffer",
       "featureName": "Transferable ArrayBuffer",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "sourceRefs": [
         "javascript.builtins.ArrayBuffer.transfer"
       ],
       "snapshot": [],
       "compatRoot": "ArrayBuffer",
-      "includeInTarget": false,
+      "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transfer::6"
@@ -1572,14 +1576,15 @@
       "compatKey": "javascript.builtins.ArrayBuffer.transferToFixedLength",
       "featureId": "transferable-arraybuffer",
       "featureName": "Transferable ArrayBuffer",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "sourceRefs": [
         "javascript.builtins.ArrayBuffer.transferToFixedLength"
       ],
       "snapshot": [],
       "compatRoot": "ArrayBuffer",
-      "includeInTarget": false,
+      "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transferToFixedLength::7"
@@ -5501,7 +5506,8 @@
       "compatKey": "javascript.builtins.FinalizationRegistry.unregister.symbol_as_target",
       "featureId": "weak-references",
       "featureName": "Weak references",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2025-12-09",
       "sourceRefs": [
         "javascript.builtins.FinalizationRegistry.unregister.symbol_as_target"
       ],
@@ -7738,7 +7744,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getCalendars",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "sourceRefs": [
         "javascript.builtins.Intl.Locale.getCalendars"
       ],
@@ -7756,7 +7763,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getCollations",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "sourceRefs": [
         "javascript.builtins.Intl.Locale.getCollations"
       ],
@@ -7774,7 +7782,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getHourCycles",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "sourceRefs": [
         "javascript.builtins.Intl.Locale.getHourCycles"
       ],
@@ -7792,7 +7801,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getNumberingSystems",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "sourceRefs": [
         "javascript.builtins.Intl.Locale.getNumberingSystems"
       ],
@@ -7810,7 +7820,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getTextInfo",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "sourceRefs": [
         "javascript.builtins.Intl.Locale.getTextInfo"
       ],
@@ -7828,7 +7839,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getTimeZones",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "sourceRefs": [
         "javascript.builtins.Intl.Locale.getTimeZones"
       ],
@@ -7846,7 +7858,8 @@
       "compatKey": "javascript.builtins.Intl.Locale.getWeekInfo",
       "featureId": "intl-locale-info",
       "featureName": "Intl.Locale info",
-      "baselineStatus": false,
+      "baselineStatus": "low",
+      "baselineLowDate": "2026-07-21",
       "sourceRefs": [
         "javascript.builtins.Intl.Locale.getWeekInfo"
       ],
@@ -9731,6 +9744,42 @@
       "notes": "member surface Iterator.from"
     },
     {
+      "compatKey": "javascript.builtins.Iterator.join",
+      "featureId": "iterator-join",
+      "featureName": "Iterator join()",
+      "baselineStatus": false,
+      "sourceRefs": [
+        "javascript.builtins.Iterator.join"
+      ],
+      "snapshot": [],
+      "compatRoot": "Iterator",
+      "includeInTarget": false,
+      "resolutionKind": "not-modeled-upstream",
+      "resolvedUnitIds": [],
+      "transforms": [],
+      "notes": "javascript.builtins.Iterator.join is not currently modeled as a dedicated member in TypeScript's lib declarations",
+      "management": {
+        "groupId": "iterator-join-tracked",
+        "category": "tracked_by_canonical_lib",
+        "delivery": "defer-upstream",
+        "upstreamState": "tracked",
+        "reason": "Iterator.join is tracked for TypeScript 7.1 but is absent from the pinned libraries.",
+        "sourceUrls": [
+          "https://github.com/microsoft/TypeScript/issues/63700",
+          "https://tc39.es/proposal-iterator-join/#sec-iterator.prototype.join"
+        ],
+        "externalAction": {
+          "kind": "watch-existing",
+          "repo": "microsoft/TypeScript",
+          "targetUrl": "https://github.com/microsoft/TypeScript/issues/63700",
+          "note": "Update the mapping when the declaration lands."
+        },
+        "expectedResolutionKinds": [
+          "not-modeled-upstream"
+        ]
+      }
+    },
+    {
       "compatKey": "javascript.builtins.Iterator.map",
       "featureId": "iterator-methods",
       "featureName": "Iterator methods",
@@ -10346,14 +10395,15 @@
       "compatKey": "javascript.builtins.Map.groupBy",
       "featureId": "array-group",
       "featureName": "Array grouping",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "sourceRefs": [
         "javascript.builtins.Map.groupBy"
       ],
       "snapshot": [],
       "compatRoot": "Map",
-      "includeInTarget": false,
+      "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es2024.collection.d.ts::MapConstructor.groupBy::2"
@@ -12311,14 +12361,15 @@
       "compatKey": "javascript.builtins.Object.groupBy",
       "featureId": "array-group",
       "featureName": "Array grouping",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "sourceRefs": [
         "javascript.builtins.Object.groupBy"
       ],
       "snapshot": [],
       "compatRoot": "Object",
-      "includeInTarget": false,
+      "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es2024.object.d.ts::ObjectConstructor.groupBy::2"
@@ -13082,14 +13133,15 @@
       "compatKey": "javascript.builtins.Promise.withResolvers",
       "featureId": "promise-withresolvers",
       "featureName": "Promise.withResolvers()",
-      "baselineStatus": "low",
+      "baselineStatus": "high",
       "baselineLowDate": "2024-03-05",
+      "baselineHighDate": "2026-09-05",
       "sourceRefs": [
         "javascript.builtins.Promise.withResolvers"
       ],
       "snapshot": [],
       "compatRoot": "Promise",
-      "includeInTarget": false,
+      "includeInTarget": true,
       "resolutionKind": "member",
       "resolvedUnitIds": [
         "lib.es2024.promise.d.ts::PromiseConstructor.withResolvers::7"
@@ -15275,6 +15327,7 @@
       "includeInTarget": true,
       "resolutionKind": "root-availability",
       "resolvedUnitIds": [
+        "lib.es2017.sharedmemory.d.ts::ArrayBufferTypes.SharedArrayBuffer::13",
         "lib.es2017.sharedmemory.d.ts::SharedArrayBuffer::1",
         "lib.es2017.sharedmemory.d.ts::SharedArrayBuffer::10",
         "lib.es2017.sharedmemory.d.ts::SharedArrayBufferConstructor::6"
@@ -16567,6 +16620,42 @@
       ],
       "transforms": [],
       "notes": "member surface String.trimEnd"
+    },
+    {
+      "compatKey": "javascript.builtins.String.trimLeft",
+      "featureId": "string-trim-leftright",
+      "featureName": "String trimLeft() and trimRight()",
+      "baselineStatus": false,
+      "sourceRefs": [
+        "javascript.builtins.String.trimLeft"
+      ],
+      "snapshot": [],
+      "compatRoot": "String",
+      "includeInTarget": false,
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2019.string.d.ts::String.trimLeft::4"
+      ],
+      "transforms": [],
+      "notes": "member surface String.trimLeft"
+    },
+    {
+      "compatKey": "javascript.builtins.String.trimRight",
+      "featureId": "string-trim-leftright",
+      "featureName": "String trimLeft() and trimRight()",
+      "baselineStatus": false,
+      "sourceRefs": [
+        "javascript.builtins.String.trimRight"
+      ],
+      "snapshot": [],
+      "compatRoot": "String",
+      "includeInTarget": false,
+      "resolutionKind": "member",
+      "resolvedUnitIds": [
+        "lib.es2019.string.d.ts::String.trimRight::5"
+      ],
+      "transforms": [],
+      "notes": "member surface String.trimRight"
     },
     {
       "compatKey": "javascript.builtins.String.trimStart",

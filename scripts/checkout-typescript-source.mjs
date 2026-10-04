@@ -9,14 +9,21 @@ import {
 } from "../lib/typescript-source.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
+
 const scriptDirectory = path.dirname(scriptPath);
+
 const repoRoot = path.resolve(scriptDirectory, "..");
+
 const defaultManifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
 
 const args = parseArgs(process.argv.slice(2));
+
 const manifestPath = path.resolve(args.manifest ?? defaultManifestPath);
+
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+
 const pin = readTypeScriptSourcePin(manifest);
+
 const summary = checkoutTypeScriptSource({
     manifest,
     outDirectory: args.out ?? path.join(repoRoot, ".tmp", "TypeScript"),
@@ -42,6 +49,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--manifest":
                 args.manifest = requireArgValue(argv[++index], current);
@@ -72,6 +80,7 @@ function requireArgValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 

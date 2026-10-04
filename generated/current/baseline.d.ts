@@ -2162,6 +2162,10 @@ interface SharedArrayBufferConstructor {
 
 declare var SharedArrayBuffer: SharedArrayBufferConstructor;
 
+interface ArrayBufferTypes {
+        SharedArrayBuffer: SharedArrayBuffer;
+}
+
 interface Atomics {
         /**
          * Adds a value to the value at the given position in the array, returning the original value.
@@ -5549,8 +5553,84 @@ declare namespace Intl {
 /////////////////////////////
 // lib.es2024.arraybuffer.d.ts
 /////////////////////////////
+interface ArrayBuffer {
+        /**
+         * Returns a boolean indicating whether or not this buffer has been detached (transferred).
+         *
+         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/detached)
+         */
+        get detached(): boolean;
+
+        /**
+         * Creates a new ArrayBuffer with the same byte content as this buffer, then detaches this buffer.
+         *
+         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/transfer)
+         */
+        transfer(newByteLength?: number): ArrayBuffer;
+
+        /**
+         * Creates a new non-resizable ArrayBuffer with the same byte content as this buffer, then detaches this buffer.
+         *
+         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/transferToFixedLength)
+         */
+        transferToFixedLength(newByteLength?: number): ArrayBuffer;
+}
+
 interface ArrayBufferConstructor {
         new (byteLength: number): ArrayBuffer;
+}
+
+/////////////////////////////
+// lib.es2024.collection.d.ts
+/////////////////////////////
+interface MapConstructor {
+        /**
+         * Groups members of an iterable according to the return value of the passed callback.
+         * @param items An iterable.
+         * @param keySelector A callback which will be invoked for each item in items.
+         */
+        groupBy<K, T>(
+            items: Iterable<T>,
+            keySelector: (item: T, index: number) => K,
+        ): Map<K, T[]>;
+}
+
+/////////////////////////////
+// lib.es2024.object.d.ts
+/////////////////////////////
+interface ObjectConstructor {
+        /**
+         * Groups members of an iterable according to the return value of the passed callback.
+         * @param items An iterable.
+         * @param keySelector A callback which will be invoked for each item in items.
+         */
+        groupBy<K extends PropertyKey, T>(
+            items: Iterable<T>,
+            keySelector: (item: T, index: number) => K,
+        ): Partial<Record<K, T[]>>;
+}
+
+/////////////////////////////
+// lib.es2024.promise.d.ts
+/////////////////////////////
+interface PromiseWithResolvers<T> {
+        promise: Promise<T>;
+
+        resolve: (value: T | PromiseLike<T>) => void;
+
+        reject: (reason?: any) => void;
+}
+
+interface PromiseConstructor {
+        /**
+         * Creates a new Promise and returns it in an object, along with its resolve and reject functions.
+         * @returns An object with the properties `promise`, `resolve`, and `reject`.
+         *
+         * ```ts
+         * const { promise, resolve, reject } = Promise.withResolvers<T>();
+         * ```
+         */
+        withResolvers<T>(): PromiseWithResolvers<T>;
 }
 
 /////////////////////////////
@@ -10419,4 +10499,25 @@ interface Date {
          * @param options An object that contains one or more properties that specify comparison options.
          */
         toLocaleTimeString(locales?: string | string[], options?: Intl.DateTimeFormatOptions): string;
+}
+
+/////////////////////////////
+// lib.esnext.array.d.ts
+/////////////////////////////
+interface ArrayConstructor {
+        /**
+         * Creates an array from an async iterator or iterable object.
+         * @param iterableOrArrayLike An async iterator or array-like object to convert to an array.
+         */
+        fromAsync<T>(iterableOrArrayLike: AsyncIterable<T> | Iterable<T | PromiseLike<T>> | ArrayLike<T | PromiseLike<T>>): Promise<T[]>;
+
+        /**
+         * Creates an array from an async iterator or iterable object.
+         *
+         * @param iterableOrArrayLike An async iterator or array-like object to convert to an array.
+         * @param mapfn A mapping function to call on every element of itarableOrArrayLike.
+         *      Each return value is awaited before being added to result array.
+         * @param thisArg Value of 'this' used when executing mapfn.
+         */
+        fromAsync<T, U>(iterableOrArrayLike: AsyncIterable<T> | Iterable<T> | ArrayLike<T>, mapFn: (value: Awaited<T>, index: number) => U, thisArg?: any): Promise<Awaited<U>[]>;
 }

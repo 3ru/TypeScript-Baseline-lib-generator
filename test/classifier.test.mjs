@@ -10,6 +10,7 @@ import {
     writeJsonFile,
 } from "./helpers.mjs";
 import { classifyManifest } from "../lib/classifier.mjs";
+import { resolveExcludedUnits } from "../lib/generator.mjs";
 import {
     createSurfaceInventory,
     discoverBuiltinSourceLibEntries,
@@ -267,6 +268,30 @@ function findRow(classification, compatKey) {
     assert.ok(found, `expected classified row for ${compatKey}`);
     return found;
 }
+
+test("SharedArrayBuffer selects its ArrayBufferLike augmentation only when the root is included", async () => {
+    const key = "javascript.builtins.SharedArrayBuffer";
+    const libSource = [
+        "interface ArrayBuffer { byteLength: number; }",
+        "interface ArrayBufferTypes { ArrayBuffer: ArrayBuffer; }",
+        "type ArrayBufferLike = ArrayBufferTypes[keyof ArrayBufferTypes];",
+        "interface SharedArrayBuffer { byteLength: number; }",
+        "interface SharedArrayBufferConstructor { new(length: number): SharedArrayBuffer; }",
+        "declare var SharedArrayBuffer: SharedArrayBufferConstructor;",
+        "interface ArrayBufferTypes { SharedArrayBuffer: SharedArrayBuffer; }",
+    ].join("\n");
+    const rows = [row("javascript.builtins.ArrayBuffer", "high"), { ...row(key, "high"), baselineLowDate: "2021-12-01" }];
+    const current = await classifyFixture({ rows, libSource });
+    const currentRow = findRow(current, key);
+    const helperId = currentRow.resolvedUnitIds.find(id => id.includes("ArrayBufferTypes.SharedArrayBuffer"));
+    assert.ok(helperId);
+    assert.ok(findRow(current, "javascript.builtins.ArrayBuffer").resolvedUnitIds.some(id => id.includes("ArrayBufferTypes.ArrayBuffer")));
+    assert.equal(resolveExcludedUnits(current.classifiedCompatRows).excludedUnitIds.has(helperId), false);
+
+    const earlier = await classifyFixture({ rows, libSource, baselineTarget: "year:2020" });
+    assert.equal(findRow(earlier, key).includeInTarget, false);
+    assert.equal(resolveExcludedUnits(earlier.classifiedCompatRows).excludedUnitIds.has(helperId), true);
+});
 
 test("classifier routes synthetic compat rows to the expected resolution kinds", async () => {
     const classification = await classifyFixture({

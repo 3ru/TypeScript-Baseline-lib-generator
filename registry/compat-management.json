@@ -440,6 +440,30 @@
             ]
         },
         {
+            "id": "iterator-join-tracked",
+            "category": "tracked_by_canonical_lib",
+            "delivery": "defer-upstream",
+            "upstreamState": "tracked",
+            "compatRoot": "Iterator",
+            "expectedResolutionKinds": [
+                "not-modeled-upstream"
+            ],
+            "reason": "Iterator.join is tracked for TypeScript 7.1 but is absent from the pinned libraries.",
+            "sourceUrls": [
+                "https://github.com/microsoft/TypeScript/issues/63700",
+                "https://tc39.es/proposal-iterator-join/#sec-iterator.prototype.join"
+            ],
+            "externalAction": {
+                "kind": "watch-existing",
+                "repo": "microsoft/TypeScript",
+                "targetUrl": "https://github.com/microsoft/TypeScript/issues/63700",
+                "note": "Update the mapping when the declaration lands."
+            },
+            "compatKeys": [
+                "javascript.builtins.Iterator.join"
+            ]
+        },
+        {
             "id": "math-sum-precise-tracked",
             "category": "tracked_by_canonical_lib",
             "delivery": "defer-upstream",

@@ -100,16 +100,7 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
             );
         }
     }
-    for (const probe of [
-        { name: "Float16Array", pattern: /\b(?:interface|declare var) Float16Array\b/ },
-        { name: "Promise.withResolvers", pattern: /\bwithResolvers\s*\(/ },
-        { name: "Array.fromAsync", pattern: /\bfromAsync\s*</ },
-        { name: "Intl.Segmenter", pattern: /\b(?:interface|const) Segmenter\b/ },
-        { name: "String.prototype.substr", pattern: /\bsubstr\s*\(/ },
-        { name: "escape", pattern: /^declare function escape\b/m },
-    ]) {
-        assert.doesNotMatch(topLevelOutput, probe.pattern, `excluded runtime surface ${probe.name} must stay absent`);
-    }
+    assert.doesNotMatch(topLevelOutput, /^declare function escape\b/m);
 
     // The exclusion-invariant audit info must appear in the report.
     assert.ok(generationReport.summary.excludedUnitCount > 0);

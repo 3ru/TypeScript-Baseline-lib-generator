@@ -20,7 +20,9 @@ import { repoRoot } from "./package-registry.mjs";
 import { resolveReleaseExecutable } from "./trusted-executable.mjs";
 
 const PLAN_FILE_NAME = "release-plan.json";
+
 const NOTES_FILE_NAME = "release-notes.md";
+
 const TARBALL_FILE_NAME = "package.tgz";
 
 /**
@@ -28,16 +30,20 @@ const TARBALL_FILE_NAME = "package.tgz";
  */
 export function assertCleanWorktree(repoRoot) {
     const worktreeStatus = getGitStatus(repoRoot, ["--untracked-files=all"]);
+
     const ignoredGeneratedStatus = getGitStatus(repoRoot, [
         "--untracked-files=all",
         "--ignored=matching",
         "--",
         "generated/current",
     ]);
+
     const trackedFileState = runGit(repoRoot, ["ls-files", "-v"]);
+
     const hasHiddenIndexState = trackedFileState
         .split("\n")
         .some(line => line && line[0] !== "H");
+
     if (worktreeStatus || ignoredGeneratedStatus || hasHiddenIndexState || hasRawTrackedChanges(repoRoot)) {
         throw new Error("Release artifacts require a clean worktree");
     }
@@ -55,6 +61,7 @@ export function readHeadCommit(repoRoot) {
  */
 function hasRawTrackedChanges(repoRoot) {
     const objectFormat = runGit(repoRoot, ["rev-parse", "--show-object-format"]).trim();
+
     if (objectFormat !== "sha1" && objectFormat !== "sha256") {
         throw new Error(`Unsupported Git object format: ${objectFormat}`);
     }
@@ -62,37 +69,48 @@ function hasRawTrackedChanges(repoRoot) {
     const entries = runGit(repoRoot, ["ls-tree", "-r", "-z", "HEAD"])
         .split("\0")
         .filter(Boolean);
+
     for (const entry of entries) {
         const match = /^(100644|100755|120000) blob ([0-9a-f]+)\t([\s\S]+)$/u.exec(entry);
+
         if (!match) {
             throw new Error(`Unsupported tracked Git entry: ${entry}`);
         }
+
         const [, mode, expectedHash, relativePath] = match;
         const filePath = path.join(repoRoot, relativePath);
+
         if (!existsSync(filePath) && mode !== "120000") {
             return true;
         }
+
         const fileStats = lstatSync(filePath, { throwIfNoEntry: false });
+
         if (!fileStats) {
             return true;
         }
+
         if (
             (mode === "120000" && !fileStats.isSymbolicLink())
             || (mode !== "120000" && !fileStats.isFile())
         ) {
             return true;
         }
+
         const contents = mode === "120000"
             ? Buffer.from(readlinkSync(filePath))
             : readFileSync(filePath);
+
         const actualHash = createHash(objectFormat)
             .update(`blob ${contents.length}\0`)
             .update(contents)
             .digest("hex");
+
         if (actualHash !== expectedHash) {
             return true;
         }
     }
+
     return false;
 }
 
@@ -110,6 +128,7 @@ function getGitStatus(repoRoot, args) {
  */
 function runGit(repoRoot, args) {
     const git = resolveReleaseExecutable(repoRoot, "RELEASE_GIT_EXECUTABLE", "git");
+
     const result = spawnSync(git.executable, args, {
         cwd: repoRoot,
         encoding: "utf8",
@@ -118,12 +137,15 @@ function runGit(repoRoot, args) {
             GIT_NO_REPLACE_OBJECTS: "1",
         },
     });
+
     if (result.error) {
         throw result.error;
     }
+
     if (result.status !== 0) {
         throw new Error(`git ${args[0]} failed with exit code ${result.status}`);
     }
+
     return result.stdout;
 }
 
@@ -176,16 +198,20 @@ export function assertReleaseWorkflowContext(environment) {
  */
 export async function writePreparedReleaseArtifact(options) {
     const { releasePlan } = options;
+
     if (releasePlan.changed !== Boolean(options.tarballPath)) {
         throw new Error("A changed release plan must have exactly one package tarball");
     }
+
     await rm(options.outputDirectory, { recursive: true, force: true });
     await mkdir(options.outputDirectory, { recursive: true });
 
     const targetTarballPath = path.join(options.outputDirectory, TARBALL_FILE_NAME);
+
     const tarballIntegrity = options.tarballPath
         ? await copyAndHashTarball(options.tarballPath, targetTarballPath)
         : null;
+
     const plan = {
         schemaVersion: 2,
         sourceCommit: options.sourceCommit,
@@ -195,12 +221,14 @@ export async function writePreparedReleaseArtifact(options) {
         publishedVersion: releasePlan.publishedVersion ?? null,
         tarballIntegrity,
     };
+
     validateReleasePlan(plan);
     await writeFile(
         path.join(options.outputDirectory, PLAN_FILE_NAME),
         `${JSON.stringify(plan, undefined, 2)}\n`,
     );
     await writeFile(path.join(options.outputDirectory, NOTES_FILE_NAME), releasePlan.notesMarkdown);
+
     return plan;
 }
 
@@ -211,16 +239,21 @@ export async function readPreparedReleaseArtifact(artifactDirectory) {
     const plan = JSON.parse(await readFile(path.join(artifactDirectory, PLAN_FILE_NAME), "utf8"));
     validateReleasePlan(plan);
     const tarballPath = path.join(artifactDirectory, TARBALL_FILE_NAME);
+
     if (plan.changed) {
         const integrity = await hashFile(tarballPath);
+
         if (integrity !== plan.tarballIntegrity) {
             throw new Error(`Release tarball integrity mismatch: expected ${plan.tarballIntegrity}, got ${integrity}`);
         }
+
         const tar = resolveReleaseExecutable(repoRoot, "RELEASE_TAR_EXECUTABLE", "tar");
+
         const packageJson = JSON.parse(execFileSync(tar.executable, ["-xOf", tarballPath, "package/package.json"], {
             encoding: "utf8",
             env: tar.environment,
         }));
+
         if (packageJson.name !== plan.packageName || packageJson.version !== plan.packageVersion) {
             throw new Error(
                 `Release tarball contains ${String(packageJson.name)}@${String(packageJson.version)}; `
@@ -228,6 +261,7 @@ export async function readPreparedReleaseArtifact(artifactDirectory) {
             );
         }
     }
+
     return {
         plan,
         tarballPath,
@@ -242,13 +276,16 @@ export async function readPreparedReleaseArtifact(artifactDirectory) {
 export async function hashPreparedReleaseArtifact(artifactDirectory, changed) {
     const hash = createHash("sha512");
     const fileNames = [PLAN_FILE_NAME, NOTES_FILE_NAME];
+
     if (changed) {
         fileNames.push(TARBALL_FILE_NAME);
     }
+
     for (const fileName of fileNames) {
         const contents = await readFile(path.join(artifactDirectory, fileName));
         hash.update(`${fileName}\0${contents.length}\0`).update(contents);
     }
+
     return `sha512-${hash.digest("base64")}`;
 }
 
@@ -258,6 +295,7 @@ export async function hashPreparedReleaseArtifact(artifactDirectory, changed) {
  */
 async function copyAndHashTarball(sourcePath, destinationPath) {
     await copyFile(sourcePath, destinationPath);
+
     return hashFile(destinationPath);
 }
 
@@ -281,6 +319,7 @@ function validateReleasePlan(plan) {
         "sourceCommit",
         "tarballIntegrity",
     ];
+
     if (
         !plan
         || typeof plan !== "object"

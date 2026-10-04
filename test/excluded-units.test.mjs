@@ -41,6 +41,7 @@ async function createFixtureInventory(tempDirectory, libFiles) {
             version: "0.0.0-test",
         }, undefined, 4)}\n`,
     );
+
     for (const [fileName, sourceText] of Object.entries(libFiles)) {
         fs.writeFileSync(path.join(libDirectory, fileName), sourceText);
     }
@@ -49,6 +50,7 @@ async function createFixtureInventory(tempDirectory, libFiles) {
         libDirectory,
         reportPathPrefix: "typescript/lib",
     });
+
     return createSurfaceInventory({
         snapshotName: "excluded-units-test",
         repoRoot: tempDirectory,
@@ -64,11 +66,13 @@ async function createFixtureInventory(tempDirectory, libFiles) {
 function requireMemberUnit(inventory, memberKey) {
     const units = inventory.memberUnitsByOwnerAndName.get(memberKey) ?? [];
     assert.equal(units.length, 1, `expected exactly one unit for ${memberKey}`);
+
     return units[0];
 }
 
 test("complete-container emission never includes excluded member units", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
+
     const inventory = await createFixtureInventory(tempDirectory, {
         "lib.es5.d.ts": [
             "interface Widget {",
@@ -85,6 +89,7 @@ test("complete-container emission never includes excluded member units", async (
 
     const widgetInterface = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])
         .find(unit => unit.declarationKind === "interface");
+
     assert.ok(widgetInterface, "expected Widget interface declaration unit");
     const goodMember = requireMemberUnit(inventory, "Widget::good");
     const badMember = requireMemberUnit(inventory, "Widget::bad");
@@ -95,6 +100,7 @@ test("complete-container emission never includes excluded member units", async (
         selectedUnitIds: [widgetInterface.id],
         completeContainerUnitIds: new Set([widgetInterface.id]),
     });
+
     assert.match(unrestricted, /good\(\): void;/);
     assert.match(unrestricted, /bad\(\): void;/);
 
@@ -105,12 +111,14 @@ test("complete-container emission never includes excluded member units", async (
         completeContainerUnitIds: new Set([widgetInterface.id]),
         excludedUnitIds: new Set([badMember.id]),
     });
+
     assert.match(restricted, /good\(\): void;/);
     assert.doesNotMatch(restricted, /bad\(\): void;/);
 });
 
 test("whole-file preserved libs fail closed when they contain excluded units", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
+
     const inventory = await createFixtureInventory(tempDirectory, {
         "lib.esnext.widget.d.ts": [
             "export {};",
@@ -180,6 +188,7 @@ test("resolveExcludedUnits bans surface-defining exclusions but keeps shared and
 
 test("resolveUnclaimedTypeOnlyUnitIds preserves global aliases without selecting interface surface", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
+
     const inventory = await createFixtureInventory(tempDirectory, {
         "lib.es5.d.ts": [
             "type Utility<T> = { value: T };",
@@ -199,6 +208,7 @@ test("resolveUnclaimedTypeOnlyUnitIds preserves global aliases without selecting
             "",
         ].join("\n"),
     });
+
     const claimedAlias = (inventory.declarationUnitsBySymbol.get("ClaimedAlias") ?? [])[0];
     const excludedMember = requireMemberUnit(inventory, "TypeOnly::excluded");
     assert.ok(claimedAlias);
@@ -211,6 +221,7 @@ test("resolveUnclaimedTypeOnlyUnitIds preserves global aliases without selecting
         ],
         excludedUnitIds: new Set([excludedMember.id]),
     });
+
     const selectedUnits = selected.map(unitId => inventory.unitById.get(unitId));
 
     assert.ok(selectedUnits.some(unit => unit?.symbolName === "Utility"));
@@ -226,6 +237,7 @@ test("resolveUnclaimedTypeOnlyUnitIds preserves global aliases without selecting
 
 test("assertExclusionInvariants rejects selections that intersect excluded units", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
+
     const inventory = await createFixtureInventory(tempDirectory, {
         "lib.es5.d.ts": [
             "interface Widget {",
@@ -234,6 +246,7 @@ test("assertExclusionInvariants rejects selections that intersect excluded units
             "",
         ].join("\n"),
     });
+
     const badMember = requireMemberUnit(inventory, "Widget::bad");
 
     assert.throws(
@@ -258,6 +271,7 @@ test("assertExclusionInvariants rejects selections that intersect excluded units
 
 test("runtime provenance rejects unclaimed members and accepts explicit compiler support", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
+
     const inventory = await createFixtureInventory(tempDirectory, {
         "lib.es5.d.ts": [
             "interface Widget {",
@@ -271,14 +285,18 @@ test("runtime provenance rejects unclaimed members and accepts explicit compiler
             "",
         ].join("\n"),
     });
+
     const widgetDeclaration = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])
         .find(unit => unit.declarationKind === "interface");
+
     const widgetValue = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])
         .find(unit => unit.declarationKind === "var");
+
     const supportedMember = requireMemberUnit(inventory, "Widget::supported");
     const unknownMember = requireMemberUnit(inventory, "Widget::unknown");
     assert.ok(widgetDeclaration && widgetValue);
     const selectedUnitIds = [widgetDeclaration.id, widgetValue.id, supportedMember.id, unknownMember.id];
+
     const classifiedCompatRows = [
         {
             compatKey: "javascript.builtins.Widget",
@@ -321,6 +339,7 @@ test("runtime provenance rejects unclaimed members and accepts explicit compiler
 
 test("runtime provenance audits every unit emitted from a whole-file lib", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
+
     const inventory = await createFixtureInventory(tempDirectory, {
         "lib.esnext.widget.d.ts": [
             "export {};",
@@ -337,10 +356,13 @@ test("runtime provenance audits every unit emitted from a whole-file lib", async
             "",
         ].join("\n"),
     });
+
     const widgetDeclaration = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])
         .find(unit => unit.declarationKind === "interface");
+
     const widgetValue = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])
         .find(unit => unit.declarationKind === "var");
+
     const supportedMember = requireMemberUnit(inventory, "Widget::supported");
     assert.ok(widgetDeclaration && widgetValue);
 
@@ -399,6 +421,7 @@ test("surface inventory rejects module boundaries in built-in lib inputs", async
 
 test("surface inventory parses and strips TypeScript-valid lib reference syntax", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
+
     const inventory = await createFixtureInventory(tempDirectory, {
         "lib.esnext.widget.d.ts": [
             "/// <reference LIB = 'es2015.iterable' />",
@@ -406,6 +429,7 @@ test("surface inventory parses and strips TypeScript-valid lib reference syntax"
             "",
         ].join("\n"),
     });
+
     const fileRecord = inventory.fileByLibFileName.get("lib.esnext.widget.d.ts");
     const widget = (inventory.declarationUnitsBySymbol.get("Widget") ?? [])[0];
     assert.deepEqual(fileRecord?.referenceLibs, ["es2015.iterable"]);
@@ -415,6 +439,7 @@ test("surface inventory parses and strips TypeScript-valid lib reference syntax"
         inventory,
         selectedUnitIds: [widget.id],
     });
+
     assert.match(output, /interface Widget/u);
     assert.doesNotMatch(output, /reference\s+LIB/iu);
 });

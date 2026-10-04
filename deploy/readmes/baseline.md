@@ -57,10 +57,10 @@ The package does not expose unavailable runtime APIs to support third-party pack
 
 ## Allow a polyfilled feature
 
-If the runtime loads an audited polyfill, add its generated `web-features` entry after the base package. For example, core-js can provide `Promise.withResolvers`:
+If the runtime loads an audited polyfill, add its generated `web-features` entry after the base package. For example, core-js can provide `Promise.try`:
 
 ```ts
-import "core-js/proposals/promise-with-resolvers";
+import "core-js/proposals/promise-try";
 ```
 
 ```json
@@ -69,7 +69,7 @@ import "core-js/proposals/promise-with-resolvers";
     "noLib": true,
     "types": [
       "{{PACKAGE_NAME}}",
-      "{{PACKAGE_NAME}}/allow/promise-withresolvers"
+      "{{PACKAGE_NAME}}/allow/promise-try"
     ]
   }
 }

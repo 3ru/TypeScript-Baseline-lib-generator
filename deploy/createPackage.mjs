@@ -38,6 +38,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--package":
                 args.package = requireValue(argv[++index], current);
@@ -68,6 +69,7 @@ function requireValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 

@@ -21,14 +21,23 @@ import { generateTypeScriptProposalLib } from "../lib/typescript-proposal.mjs";
 import { readTypeScriptSourcePin } from "../lib/typescript-source.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
+
 const scriptDirectory = path.dirname(scriptPath);
+
 const repoRoot = path.resolve(scriptDirectory, "..");
+
 const manifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
+
 const fixturesRoot = path.join(repoRoot, "fixtures", "typescript");
+
 const defaultSummaryPath = path.join(repoRoot, ".tmp", "typescript-integration-summary.md");
+
 const defaultDiffPath = path.join(repoRoot, ".tmp", "typescript-baseline-changes.diff");
+
 const defaultFocusedBaselinesDirectory = path.join(repoRoot, ".tmp", "typescript-focused-artifact");
+
 const defaultLocalBaselinesDirectory = path.join(repoRoot, ".tmp", "typescript-raw-local-baselines");
+
 const TYPESCRIPT_PROPOSAL_PATHS = [
     path.join("tsc", "internal", "bundled", "source", "baseline.d.ts"),
     path.join("tsc", "internal", "bundled", "source", "libs.json"),
@@ -50,6 +59,7 @@ await main();
 async function main() {
     const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
     const expectedCommit = readTypeScriptSourcePin(manifest).commit;
+
     const proposal = await generateTypeScriptProposalLib({
         repoRoot,
         manifestPath,
@@ -58,7 +68,9 @@ async function main() {
         expectedCommit,
         allowUnpinned: args.allowUnpinned,
     });
+
     let patchSummary;
+
     try {
         patchSummary = prepareTypeScriptBaselinePatch({
             repoRoot,
@@ -72,6 +84,7 @@ async function main() {
     finally {
         proposal.cleanup();
     }
+
     const integrationDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "ts-baseline-ts-integration-"));
     /** @type {ReturnType<typeof runSmokeChecks> | undefined} */
     let smokeResults;
@@ -106,23 +119,28 @@ async function main() {
             //   the complete TypeScript suite to pass on the accepted state.
             if (args.mode === "gate" || args.mode === "full") {
                 extendedResults.targetedHarness = runTargetedHarness(patchSummary.typescriptDir);
+
                 if (!extendedResults.targetedHarness.ok) {
                     blockingFailure = new Error(
                         extendedResults.targetedHarness.output.trim() ||
                             "TypeScript targeted libBaseline harness failed",
                     );
                 }
+
                 extendedResults.focusedBaselinesPath = copyFocusedBaselinesArtifact({
                     typescriptDir: patchSummary.typescriptDir,
                     outputDirectory: args.focusedBaselinesOut,
                 });
+
                 const unexpectedPaths = findUnexpectedTypeScriptPatchPaths(
                     patchSummary.typescriptDir,
                     TYPESCRIPT_PROPOSAL_PATHS,
                 );
+
                 if (unexpectedPaths.length) {
                     blockingFailure ??= createUnexpectedPathsError("TypeScript generation", unexpectedPaths);
                 }
+
                 if (args.baselineDiffOut) {
                     fs.mkdirSync(path.dirname(args.baselineDiffOut), { recursive: true });
                     fs.writeFileSync(args.baselineDiffOut, renderTypeScriptPatchDiff(patchSummary.typescriptDir));
@@ -145,6 +163,7 @@ async function main() {
                     ["hereby", "baseline-accept"],
                     { cwd: patchSummary.typescriptDir },
                 );
+
                 if (!extendedResults.baselineAccept.ok) {
                     blockingFailure ??= new Error(
                         extendedResults.baselineAccept.output.trim() || "TypeScript baseline-accept failed",
@@ -155,6 +174,7 @@ async function main() {
                         patchSummary.typescriptDir,
                         TYPESCRIPT_PROPOSAL_PATHS,
                     );
+
                     if (unexpectedPaths.length) {
                         blockingFailure ??= createUnexpectedPathsError("TypeScript baseline-accept", unexpectedPaths);
                     }
@@ -164,6 +184,7 @@ async function main() {
                             ["test"],
                             { cwd: patchSummary.typescriptDir },
                         );
+
                         if (!extendedResults.fullSuiteAfterBaselineAccept.ok) {
                             blockingFailure ??= new Error(
                                 extendedResults.fullSuiteAfterBaselineAccept.output.trim()
@@ -172,8 +193,10 @@ async function main() {
                         }
                     }
                 }
+
                 if (args.baselineDiffOut) {
                     fs.mkdirSync(path.dirname(args.baselineDiffOut), { recursive: true });
+
                     const diffText = extendedResults.baselineAccept.ok
                         ? renderTypeScriptPatchDiff(patchSummary.typescriptDir)
                         : renderUnavailableDiffArtifact({
@@ -182,6 +205,7 @@ async function main() {
                             localBaselinesPath: extendedResults.localBaselinesPath,
                             typescriptDir: patchSummary.typescriptDir,
                         });
+
                     fs.writeFileSync(args.baselineDiffOut, diffText);
                     extendedResults.baselineDiffPath = args.baselineDiffOut;
                 }
@@ -206,6 +230,7 @@ async function main() {
         if (failure) {
             throw failure;
         }
+
         if (blockingFailure) {
             throw blockingFailure;
         }
@@ -222,6 +247,7 @@ function installTypeScriptDependencies(typescriptDir) {
     const installArgs = fs.existsSync(path.join(typescriptDir, "package-lock.json"))
         ? ["ci"]
         : ["install"];
+
     runNpm(typescriptDir, installArgs);
 }
 
@@ -235,6 +261,7 @@ function runSmokeChecks(typescriptDir, integrationDirectory) {
     const negativeProbes = loadActiveNegativeProbes();
     const negativeFlagPath = writeNegativeSmokeFixture(smokeRoot, negativeProbes);
     const tsconfigPath = writeSmokeTsconfig(smokeRoot);
+
     const localTscPath = path.join(
         typescriptDir,
         "built",
@@ -256,7 +283,9 @@ function runSmokeChecks(typescriptDir, integrationDirectory) {
         ["--strict", "--noEmit", "--lib", "baseline", negativeFlagPath],
         { cwd: typescriptDir },
     );
+
     assert.equal(negativeResult.ok, false, "Expected negative baseline smoke to fail");
+
     for (const probe of negativeProbes) {
         assert.match(
             negativeResult.output,
@@ -282,6 +311,7 @@ function loadActiveNegativeProbes() {
     const classification = JSON.parse(
         fs.readFileSync(path.join(repoRoot, "derived", "current", "classification.json"), "utf8"),
     );
+
     return selectActiveNegativeProbes(classification.classifiedCompatRows);
 }
 
@@ -293,6 +323,7 @@ function writeNegativeSmokeFixture(smokeRoot, negativeProbes) {
     const targetPath = path.join(smokeRoot, "negative-flag.ts");
     fs.mkdirSync(smokeRoot, { recursive: true });
     fs.writeFileSync(targetPath, renderNegativeProbeSource(negativeProbes));
+
     return targetPath;
 }
 
@@ -327,6 +358,7 @@ function writeSmokeTsconfig(smokeRoot) {
             files: ["positive-flag.ts"],
         }, undefined, 4)}\n`,
     );
+
     return tsconfigPath;
 }
 
@@ -349,6 +381,7 @@ function writeSmokeTsconfig(smokeRoot) {
  */
 function renderIntegrationSummary(options) {
     const blockingChecksPassed = !options.blockingFailureMessage;
+
     const lines = [
         "# TypeScript Integration Summary",
         "",
@@ -369,6 +402,7 @@ function renderIntegrationSummary(options) {
         lines.push(
             `- Targeted harness test: ${formatBlockingResult(options.extendedResults.targetedHarness)}`,
         );
+
         if (options.extendedResults.focusedBaselinesPath) {
             lines.push(`- Focused integration artifact: \`${options.extendedResults.focusedBaselinesPath}\``);
         }
@@ -380,10 +414,12 @@ function renderIntegrationSummary(options) {
             `- Baseline accept: ${formatBlockingResult(options.extendedResults.baselineAccept)}`,
             `- Post-accept full TypeScript suite: ${formatBlockingResult(options.extendedResults.fullSuiteAfterBaselineAccept)}`,
         );
+
         if (options.extendedResults.localBaselinesPath) {
             lines.push(`- Raw local baselines artifact: \`${options.extendedResults.localBaselinesPath}\``);
         }
     }
+
     if (options.extendedResults.baselineDiffPath) {
         lines.push(`- Baseline diff artifact: \`${options.extendedResults.baselineDiffPath}\``);
     }
@@ -450,6 +486,7 @@ function formatBlockingCheckStatus(ok, blockingFailureMessage) {
     if (ok) {
         return "passed (blocking)";
     }
+
     return blockingFailureMessage ? "failed (blocking)" : "not run";
 }
 
@@ -460,6 +497,7 @@ function formatBlockingResult(result) {
     if (!result) {
         return "not run";
     }
+
     return result.ok ? "passed (blocking)" : "failed (blocking)";
 }
 
@@ -470,6 +508,7 @@ function formatInitialSuiteResult(result) {
     if (!result) {
         return "not run";
     }
+
     return result.ok ? "passed (pre-accept)" : "failed (pre-accept baselines captured)";
 }
 
@@ -508,6 +547,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--allow-unpinned":
                 args.allowUnpinned = true;
@@ -529,12 +569,15 @@ function parseArgs(argv) {
                 break;
             case "--mode": {
                 const mode = requireArgValue(argv[++index], current);
+
                 if (mode !== "smoke" && mode !== "gate" && mode !== "full") {
                     throw new Error(`Unsupported integration mode: ${mode}`);
                 }
+
                 args.mode = mode;
                 break;
             }
+
             case "--skip-install":
                 args.skipInstall = true;
                 break;
@@ -558,6 +601,7 @@ function requireArgValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 
@@ -591,17 +635,20 @@ function runNpm(cwd, args) {
  */
 function runTargetedHarness(typescriptDir) {
     const testName = "TestLocal/libBaseline.ts";
+
     const result = runCommandAllowFailure(
         "go",
         ["test", "-json", "./internal/testrunner", "-run", "^TestLocal$/^libBaseline\\.ts$"],
         { cwd: path.join(typescriptDir, "tsc") },
     );
+
     if (result.ok && !hasPassingGoTestEvent(result.output, testName)) {
         return {
             ok: false,
             output: `${result.output}\nExpected a passing Go test event for ${testName}.`,
         };
     }
+
     return result;
 }
 
@@ -662,6 +709,7 @@ function runCommandAllowFailure(file, args, options) {
  */
 function copyLocalBaselinesArtifact(options) {
     const sourceDirectory = path.join(options.typescriptDir, "tsc", "testdata", "baselines", "local");
+
     if (!fs.existsSync(sourceDirectory)) {
         return undefined;
     }
@@ -669,6 +717,7 @@ function copyLocalBaselinesArtifact(options) {
     fs.rmSync(options.outputDirectory, { recursive: true, force: true });
     fs.mkdirSync(path.dirname(options.outputDirectory), { recursive: true });
     fs.cpSync(sourceDirectory, options.outputDirectory, { recursive: true });
+
     return options.outputDirectory;
 }
 
@@ -683,16 +732,20 @@ function copyFocusedBaselinesArtifact(options) {
     // Keep a reviewer-sized snapshot of the proposal-specific patch surface.
     fs.mkdirSync(options.outputDirectory, { recursive: true });
     let copiedFileCount = 0;
+
     for (const relativePath of TYPESCRIPT_PROPOSAL_PATHS) {
         const sourcePath = path.join(options.typescriptDir, relativePath);
+
         if (!fs.existsSync(sourcePath)) {
             continue;
         }
+
         const targetPath = path.join(options.outputDirectory, relativePath);
         fs.mkdirSync(path.dirname(targetPath), { recursive: true });
         fs.copyFileSync(sourcePath, targetPath);
         copiedFileCount++;
     }
+
     return copiedFileCount > 0 ? options.outputDirectory : undefined;
 }
 
