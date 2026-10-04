@@ -39,17 +39,21 @@ test("feature overlaps preserve baseline, allowlist, and year declarations witho
         "javascript.builtins.Set.union",
         "javascript.builtins.String.substr",
     ]);
+
     const originalRows = dataset.compatRows.filter(
         /** @param {{ compatKey: string; }} row */
         row => overlappingKeys.has(row.compatKey),
     );
+
     assert.equal(originalRows.length, overlappingKeys.size);
+
     const addedFeature = {
         featureId: "aaa-overlapping-feature",
         featureName: "Overlapping feature",
         snapshot: ["ecmascript-2025"],
         group: ["overlapping-group"],
     };
+
     dataset.featureRows.push({ ...addedFeature, baselineStatus: false });
     dataset.compatRows.push(...originalRows.map(
         /** @param {any} row */
@@ -72,6 +76,7 @@ test("feature overlaps preserve baseline, allowlist, and year declarations witho
             /** @param {{ compatKey: string; }} row */
             row => row.compatKey === originalRow.compatKey,
         );
+
         assert.equal(matchingRows.length, 1);
         const classified = matchingRows[0];
         assert.equal(classified.featureId, addedFeature.featureId);
