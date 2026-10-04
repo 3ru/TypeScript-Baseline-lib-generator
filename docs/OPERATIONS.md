@@ -36,6 +36,19 @@ Identical inputs produce byte-identical artifacts on each supported operating sy
 - `libSource` records the platform package and one content hash. The update requires identical files on Linux, macOS, and Windows.
 - `typescriptSource` records the exact `microsoft/TypeScript` `main` commit used by proposal preparation and integration tests. Proposal artifacts are generated from that checkout's declaration corpus.
 
+## Update workflows
+
+Weekly Update refreshes `web-features` and the generated declarations. TypeScript Toolchain Update refreshes the supported compiler packages and source pin, then tests the upstream integration. Both open a reviewable PR when inputs change; neither publishes a package. An unchanged snapshot can finish successfully without creating a PR.
+
+To check current `main`, run these commands from the repository checkout:
+
+```sh
+gh workflow run weekly-update.yml --ref main
+gh workflow run typescript-update.yml --ref main
+```
+
+The workflows use `AUTOMATION_TOKEN` so PR checks can start automatically. A fine-grained PAT needs `contents: write` and `pull-requests: write` access to this repository. Without that secret, the default `GITHUB_TOKEN` needs repository permission to create PRs, and its PR checks require manual approval. Approve pending workflows before merging. See [GitHub's token behavior](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow).
+
 ## Failed updates
 
 Weekly data and TypeScript toolchain updates save an `update-diagnostics` workflow artifact, including command logs, `summary.md`, and `summary.json`. The job summary shows the failed step, candidate input pins, and added, removed, or changed compat keys. Reports use the input dataset even if generation fails; existing derived files are not evidence that the candidate passed.
@@ -44,4 +57,6 @@ For registry drift, inspect each named compat key and its upstream declaration b
 
 For a TypeScript layout change, update the integration adapter and its fixtures. Keep proposal generation pinned to the recorded commit. Run `npm run validate`, then run `npm run test:typescript:gate` against that commit before retrying the toolchain workflow.
 
-Failed update jobs do not create pull requests. Repair the cause and rerun the workflow. Diagnostic collection does not change the release gates or publish a package.
+Failed update jobs do not create pull requests. After merging a fix, start a new run on `main` using the commands above. GitHub's [Re-run jobs](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs) uses the original commit, so it can repeat a failure that is already fixed on `main`. Use it for a transient failure that does not require a repository change.
+
+Diagnostic collection does not change the release gates or publish a package.

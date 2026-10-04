@@ -86,17 +86,14 @@ jobs:
           UPDATE_WORKFLOW_STEPS: ${{ toJSON(steps) }}
         run: node scripts/update-diagnostics.mjs report
 
-      # By GitHub design, PRs opened with the default GITHUB_TOKEN don't trigger
-      # any pull_request workflow (validate / test-typescript / package-dry-run).
-      # Set AUTOMATION_TOKEN (a fine-grained PAT or GitHub App token) to run CI
-      # on bot PRs too.
+      # A separate token lets PR checks run without manual approval.
       - name: Warn when AUTOMATION_TOKEN is not configured
         env:
           AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
         run: |
           if [ -z "$AUTOMATION_TOKEN" ]; then
-            message="AUTOMATION_TOKEN is not set, so PRs created by this workflow won't run pull_request CI automatically. Register a fine-grained PAT (contents: write / pull-requests: write) as AUTOMATION_TOKEN in the repository secrets."
-            echo "::warning title=CI won't run on bot PRs::${message}"
+            message="AUTOMATION_TOKEN is not set. PR checks created with GITHUB_TOKEN require manual approval. Set AUTOMATION_TOKEN with contents: write and pull-requests: write for unattended checks."
+            echo "::warning title=PR checks need approval::${message}"
             echo "> [!WARNING]" >> "$GITHUB_STEP_SUMMARY"
             echo "> ${message}" >> "$GITHUB_STEP_SUMMARY"
           fi
