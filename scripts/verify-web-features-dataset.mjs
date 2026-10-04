@@ -3,16 +3,25 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadBaselineDataset } from "../lib/dataset-loader.mjs";
+import { parseBaselineDataset } from "../lib/dataset-loader.mjs";
 import { requireRelativeManifestPath } from "../lib/shared.mjs";
 import { verifyWebFeaturesDataset } from "../lib/web-features-dataset.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
+
 const repoRoot = path.resolve(scriptDirectory, "..");
+
 const manifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
+
 const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+
 const datasetPath = requireRelativeManifestPath(manifest.dataset, manifestPath, "dataset");
-const dataset = await loadBaselineDataset(
+
+/** @type {unknown} */
+const dataset = JSON.parse(await readFile(datasetPath, "utf8"));
+
+parseBaselineDataset(
+    dataset,
     datasetPath,
     manifest.snapshot.name,
     manifest.snapshot.baselineDate,

@@ -39,12 +39,13 @@ const defaultFocusedBaselinesDirectory = path.join(repoRoot, ".tmp", "typescript
 const defaultLocalBaselinesDirectory = path.join(repoRoot, ".tmp", "typescript-raw-local-baselines");
 
 const TYPESCRIPT_PROPOSAL_PATHS = [
-    path.join("tsc", "internal", "bundled", "source", "baseline.d.ts"),
-    path.join("tsc", "internal", "bundled", "source", "libs.json"),
     path.join("tsc", "internal", "bundled", "libs", "lib.baseline.d.ts"),
     path.join("tsc", "internal", "bundled", "libs_generated.go"),
     path.join("tsc", "internal", "bundled", "embed_generated.go"),
-    path.join("tsc", "internal", "tsoptions", "enummaps.go"),
+    path.join("tools", "scripts", "tsc", "options.ts"),
+    path.join("tsc", "internal", "tsoptions", "declarations_generated.go"),
+    path.join("packages", "typescript", "schemas", "tsconfig.schema.json"),
+    path.join("packages", "typescript", "schemas", "jsconfig.schema.json"),
     path.join("tsc", "testdata", "tests", "cases", "compiler", "libBaseline.ts"),
     path.join("tsc", "testdata", "baselines", "reference", "compiler", "libBaseline.errors.txt"),
     path.join("tsc", "testdata", "baselines", "reference", "compiler", "libBaseline.js"),

@@ -24,45 +24,67 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+      - id: checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - id: setup-node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "npm"
-      - run: npm ci
+      - id: install
+        run: node scripts/update-diagnostics.mjs run install -- npm ci
 
       - name: Run static JS checks
-        run: npm run lint
+        id: lint
+        run: node scripts/update-diagnostics.mjs run lint -- npm run lint
 
       - name: Pin latest TypeScript toolchain
-        run: npm run update:typescript-toolchain
+        id: update-toolchain
+        run: node scripts/update-diagnostics.mjs run update-toolchain -- npm run update:typescript-toolchain
 
       - name: Verify pinned web-features dataset
-        run: npm run verify:dataset
+        id: verify-dataset
+        run: node scripts/update-diagnostics.mjs run verify-dataset -- npm run verify:dataset
 
       - name: Regenerate baseline
-        run: npm run generate
+        id: generate
+        run: node scripts/update-diagnostics.mjs run generate -- npm run generate
 
       - name: Run standalone validation
-        run: npm test
+        id: test
+        run: node scripts/update-diagnostics.mjs run test -- npm test
 
       - name: Checkout updated TypeScript source
-        run: npm run checkout:typescript-source -- --out .tmp/TypeScript --force
+        id: checkout-typescript
+        run: node scripts/update-diagnostics.mjs run checkout-typescript -- npm run checkout:typescript-source -- --out .tmp/TypeScript --force
 
       - name: Read required Go version
         id: go-version
         run: echo "version=$(awk '/^go / { print $2; exit }' .tmp/TypeScript/tsc/go.mod)" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+      - id: setup-go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           cache-dependency-path: .tmp/TypeScript/tsc/go.sum
 
       - name: Test updated TypeScript source
-        run: npm run test:typescript:gate -- --typescript-dir ./.tmp/TypeScript
+        id: integration
+        run: node scripts/update-diagnostics.mjs run integration -- npm run test:typescript:gate -- --typescript-dir ./.tmp/TypeScript
+
+      - name: Check latest TypeScript major against the peer range
+        id: peer-range
+        run: node scripts/update-diagnostics.mjs run peer-range -- npm run check:typescript-peer-latest
 
       - name: Prepare pull request body
-        run: npm run write:update-pr-body -- --out .tmp/typescript-toolchain-update-pr.md --summary-out .tmp/typescript-toolchain-update-summary.json
+        id: pr-body
+        run: node scripts/update-diagnostics.mjs run pr-body -- npm run write:update-pr-body -- --out .tmp/typescript-toolchain-update-pr.md --summary-out .tmp/typescript-toolchain-update-summary.json
+
+      - name: Write update diagnostics
+        if: always()
+        env:
+          UPDATE_WORKFLOW_STEPS: ${{ toJSON(steps) }}
+        run: node scripts/update-diagnostics.mjs report
 
       # By GitHub design, PRs opened with the default GITHUB_TOKEN don't trigger
       # any pull_request workflow (validate / test-typescript / package-dry-run).
@@ -80,6 +102,7 @@ jobs:
           fi
 
       - name: Create pull request
+        id: pull-request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           token: ${{ secrets.AUTOMATION_TOKEN || github.token }}
@@ -89,5 +112,11 @@ jobs:
           title: "chore: update TypeScript toolchain snapshot"
           body-path: .tmp/typescript-toolchain-update-pr.md
 
-      - name: Check latest TypeScript major against the peer range
-        run: npm run check:typescript-peer-latest
+      - name: Upload update diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: update-diagnostics
+          path: .tmp/update-diagnostics
+          include-hidden-files: true
+          if-no-files-found: error

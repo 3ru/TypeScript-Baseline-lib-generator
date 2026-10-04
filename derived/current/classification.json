@@ -40,7 +40,7 @@
   "compatManagementRegistrySummary": {
     "kind": "typescript-baseline-lib/compat-management-registry",
     "schemaVersion": 1,
-    "sourceHash": "sha256-11588342536d409110b0237bcfe2a83a7588c122398f0bc6168217cd786b4603",
+    "sourceHash": "sha256-5aad0f5fa9d5a6b4b43e7ccc9ee8220eaf5d617bdfe3f6b31edebae55d7cb9c6",
     "groupCount": 20,
     "managedCompatCount": 61
   },
@@ -9918,16 +9918,17 @@
         "category": "actionable_upstream_gap",
         "delivery": "defer-upstream",
         "upstreamState": "tracked",
-        "reason": "proposal-json-parse-with-source is tracked upstream, but the current TypeScript lib still lacks JSON.rawJSON, JSON.isRawJSON, and the reviver context parameter surface required by web-features.",
+        "reason": "TypeScript 7.0 lacks these declarations. The pinned upstream source includes all three in lib.es2026.json.d.ts.",
         "sourceUrls": [
           "https://github.com/microsoft/TypeScript/issues/61330",
+          "https://github.com/microsoft/TypeScript/pull/64096",
           "https://github.com/tc39/proposal-json-parse-with-source"
         ],
         "externalAction": {
           "kind": "watch-existing",
           "repo": "microsoft/TypeScript",
           "targetUrl": "https://github.com/microsoft/TypeScript/issues/61330",
-          "note": "Watch the existing Domain: lib.d.ts issue and promote once the canonical lib surface lands."
+          "note": "Watch the next TypeScript release and remove the source-specific expectation once the published declarations include these APIs."
         },
         "expectedResolutionKinds": [
           "not-modeled-upstream",
@@ -9994,16 +9995,17 @@
         "category": "actionable_upstream_gap",
         "delivery": "defer-upstream",
         "upstreamState": "tracked",
-        "reason": "proposal-json-parse-with-source is tracked upstream, but the current TypeScript lib still lacks JSON.rawJSON, JSON.isRawJSON, and the reviver context parameter surface required by web-features.",
+        "reason": "TypeScript 7.0 lacks these declarations. The pinned upstream source includes all three in lib.es2026.json.d.ts.",
         "sourceUrls": [
           "https://github.com/microsoft/TypeScript/issues/61330",
+          "https://github.com/microsoft/TypeScript/pull/64096",
           "https://github.com/tc39/proposal-json-parse-with-source"
         ],
         "externalAction": {
           "kind": "watch-existing",
           "repo": "microsoft/TypeScript",
           "targetUrl": "https://github.com/microsoft/TypeScript/issues/61330",
-          "note": "Watch the existing Domain: lib.d.ts issue and promote once the canonical lib surface lands."
+          "note": "Watch the next TypeScript release and remove the source-specific expectation once the published declarations include these APIs."
         },
         "expectedResolutionKinds": [
           "not-modeled-upstream",
@@ -10032,16 +10034,17 @@
         "category": "actionable_upstream_gap",
         "delivery": "defer-upstream",
         "upstreamState": "tracked",
-        "reason": "proposal-json-parse-with-source is tracked upstream, but the current TypeScript lib still lacks JSON.rawJSON, JSON.isRawJSON, and the reviver context parameter surface required by web-features.",
+        "reason": "TypeScript 7.0 lacks these declarations. The pinned upstream source includes all three in lib.es2026.json.d.ts.",
         "sourceUrls": [
           "https://github.com/microsoft/TypeScript/issues/61330",
+          "https://github.com/microsoft/TypeScript/pull/64096",
           "https://github.com/tc39/proposal-json-parse-with-source"
         ],
         "externalAction": {
           "kind": "watch-existing",
           "repo": "microsoft/TypeScript",
           "targetUrl": "https://github.com/microsoft/TypeScript/issues/61330",
-          "note": "Watch the existing Domain: lib.d.ts issue and promote once the canonical lib surface lands."
+          "note": "Watch the next TypeScript release and remove the source-specific expectation once the published declarations include these APIs."
         },
         "expectedResolutionKinds": [
           "not-modeled-upstream",

@@ -17,7 +17,7 @@ The command must pass before you open a pull request.
 
 Use the Node.js version in the `engines` field. The project supports macOS, Linux, and WSL.
 
-If you run the TypeScript 7 integration gate, install the Go toolchain.
+The upstream TypeScript integration gate requires Node.js 24 and the Go version in the pinned checkout's `tsc/go.mod`.
 
 ## How the generator works
 
@@ -32,6 +32,10 @@ npm run generate
 Git tracks the artifacts in `derived/current/` and `generated/current/`. If your change modifies the output, commit the regenerated files.
 
 If the tracked artifacts differ from the generated artifacts, CI fails.
+
+A compat key can belong to more than one web-features feature. The dataset stores one row per key. Overlapping rows include a sorted `featureMemberships` array with each feature's name, snapshots, and groups. The existing scalar feature fields describe the first membership; use `getCompatFeatureMemberships` to read all memberships.
+
+Inclusion uses the key's own Baseline status and dates. All memberships must agree on those facts, but their feature metadata may differ. Conflicting facts and repeated keys within one feature stop generation. Allowlist entries remain tied to compat keys rather than feature IDs.
 
 ## Change the compat-management registry
 
