@@ -10,7 +10,7 @@ import {
     writeJsonFile,
 } from "./helpers.mjs";
 import { loadBaselineDataset } from "../lib/dataset-loader.mjs";
-import { getCompatFeatureMemberships } from "../lib/compat-rows.mjs";
+import { normalizeCompatRows, parseCompatRow } from "../lib/compat-rows.mjs";
 import {
     buildWebFeaturesDataset,
     datasetsEqualIgnoringDate,
@@ -22,7 +22,8 @@ import {
 // change, hold the extraction date and don't open a "date-only PR". Pin this invariant.
 /**
  * @param {string} date
- * @param {Record<string, unknown>} [extra]
+ * @param {Partial<import("../lib/dataset-loader.mjs").BaselineDataset>} [extra]
+ * @returns {import("../lib/dataset-loader.mjs").BaselineDataset}
  */
 function datasetFixture(date, extra = {}) {
     return {
@@ -34,7 +35,7 @@ function datasetFixture(date, extra = {}) {
             webFeaturesPackageVersion: "3.32.0",
         },
         featureRows: [{ featureId: "a" }],
-        compatRows: [{ compatKey: "javascript.builtins.A", baselineStatus: "high" }],
+        compatRows: [{ compatKey: "javascript.builtins.A", featureId: "a", featureName: "A", snapshot: [], group: [], sourceRefs: [], baselineStatus: "high" }],
         ...extra,
     };
 }
@@ -51,9 +52,11 @@ test("resolveSnapshotDate preserves the existing date when only the date differs
 
 test("resolveSnapshotDate advances the date when the content actually changed", () => {
     const existing = datasetFixture("2026-07-07");
+
     const rebuilt = datasetFixture("2026-12-31", {
-        compatRows: [{ compatKey: "javascript.builtins.A", baselineStatus: "low" }],
+        compatRows: [{ ...existing.compatRows[0], baselineStatus: "low" }],
     });
+
     assert.ok(!datasetsEqualIgnoringDate(existing, rebuilt));
     assert.equal(
         resolveSnapshotDate({ existingDataset: existing, newDataset: rebuilt, candidateDate: "2026-12-31" }),
@@ -141,26 +144,31 @@ test("web-features extractor accepts well-formed per-key statuses", async () => 
 
 test("overlapping keys retain every feature membership and use per-key facts", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
+
     const firstFeature = {
         ...validFeature(),
         name: "First feature",
         snapshot: ["ecmascript-2020"],
         group: ["first-group"],
     };
+
     const secondFeature = {
         ...validFeature(),
         name: "Second feature",
         snapshot: ["ecmascript-2024"],
         group: ["second-group"],
     };
+
     secondFeature.status.baseline = "low";
     secondFeature.status.baseline_low_date = "2024-01-01";
     delete secondFeature.status.baseline_high_date;
+
     const options = {
         repoRoot: tempDirectory,
         snapshotDate: "2026-07-07",
         snapshotName: "web-features-test",
     };
+
     installWebFeaturesFixture(tempDirectory, { second: secondFeature, first: firstFeature });
     const dataset = await buildWebFeaturesDataset(options);
     assert.equal(dataset.featureRows.length, 2);
@@ -193,6 +201,7 @@ test("overlapping keys retain every feature membership and use per-key facts", a
 
 test("overlapping keys reject conflicting per-key statuses and dates", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
+
     /** @type {Array<[string, string | undefined]>} */
     const conflicts = [
         ["baseline", "low"],
@@ -200,6 +209,7 @@ test("overlapping keys reject conflicting per-key statuses and dates", async () 
         ["baseline_high_date", "2023-07-01"],
         ["baseline_high_date", undefined],
     ];
+
     for (const [field, value] of conflicts) {
         const secondFeature = validFeature();
         secondFeature.status.by_compat_key["javascript.builtins.Widget.good"][field] = value;
@@ -237,24 +247,29 @@ test("dataset loader rejects conflicts and duplicate memberships in overlapping 
     const tempDirectory = createTempDirectory(tempDirectories);
     const datasetPath = path.join(tempDirectory, "dataset.json");
     installWebFeaturesFixture(tempDirectory, { first: validFeature(), second: validFeature() });
+
     const dataset = await buildWebFeaturesDataset({
         repoRoot: tempDirectory,
         snapshotDate: "2026-07-07",
         snapshotName: "web-features-test",
     });
+
     const overlapping = dataset.compatRows[0];
+
     const conflicting = {
         ...overlapping,
         featureId: "third",
         featureMemberships: undefined,
         baselineStatus: "low",
     };
+
     writeJsonFile(datasetPath, { ...dataset, compatRows: [overlapping, conflicting] });
     await assert.rejects(
         loadBaselineDataset(datasetPath, "web-features-test"),
         /conflicting baselineStatus/,
     );
 
+    assert.ok(overlapping.featureMemberships);
     overlapping.featureMemberships.push(overlapping.featureMemberships[0]);
     writeJsonFile(datasetPath, dataset);
     await assert.rejects(
@@ -267,13 +282,17 @@ test("explicit feature memberships reject malformed provenance", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const datasetPath = path.join(tempDirectory, "dataset.json");
     installWebFeaturesFixture(tempDirectory, { first: validFeature(), second: validFeature() });
+
     const dataset = await buildWebFeaturesDataset({
         repoRoot: tempDirectory,
         snapshotDate: "2026-07-07",
         snapshotName: "web-features-test",
     });
+
     const row = dataset.compatRows[0];
     const memberships = row.featureMemberships;
+    assert.ok(memberships);
+
     const invalidValues = [
         null,
         {},
@@ -293,17 +312,79 @@ test("explicit feature memberships reject malformed provenance", async () => {
         [memberships[0], { ...memberships[1], group: null }],
         [memberships[0], { ...memberships[1], group: [42] }],
     ];
+
     for (const featureMemberships of invalidValues) {
-        row.featureMemberships = featureMemberships;
-        assert.throws(() => getCompatFeatureMemberships(row), /Compat row .* invalid/);
-        writeJsonFile(datasetPath, dataset);
-        await assert.rejects(loadBaselineDataset(datasetPath, "web-features-test"), /Compat row .* invalid/);
+        const invalidRow = { ...row, featureMemberships };
+        assert.throws(() => parseCompatRow(invalidRow), /Compat row .* (?:invalid|must be)/);
+        writeJsonFile(datasetPath, { ...dataset, compatRows: [invalidRow] });
+        await assert.rejects(loadBaselineDataset(datasetPath, "web-features-test"), /Compat row .* (?:invalid|must be)/);
+    }
+});
+
+test("singleton and overlapping rows decode the same metadata and provenance contract", () => {
+    const row = {
+        compatKey: "javascript.builtins.Widget.good",
+        featureId: "first",
+        featureName: "First",
+        baselineStatus: "high",
+        baselineLowDate: "2020-01-01",
+    };
+
+    const first = parseCompatRow(row);
+    const second = { ...first, featureId: "second", featureName: "Second", sourceRefs: [row.compatKey] };
+    const normalized = normalizeCompatRows([second, first]);
+    assert.deepEqual(normalizeCompatRows(normalized), normalized);
+    assert.deepEqual(first.sourceRefs, []);
+    assert.deepEqual(first.snapshot, []);
+    assert.deepEqual(first.group, []);
+
+    for (const changes of [
+        { featureId: 42 },
+        { featureName: 42 },
+        { snapshot: "ecmascript-2020" },
+        { snapshot: [null] },
+        { group: "javascript" },
+        { group: null },
+        { sourceRefs: "javascript.builtins.Widget.good" },
+        { sourceRefs: [42] },
+    ]) {
+        const invalidRow = { ...first, ...changes };
+        assert.throws(() => normalizeCompatRows([invalidRow]), /Compat row .* must be/);
+        assert.throws(() => normalizeCompatRows([invalidRow, second]), /Compat row .* must be/);
+    }
+});
+
+test("dataset loader validates high dates and feature references without rejecting projected promotion dates", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const datasetPath = path.join(tempDirectory, "dataset.json");
+    installWebFeaturesFixture(tempDirectory, { first: validFeature(), second: validFeature() });
+    const dataset = await buildWebFeaturesDataset({ repoRoot: tempDirectory, snapshotDate: "2026-07-07", snapshotName: "web-features-test" });
+    const row = dataset.compatRows[0];
+
+    for (const baselineHighDate of ["not-a-date", "2025-02-30", "2019-12-31"]) {
+        writeJsonFile(datasetPath, { ...dataset, compatRows: [{ ...row, baselineHighDate }] });
+        await assert.rejects(loadBaselineDataset(datasetPath, "web-features-test"), /baselineHighDate/);
+    }
+
+    writeJsonFile(datasetPath, { ...dataset, compatRows: [{ ...row, baselineStatus: "low", baselineHighDate: "2027-01-01" }] });
+    assert.equal((await loadBaselineDataset(datasetPath, "web-features-test", "2026-07-07")).compatRows[0].baselineHighDate, "2027-01-01");
+    writeJsonFile(datasetPath, { ...dataset, featureRows: [dataset.featureRows[0]] });
+    await assert.rejects(loadBaselineDataset(datasetPath, "web-features-test"), /references missing feature second/);
+});
+
+test("web-features metadata is decoded before either singleton or overlap normalization", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+
+    for (const changes of [{ name: null }, { snapshot: [42] }, { group: "javascript" }]) {
+        installWebFeaturesFixture(tempDirectory, { first: { ...validFeature(), ...changes } });
+        await assert.rejects(buildWebFeaturesDataset({ repoRoot: tempDirectory, snapshotDate: "2026-07-07", snapshotName: "web-features-test" }), /must be/);
     }
 });
 
 test("checked-in dataset must exactly match the pinned package extraction", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     installWebFeaturesFixture(tempDirectory, { "widget-helpers": validFeature() });
+
     const dataset = await buildWebFeaturesDataset({
         repoRoot: tempDirectory,
         snapshotDate: "2026-07-07",
@@ -317,6 +398,24 @@ test("checked-in dataset must exactly match the pinned package extraction", asyn
         verifyWebFeaturesDataset({ repoRoot: tempDirectory, dataset }),
         /does not match the pinned web-features package extraction/u,
     );
+});
+
+test("pinned artifact verification rejects extra fields before domain projection", async () => {
+    const tempDirectory = createTempDirectory(tempDirectories);
+    const datasetPath = path.join(tempDirectory, "dataset.json");
+    installWebFeaturesFixture(tempDirectory, { first: validFeature() });
+    const dataset = await buildWebFeaturesDataset({ repoRoot: tempDirectory, snapshotDate: "2026-07-07", snapshotName: "web-features-test" });
+
+    for (const candidate of [
+        { ...dataset, unexpected: true },
+        { ...dataset, snapshot: { ...dataset.snapshot, unexpected: true } },
+        { ...dataset, featureRows: [{ ...dataset.featureRows[0], unexpected: true }] },
+        { ...dataset, compatRows: [{ ...dataset.compatRows[0], unexpected: true }] },
+    ]) {
+        writeJsonFile(datasetPath, candidate);
+        await loadBaselineDataset(datasetPath, "web-features-test");
+        await assert.rejects(verifyWebFeaturesDataset({ repoRoot: tempDirectory, dataset: candidate }), /does not match the pinned web-features package extraction/);
+    }
 });
 
 test("web-features extractor fails closed when by_compat_key is missing instead of inheriting feature status", async () => {
@@ -354,7 +453,7 @@ test("web-features extractor fails closed when compat_features changes shape", a
             snapshotDate: "2026-07-07",
             snapshotName: "web-features-test",
         }),
-        /non-array compat_features/,
+        /compat_features must be an array of strings/,
     );
 
     const renamedDirectory = createTempDirectory(tempDirectories);
@@ -380,7 +479,7 @@ test("web-features extractor fails closed when compat_features changes shape", a
             snapshotDate: "2026-07-07",
             snapshotName: "web-features-test",
         }),
-        /missing the features map/,
+        /features map must be an object/,
     );
 });
 
@@ -422,6 +521,7 @@ test("dataset loader rejects checked-in rows with unsupported baseline statuses"
             {
                 compatKey: "javascript.builtins.Widget.good",
                 featureId: "widget-helpers",
+                featureName: "Widget helpers",
                 baselineStatus: "widely",
             },
         ],
@@ -429,7 +529,7 @@ test("dataset loader rejects checked-in rows with unsupported baseline statuses"
 
     await assert.rejects(
         loadBaselineDataset(datasetPath, "web-features-test"),
-        /unsupported baselineStatus "widely"/,
+        /baselineStatus has unsupported baseline status "widely"/,
     );
 });
 
@@ -443,6 +543,7 @@ test("dataset loader validates Baseline dates against the snapshot", async () =>
         ["2027-01-01", /is after snapshot 2026-07-07/],
         [undefined, /is not a valid Baseline date/],
     ];
+
     for (const [baselineLowDate, expectedError] of invalidDates) {
         writeJsonFile(datasetPath, {
             snapshot: { name: "web-features-test", baselineDate: "2026-07-07" },
@@ -450,8 +551,9 @@ test("dataset loader validates Baseline dates against the snapshot", async () =>
             compatRows: [{
                 compatKey: "javascript.builtins.Widget.good",
                 featureId: "widget-helpers",
+                featureName: "Widget helpers",
                 baselineStatus: "high",
-                ...(baselineLowDate ? { baselineLowDate } : {}),
+                baselineLowDate,
             }],
         });
         await assert.rejects(
