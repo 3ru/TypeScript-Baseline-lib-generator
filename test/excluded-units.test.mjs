@@ -53,7 +53,6 @@ async function createFixtureInventory(tempDirectory, libFiles) {
 
     return createSurfaceInventory({
         snapshotName: "excluded-units-test",
-        repoRoot: tempDirectory,
         sourceLibEntries,
         inventoryOutputPath: path.join(tempDirectory, "inventory.json"),
     });

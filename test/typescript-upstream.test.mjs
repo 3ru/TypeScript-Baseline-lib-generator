@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import {
-    enumMapsRelativePath,
+    compilerOptionsRelativePath,
     findUnexpectedTypeScriptPatchPaths,
     hasPassingGoTestEvent,
     prepareTypeScriptBaselinePatch,
@@ -22,6 +22,8 @@ import {
 /** @type {string[]} */
 const tempDirectories = [];
 
+const COPYRIGHT = "/*! *****\nCopyright (c) Microsoft Corporation. All rights reserved.\n***** */\n\n";
+
 test.afterEach(() => {
     cleanupTempDirectories(tempDirectories);
 });
@@ -29,11 +31,11 @@ test.afterEach(() => {
 test("prepareTypeScriptBaselinePatch patches the unified TypeScript tree once", () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const typescriptDir = createFakeTypeScriptTree(tempDirectory);
-    const generatedLibPath = path.join(tempDirectory, "generated", "baseline.d.ts");
+    const generatedLibPath = path.join(tempDirectory, "generated", "lib.baseline.d.ts");
     const fixturesRoot = createFixtureTree(tempDirectory);
 
     fs.mkdirSync(path.dirname(generatedLibPath), { recursive: true });
-    fs.writeFileSync(generatedLibPath, "// generated baseline\n");
+    fs.writeFileSync(generatedLibPath, `${COPYRIGHT}\n// generated baseline\n`);
 
     const first = prepareTypeScriptBaselinePatch({
         repoRoot: tempDirectory,
@@ -42,20 +44,17 @@ test("prepareTypeScriptBaselinePatch patches the unified TypeScript tree once", 
         fixturesRoot,
     });
 
-    const libSourcePath = path.join(typescriptDir, typescriptLibSourceDirectory, "baseline.d.ts");
-    const libsJsonPath = path.join(typescriptDir, typescriptLibSourceDirectory, "libs.json");
-    const enumMapsPath = path.join(typescriptDir, enumMapsRelativePath);
+    const libSourcePath = path.join(typescriptDir, typescriptLibSourceDirectory, "lib.baseline.d.ts");
+    const compilerOptionsPath = path.join(typescriptDir, compilerOptionsRelativePath);
     const testCasePath = path.join(typescriptDir, "tsc", "testdata", "tests", "cases", "compiler", "libBaseline.ts");
     const baselinePath = path.join(typescriptDir, "tsc", "testdata", "baselines", "reference", "compiler", "libBaseline.errors.txt");
 
-    assert.equal(fs.readFileSync(libSourcePath, "utf8"), "// generated baseline\n");
-    assert.equal([...fs.readFileSync(libsJsonPath, "utf8").matchAll(/"baseline"/g)].length, 1);
-    assert.equal([...fs.readFileSync(enumMapsPath, "utf8").matchAll(/Value: "lib\.baseline\.d\.ts"/g)].length, 1);
+    assert.equal(fs.readFileSync(libSourcePath, "utf8"), `${COPYRIGHT}\n// generated baseline\n`);
+    assert.equal([...fs.readFileSync(compilerOptionsPath, "utf8").matchAll(/value: "lib\.baseline\.d\.ts"/g)].length, 1);
     assert.ok(fs.existsSync(testCasePath));
     assert.ok(fs.existsSync(baselinePath));
     assert.equal(first.copiedGeneratedLib.changed, true);
-    assert.equal(first.patchedLibsJson.changed, true);
-    assert.equal(first.patchedEnumMaps.changed, true);
+    assert.equal(first.patchedCompilerOptions.changed, true);
     assert.equal(first.fixtureFiles.length, 2);
     assert.equal(first.changedFixtureFiles.length, 2);
     assert.match(renderTypeScriptPatchSummary(first), /npm ci && npm run generate/u);
@@ -66,9 +65,9 @@ test("prepareTypeScriptBaselinePatch patches the unified TypeScript tree once", 
         generatedLibPath,
         fixturesRoot,
     });
+
     assert.equal(second.copiedGeneratedLib.changed, false);
-    assert.equal(second.patchedLibsJson.changed, false);
-    assert.equal(second.patchedEnumMaps.changed, false);
+    assert.equal(second.patchedCompilerOptions.changed, false);
     assert.equal(second.fixtureFiles.length, 2);
     assert.equal(second.changedFixtureFiles.length, 0);
 });
@@ -77,62 +76,63 @@ test("prepareTypeScriptBaselinePatch uses the checkout command's default directo
     const tempDirectory = createTempDirectory(tempDirectories);
     const sourceDirectory = createFakeTypeScriptTree(tempDirectory);
     const typescriptDir = path.join(tempDirectory, ".tmp", "TypeScript");
-    const generatedLibPath = path.join(tempDirectory, "generated", "baseline.d.ts");
+    const generatedLibPath = path.join(tempDirectory, "generated", "lib.baseline.d.ts");
     const fixturesRoot = createFixtureTree(tempDirectory);
 
     fs.mkdirSync(path.dirname(typescriptDir), { recursive: true });
     fs.renameSync(sourceDirectory, typescriptDir);
     fs.mkdirSync(path.dirname(generatedLibPath), { recursive: true });
-    fs.writeFileSync(generatedLibPath, "// generated baseline\n");
+    fs.writeFileSync(generatedLibPath, `${COPYRIGHT}\n// generated baseline\n`);
 
     const summary = prepareTypeScriptBaselinePatch({
         repoRoot: tempDirectory,
         generatedLibPath,
         fixturesRoot,
     });
+
     assert.equal(summary.typescriptDir, typescriptDir);
 });
 
-test("prepareTypeScriptBaselinePatch fails closed when the LibMap anchor drifts", () => {
+test("prepareTypeScriptBaselinePatch fails closed when the compiler option anchor drifts", () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const typescriptDir = createFakeTypeScriptTree(tempDirectory);
-    const generatedLibPath = path.join(tempDirectory, "generated", "baseline.d.ts");
+    const generatedLibPath = path.join(tempDirectory, "generated", "lib.baseline.d.ts");
     const fixturesRoot = createFixtureTree(tempDirectory);
-    const enumMapsPath = path.join(typescriptDir, enumMapsRelativePath);
+    const compilerOptionsPath = path.join(typescriptDir, compilerOptionsRelativePath);
 
     fs.mkdirSync(path.dirname(generatedLibPath), { recursive: true });
-    fs.writeFileSync(generatedLibPath, "// generated baseline\n");
-    fs.writeFileSync(enumMapsPath, "var LibMap = ...\n\t{Key: \"es2025\", Value: \"lib.es2025.d.ts\"},\n");
+    fs.writeFileSync(generatedLibPath, `${COPYRIGHT}\n// generated baseline\n`);
+    fs.writeFileSync(compilerOptionsPath, "var LibMap = ...\n\t{Key: \"es2025\", Value: \"lib.es2025.d.ts\"},\n");
 
     assert.throws(
         () => prepareTypeScriptBaselinePatch({ repoRoot: tempDirectory, typescriptDir, generatedLibPath, fixturesRoot }),
-        /enummaps\.go LibMap entry anchor/u,
+        /options\.ts lib entry anchor/u,
     );
 });
 
 test("prepareTypeScriptBaselinePatch preserves upstream line endings", () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const typescriptDir = createFakeTypeScriptTree(tempDirectory);
-    const generatedLibPath = path.join(tempDirectory, "generated", "baseline.d.ts");
+    const generatedLibPath = path.join(tempDirectory, "generated", "lib.baseline.d.ts");
     const fixturesRoot = createFixtureTree(tempDirectory);
-    const libsJsonPath = path.join(typescriptDir, typescriptLibSourceDirectory, "libs.json");
 
     fs.mkdirSync(path.dirname(generatedLibPath), { recursive: true });
-    fs.writeFileSync(generatedLibPath, "// generated baseline\n");
-    fs.writeFileSync(libsJsonPath, fs.readFileSync(libsJsonPath, "utf8").replace(/\n/gu, "\r\n"));
+    fs.writeFileSync(generatedLibPath, `${COPYRIGHT}\n// generated baseline\n`);
+    const compilerOptionsPath = path.join(typescriptDir, compilerOptionsRelativePath);
+    fs.writeFileSync(compilerOptionsPath, fs.readFileSync(compilerOptionsPath, "utf8").replace(/\n/gu, "\r\n"));
 
     prepareTypeScriptBaselinePatch({ repoRoot: tempDirectory, typescriptDir, generatedLibPath, fixturesRoot });
-    assert.doesNotMatch(fs.readFileSync(libsJsonPath, "utf8"), /(?<!\r)\n/u);
+    assert.doesNotMatch(fs.readFileSync(compilerOptionsPath, "utf8"), /(?<!\r)\n/u);
 });
 
 test("prepareTypeScriptBaselinePatch refuses a clone that drifted from the pin", () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const typescriptDir = createFakeTypeScriptTree(tempDirectory);
-    const generatedLibPath = path.join(tempDirectory, "generated", "baseline.d.ts");
+    const generatedLibPath = path.join(tempDirectory, "generated", "lib.baseline.d.ts");
     const fixturesRoot = createFixtureTree(tempDirectory);
 
     fs.mkdirSync(path.dirname(generatedLibPath), { recursive: true });
-    fs.writeFileSync(generatedLibPath, "// generated baseline\n");
+    fs.writeFileSync(generatedLibPath, `${COPYRIGHT}\n// generated baseline\n`);
     execFileSync("git", ["init", "--quiet"], { cwd: typescriptDir });
     execFileSync("git", ["-c", "user.email=t@example.com", "-c", "user.name=t", "add", "."], { cwd: typescriptDir });
     execFileSync("git", ["-c", "user.email=t@example.com", "-c", "user.name=t", "commit", "--quiet", "-m", "fixture"], { cwd: typescriptDir });
@@ -147,7 +147,7 @@ test("prepareTypeScriptBaselinePatch refuses a clone that drifted from the pin",
         }),
         /Refusing to patch an unpinned clone/u,
     );
-    assert.ok(!fs.existsSync(path.join(typescriptDir, typescriptLibSourceDirectory, "baseline.d.ts")));
+    assert.ok(!fs.existsSync(path.join(typescriptDir, typescriptLibSourceDirectory, "lib.baseline.d.ts")));
 });
 
 test("TypeScript patch auditing rejects changes outside the proposal surface", () => {
@@ -231,17 +231,15 @@ test("TypeScript patch auditing accepts only mechanical lib-list baseline update
 function createFakeTypeScriptTree(tempDirectory) {
     const typescriptDir = path.join(tempDirectory, "TypeScript");
     const libSourceDirectory = path.join(typescriptDir, typescriptLibSourceDirectory);
-    const enumMapsPath = path.join(typescriptDir, enumMapsRelativePath);
+    const compilerOptionsPath = path.join(typescriptDir, compilerOptionsRelativePath);
 
     fs.mkdirSync(libSourceDirectory, { recursive: true });
-    fs.mkdirSync(path.dirname(enumMapsPath), { recursive: true });
+    fs.mkdirSync(path.dirname(compilerOptionsPath), { recursive: true });
+    fs.writeFileSync(path.join(libSourceDirectory, "lib.es5.d.ts"), "interface Object {}\n");
+    fs.writeFileSync(path.join(typescriptDir, "tsc", "internal", "bundled", "CopyrightNotice.txt"), COPYRIGHT);
     fs.writeFileSync(
-        path.join(libSourceDirectory, "libs.json"),
-        "{\n    \"libs\": [\n        \"es2025\",\n        \"esnext\",\n        \"dom.generated\"\n    ]\n}\n",
-    );
-    fs.writeFileSync(
-        enumMapsPath,
-        "var LibMap = collections.NewOrderedMapFromList([]collections.MapEntry[string, any]{\n\t{Key: \"es2025\", Value: \"lib.es2025.d.ts\"},\n\t{Key: \"esnext\", Value: \"lib.esnext.d.ts\"},\n\t{Key: \"dom\", Value: \"lib.dom.d.ts\"},\n})\n",
+        compilerOptionsPath,
+        'const options = {\n                { name: "esnext", value: "lib.esnext.d.ts" },\n};\n',
     );
 
     return typescriptDir;
@@ -259,6 +257,7 @@ function createFixtureTree(tempDirectory) {
     fs.mkdirSync(path.dirname(baselinePath), { recursive: true });
     fs.writeFileSync(testCasePath, "// @lib: baseline\nObject.hasOwn({}, 'x');\n");
     fs.writeFileSync(baselinePath, "fixture baseline\n");
+
     return fixturesRoot;
 }
 
@@ -270,11 +269,13 @@ function initializeGitFixture(directory, files) {
     execFileSync("git", ["init", "--quiet"], { cwd: directory });
     execFileSync("git", ["config", "user.email", "test@example.com"], { cwd: directory });
     execFileSync("git", ["config", "user.name", "Test"], { cwd: directory });
+
     for (const [relativePath, text] of Object.entries(files)) {
         const filePath = path.join(directory, relativePath);
         fs.mkdirSync(path.dirname(filePath), { recursive: true });
         fs.writeFileSync(filePath, text);
     }
+
     execFileSync("git", ["add", "."], { cwd: directory });
     execFileSync("git", ["commit", "--quiet", "-m", "fixture"], { cwd: directory });
 }
