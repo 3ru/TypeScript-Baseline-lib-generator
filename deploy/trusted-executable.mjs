@@ -9,6 +9,7 @@ import path from "node:path";
  */
 export function resolveReleaseExecutable(repoRoot, environmentVariable, defaultExecutable) {
     const configuredExecutable = process.env[environmentVariable];
+
     if (
         configuredExecutable
         && (!path.isAbsolute(configuredExecutable) || isWithinDirectory(configuredExecutable, repoRoot))
@@ -29,7 +30,9 @@ export function resolveReleaseExecutable(repoRoot, environmentVariable, defaultE
                 && !isWithinDirectory(entry, repoRoot)
                 && !/[\\/]node_modules[\\/]\.bin(?:$|[\\/])/u.test(entry)
             );
+
     const safePath = [...new Set(safePathEntries)].join(path.delimiter);
+
     return {
         executable: configuredExecutable ?? defaultExecutable,
         environment: {
@@ -45,6 +48,7 @@ export function resolveReleaseExecutable(repoRoot, environmentVariable, defaultE
  */
 function isWithinDirectory(candidatePath, directoryPath) {
     const relativePath = path.relative(directoryPath, candidatePath);
+
     return relativePath === ""
         || (!relativePath.startsWith(`..${path.sep}`) && relativePath !== ".." && !path.isAbsolute(relativePath));
 }

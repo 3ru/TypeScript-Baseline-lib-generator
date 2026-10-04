@@ -14,13 +14,21 @@ import { resolveInstalledPackageRoot } from "../lib/installed-package.mjs";
 import { selectActiveNegativeProbes } from "../lib/negative-probes.mjs";
 
 const testDirectory = path.dirname(fileURLToPath(import.meta.url));
+
 export const repoRoot = path.resolve(testDirectory, "..");
+
 export const repoManifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
+
 export const repoManifest = JSON.parse(fs.readFileSync(repoManifestPath, "utf8"));
+
 export const repoDatasetPath = path.join(repoRoot, "datasets", "web-features-js-compat.json");
+
 export const repoRegistryPath = path.join(repoRoot, "registry", "compat-management.json");
+
 export const repoAllowlistRegistryPath = path.join(repoRoot, "registry", "allowlist.json");
+
 export const repoGeneratedLibPath = path.join(repoRoot, "generated", "current", "baseline.d.ts");
+
 export const repoClassificationPath = path.join(repoRoot, "derived", "current", "classification.json");
 
 /**
@@ -30,6 +38,7 @@ export const repoClassificationPath = path.join(repoRoot, "derived", "current", 
 export function loadActiveNegativeProbesFromRepo() {
     /** @type {{ classifiedCompatRows: Array<{ compatKey: string; includeInTarget: boolean; }>; }} */
     const classification = readJsonFile(repoClassificationPath);
+
     return selectActiveNegativeProbes(classification.classifiedCompatRows);
 }
 
@@ -41,6 +50,7 @@ export function createTempDirectory(tempDirectories) {
     fs.mkdirSync(tempRoot, { recursive: true });
     const tempDirectory = fs.mkdtempSync(path.join(tempRoot, "run-"));
     tempDirectories.push(tempDirectory);
+
     return tempDirectory;
 }
 
@@ -51,6 +61,7 @@ export function cleanupTempDirectories(tempDirectories) {
     for (const tempDirectory of tempDirectories) {
         fs.rmSync(tempDirectory, { recursive: true, force: true });
     }
+
     tempDirectories.length = 0;
 }
 
@@ -108,6 +119,7 @@ export function createManifest(tempDirectory, options = {}) {
         yearDirectory: toPosixRelativePath(repoRoot, path.join(outputRoot, "generated", "year")),
         firstYear: repoManifest.firstClassLib.firstYear,
     };
+
     if (options.generatedOutputPath) {
         manifest.firstClassLib.outputFile = toPosixRelativePath(repoRoot, options.generatedOutputPath);
     }
@@ -187,9 +199,11 @@ export function runTscExpectFailure(args, options = {}) {
         ...options,
         allowFailure: true,
     });
+
     if (typeof result === "string") {
         assert.fail(`Expected tsc to fail for ${args.join(" ")}`);
     }
+
     return result;
 }
 
@@ -202,9 +216,11 @@ export function runTscStradaExpectFailure(args, options = {}) {
         ...options,
         allowFailure: true,
     });
+
     if (typeof result === "string") {
         assert.fail(`Expected strada tsc to fail for ${args.join(" ")}`);
     }
+
     return result;
 }
 
@@ -215,6 +231,7 @@ export function runTscStradaExpectFailure(args, options = {}) {
 export function runNpm(args, options = {}) {
     const cwd = options.cwd ?? repoRoot;
     const npm = resolveReleaseExecutable(repoRoot, "RELEASE_NPM_EXECUTABLE", "npm");
+
     return execFileSync(npm.executable, args, {
         cwd,
         encoding: "utf8",
@@ -231,11 +248,13 @@ export function runNpm(args, options = {}) {
  */
 export async function stageBaselinePackage(options = {}) {
     const stageDirectoryRoot = createTempDirectory(options.tempDirectories ?? []);
+
     const [summary] = await createPackageStages({
         packageId: "baseline",
         versionOverride: options.versionOverride ?? "0.0.0-test",
         stageDirectoryRoot,
     });
+
     assert.ok(summary, "Expected baseline package staging summary");
 
     return {
@@ -251,6 +270,7 @@ export async function createBaselinePackageTarball(options = {}) {
     const summary = await stageBaselinePackage(options);
     const tarballPath = await createPackageTarball(summary.stageDirectory);
     options.tempDirectories?.push(path.dirname(tarballPath));
+
     return {
         ...summary,
         tarballPath,
@@ -267,9 +287,11 @@ export async function createBaselinePackageTarball(options = {}) {
 function runPackageBinary(packageName, binName, args, options = {}) {
     const packageJsonPath = path.join(resolveInstalledPackageRoot(repoRoot, packageName), "package.json");
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+
     const binRelativePath = typeof packageJson.bin === "string"
         ? packageJson.bin
         : packageJson.bin?.[binName];
+
     assert.ok(binRelativePath, `Package ${packageName} does not expose a ${binName} binary`);
 
     const packageRoot = path.dirname(packageJsonPath);
@@ -288,11 +310,13 @@ function runPackageBinary(packageName, binName, args, options = {}) {
     catch (error) {
         if (options.allowFailure) {
             const failedError = /** @type {{ stdout?: string; stderr?: string; }} */ (error);
+
             return {
                 ok: false,
                 output: `${failedError.stdout ?? ""}${failedError.stderr ?? ""}`,
             };
         }
+
         throw error;
     }
 }

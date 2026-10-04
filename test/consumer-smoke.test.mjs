@@ -63,14 +63,17 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
         "process.stdout.write(JSON.stringify(snapshot));",
         "",
     ].join("\n"));
+
     const importedSnapshot = JSON.parse(execFileSync(process.execPath, [importProbePath], {
         cwd: consumerDirectory,
         encoding: "utf8",
     }));
+
     const requiredSnapshot = JSON.parse(execFileSync(process.execPath, [requireProbePath], {
         cwd: consumerDirectory,
         encoding: "utf8",
     }));
+
     assert.deepEqual(importedSnapshot, stagedSnapshot);
     assert.deepEqual(requiredSnapshot, stagedSnapshot);
 
@@ -111,6 +114,7 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
 
     const failure = runTscExpectFailure(["-p", path.join(consumerDirectory, "tsconfig.fail.json")], { cwd: consumerDirectory });
     assert.equal(failure.ok, false);
+
     for (const probe of negativeProbes) {
         assert.match(failure.output, probe.errorPattern, `expected excluded probe ${probe.compatKey} to fail compilation`);
     }
@@ -119,6 +123,7 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
     // caught by either checker).
     const stradaFailure = runTscStradaExpectFailure(["-p", path.join(consumerDirectory, "tsconfig.fail.json")], { cwd: consumerDirectory });
     assert.equal(stradaFailure.ok, false);
+
     for (const probe of negativeProbes) {
         assert.match(stradaFailure.output, probe.errorPattern, `expected excluded probe ${probe.compatKey} to fail compilation under strada`);
     }

@@ -10,23 +10,30 @@ import { retryAsync, retrySync } from "../lib/net-retry.mjs";
 
 test("retrySync returns immediately on first success without retrying", () => {
     let calls = 0;
+
     const result = retrySync("op", () => {
         calls += 1;
+
         return "ok";
     }, { baseDelayMs: 0 });
+
     assert.equal(result, "ok");
     assert.equal(calls, 1);
 });
 
 test("retrySync recovers after transient failures", () => {
     let calls = 0;
+
     const result = retrySync("op", () => {
         calls += 1;
+
         if (calls < 3) {
             throw new Error("transient");
         }
+
         return "recovered";
     }, { attempts: 3, baseDelayMs: 0 });
+
     assert.equal(result, "recovered");
     assert.equal(calls, 3);
 });
@@ -45,13 +52,17 @@ test("retrySync gives up after exhausting attempts and surfaces the last error",
 
 test("retryAsync recovers after transient rejection", async () => {
     let calls = 0;
+
     const result = await retryAsync("op", async () => {
         calls += 1;
+
         if (calls < 2) {
             throw new Error("transient");
         }
+
         return "recovered";
     }, { attempts: 3, baseDelayMs: 0 });
+
     assert.equal(result, "recovered");
     assert.equal(calls, 2);
 });

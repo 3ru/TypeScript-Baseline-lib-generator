@@ -95,6 +95,7 @@ test("compat-management registry fails schema validation on unexpected propertie
             if (index !== 0) {
                 return group;
             }
+
             return {
                 ...group,
                 category: "invalid-category",
@@ -108,6 +109,7 @@ test("compat-management registry fails schema validation on unexpected propertie
         error => {
             assert.match(String(error), /failed JSON schema validation/);
             assert.match(String(error), /invalid-category|unexpected property stray/);
+
             return true;
         },
     );

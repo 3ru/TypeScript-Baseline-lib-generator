@@ -16,6 +16,7 @@ const summaries = await createPackageStages({
 
 /** @type {Array<Record<string, string>>} */
 const tarballSummaries = [];
+
 for (const summary of summaries) {
     const tarballPath = await createPackageTarball(summary.stageDirectory);
     tarballSummaries.push({
@@ -45,6 +46,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--package":
                 args.package = requireValue(argv[++index], current);
@@ -75,6 +77,7 @@ function requireValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 

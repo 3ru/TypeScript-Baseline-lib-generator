@@ -134,6 +134,7 @@ test("every registered allow entry exposes its complete API surface under TypeSc
     const registry = await loadAllowlistRegistry(repoAllowlistRegistryPath);
     const stagedPackageJson = readJsonFile(path.join(stageDirectory, "package.json"));
     const stagedGeneration = readJsonFile(path.join(stageDirectory, "reports", "generation.json"));
+
     const generationEntryByName = new Map(stagedGeneration.allowEntries.map(
         /** @param {{ entryName: string; kind: string; }} entry */
         entry => [entry.entryName, entry],
@@ -166,6 +167,7 @@ test("every registered allow entry exposes its complete API surface under TypeSc
         writeTextFile(path.join(consumerDirectory, `${baseName}.ts`), ALLOW_ENTRY_PROBES[entry.entryName]);
         writeConsumerConfig(consumerDirectory, baseName, [baselinePackageName]);
         const baseConfigPath = path.join(consumerDirectory, `tsconfig.${baseName}.json`);
+
         if (generationEntryByName.get(entry.entryName)?.kind === "active") {
             assert.equal(runTscExpectFailure(["-p", baseConfigPath], { cwd: consumerDirectory }).ok, false);
             assert.equal(runTscStradaExpectFailure(["-p", baseConfigPath], { cwd: consumerDirectory }).ok, false);
@@ -182,6 +184,7 @@ test("allow entries preserve isolation under TypeScript 6 and 7", () => {
     const consumerDirectory = path.join(tempDirectory, "consumer");
     const datasetPath = path.join(tempDirectory, "dataset.json");
     const dataset = readJsonFile(repoDatasetPath);
+
     for (const compatKey of [
         "javascript.builtins.Promise.withResolvers",
         "javascript.builtins.Array.fromAsync",
@@ -190,13 +193,16 @@ test("allow entries preserve isolation under TypeScript 6 and 7", () => {
             /** @param {{ compatKey: string; }} row */
             row => row.compatKey === compatKey,
         );
+
         assert.ok(row);
         row.baselineStatus = "low";
         delete row.baselineHighDate;
     }
+
     writeJsonFile(datasetPath, dataset);
     const fixture = createManifest(tempDirectory, { datasetPath });
     runGenerate(fixture.manifestPath);
+
     const declarationFiles = [
         path.join(fixture.outputRoot, "generated", "baseline.d.ts"),
         path.join(fixture.outputRoot, "generated", "allow", "promise-withresolvers", "index.d.ts"),
@@ -249,11 +255,14 @@ test("generation is registry-bound, non-empty, safe, and deterministic", async (
     );
 
     const supportDirectory = path.join(fixture.outputRoot, "generated", "allow", "_support");
+
     const supportFiles = fs.existsSync(supportDirectory)
         ? fs.readdirSync(supportDirectory).sort()
         : [];
+
     /** @type {Map<string, Set<string>>} */
     const consumersByUnitId = new Map();
+
     for (const entry of generation.allowEntries) {
         for (const unitId of entry.supportUnitIds) {
             const consumers = consumersByUnitId.get(unitId) ?? new Set();
@@ -261,28 +270,35 @@ test("generation is registry-bound, non-empty, safe, and deterministic", async (
             consumersByUnitId.set(unitId, consumers);
         }
     }
+
     const consumerGroups = new Set(
         [...consumersByUnitId.values()].map(consumers => [...consumers].sort().join("\0")),
     );
+
     assert.equal(supportFiles.length, consumerGroups.size);
+
     for (const group of consumerGroups) {
         const entryNames = group.split("\0");
+
         if (entryNames.length === 1) {
             assert.ok(supportFiles.includes(`${entryNames[0]}.d.ts`));
         }
     }
 
     const referencedSupportFiles = new Set();
+
     for (const entry of generation.allowEntries) {
         const source = fs.readFileSync(
             path.join(fixture.outputRoot, "generated", "allow", entry.entryName, "index.d.ts"),
             "utf8",
         );
+
         for (const match of source.matchAll(/^\/\/\/ <reference path="\.\.\/_support\/([^"]+)" \/>$/gm)) {
             assert.ok(supportFiles.includes(match[1]));
             referencedSupportFiles.add(match[1]);
         }
     }
+
     assert.deepEqual([...referencedSupportFiles].sort(), supportFiles);
 
     runGenerate(fixture.manifestPath);
@@ -356,6 +372,7 @@ test("shared support bundles preserve entry isolation and composition under Type
             ].join("\n"),
         },
     ];
+
     for (const compilerCase of cases) {
         const configPath = writeDirectConsumerConfig({
             directory: tempDirectory,
@@ -363,6 +380,7 @@ test("shared support bundles preserve entry isolation and composition under Type
             source: compilerCase.source,
             declarationFiles: [fixture.topLevelOutputPath, ...compilerCase.entries],
         });
+
         runTsc(["-p", configPath], { cwd: tempDirectory });
         runTscStrada(["-p", configPath], { cwd: tempDirectory });
     }
@@ -377,6 +395,7 @@ test("shared support bundles preserve entry isolation and composition under Type
         ].join("\n"),
         declarationFiles: [fixture.topLevelOutputPath, coreEntryPath],
     });
+
     assert.match(runTscExpectFailure(["-p", coreIsolationConfig], { cwd: tempDirectory }).output, /formatToParts/);
     assert.match(runTscStradaExpectFailure(["-p", coreIsolationConfig], { cwd: tempDirectory }).output, /formatToParts/);
 
@@ -386,6 +405,7 @@ test("shared support bundles preserve entry isolation and composition under Type
         source: "new Intl.DurationFormat(\"en\");\n",
         declarationFiles: [fixture.topLevelOutputPath, detailsEntryPath],
     });
+
     assert.match(runTscExpectFailure(["-p", detailsIsolationConfig], { cwd: tempDirectory }).output, /DurationFormat/);
     assert.match(runTscStradaExpectFailure(["-p", detailsIsolationConfig], { cwd: tempDirectory }).output, /DurationFormat/);
 });
@@ -428,17 +448,21 @@ test("partial Baseline promotion cannot split a non-mergeable container from its
     const datasetPath = path.join(tempDirectory, "dataset.json");
     const allowlistRegistryPath = path.join(tempDirectory, "allowlist.json");
     const dataset = readJsonFile(repoDatasetPath);
+
     const promotedCompatKeys = new Set([
         "javascript.builtins.Intl.DurationFormat",
         "javascript.builtins.Intl.DurationFormat.DurationFormat",
         "javascript.builtins.Intl.DurationFormat.format",
     ]);
+
     for (const row of dataset.compatRows) {
         if (promotedCompatKeys.has(row.compatKey)) {
             row.baselineStatus = "high";
         }
     }
+
     writeJsonFile(datasetPath, dataset);
+
     const durationFormatCompatKeys = [
         "javascript.builtins.Intl.DurationFormat",
         "javascript.builtins.Intl.DurationFormat.DurationFormat",
@@ -455,9 +479,11 @@ test("partial Baseline promotion cannot split a non-mergeable container from its
         });
         const fixture = createManifest(tempDirectory, { datasetPath, allowlistRegistryPath });
         const failure = runGenerateExpectFailure(fixture.manifestPath);
+
         const expectedSurfaces = entryName === "baseline"
             ? "baseline, baseline"
             : "baseline, intl-duration-format";
+
         assert.match(
             failure,
             new RegExp(
@@ -474,10 +500,12 @@ test("a registered path becomes a permanent baseline alias after promotion", () 
     const allowlistRegistryPath = path.join(tempDirectory, "allowlist.json");
     const dataset = readJsonFile(repoDatasetPath);
     const compatKey = "javascript.builtins.Promise.withResolvers";
+
     const compatRow = dataset.compatRows.find(
         /** @param {{ compatKey: string; }} row */
         row => row.compatKey === compatKey,
     );
+
     assert.ok(compatRow);
     compatRow.baselineStatus = "low";
     delete compatRow.baselineHighDate;
@@ -554,10 +582,12 @@ test("every compat key in an active entry must emit declaration surface", () => 
     const allowlistRegistryPath = path.join(tempDirectory, "allowlist.json");
     const dataset = readJsonFile(repoDatasetPath);
     const behavioralCompatKey = "javascript.builtins.AggregateError.serializable_object";
+
     const behavioralRow = dataset.compatRows.find(
         /** @param {{ compatKey: string; }} row */
         row => row.compatKey === behavioralCompatKey,
     );
+
     assert.ok(behavioralRow);
     behavioralRow.baselineStatus = "low";
     delete behavioralRow.baselineHighDate;
@@ -627,6 +657,7 @@ test("release planning preserves published paths and exact compat contracts", ()
             compatKeys: ["javascript.builtins.Promise.withResolvers"],
         }],
     });
+
     const unchanged = JSON.stringify({
         allowEntries: [{
             kind: "alias",
@@ -634,6 +665,7 @@ test("release planning preserves published paths and exact compat contracts", ()
             compatKeys: ["javascript.builtins.Promise.withResolvers"],
         }],
     });
+
     assert.doesNotThrow(() => assertAllowEntryContractsPreserved(published, unchanged));
     assert.throws(
         () => assertAllowEntryContractsPreserved(published, JSON.stringify({
@@ -676,6 +708,7 @@ function writeConsumerConfig(consumerDirectory, name, types) {
  */
 function assertCompilerFailuresContain(consumerDirectory, name, expectedError) {
     const configPath = path.join(consumerDirectory, `tsconfig.${name}.json`);
+
     for (const failure of [
         runTscExpectFailure(["-p", configPath], { cwd: consumerDirectory }),
         runTscStradaExpectFailure(["-p", configPath], { cwd: consumerDirectory }),
@@ -704,6 +737,7 @@ function writeDirectConsumerConfig(options) {
         compilerOptions: { noLib: true, strict: true },
         files: [sourcePath, ...options.declarationFiles],
     });
+
     return configPath;
 }
 
