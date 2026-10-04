@@ -39050,6 +39050,7 @@
         "lib.es2025.iterator.d.ts::IteratorObject::10",
         "lib.es2025.iterator.d.ts::IteratorObjectConstructor::6"
       ],
+      "isGlobalAugmentation": true,
       "parameterNames": [],
       "surfacePath": "global",
       "order": 5

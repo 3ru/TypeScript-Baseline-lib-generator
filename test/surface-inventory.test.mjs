@@ -90,6 +90,23 @@ test("whole-file emission rejects cross-module local merges and preserves valid 
     assert.deepEqual(typecheck([generatedPath, probePath]), []);
 });
 
+test("a module-local namespace named global cannot merge across source files", async () => {
+    const inventory = await inventoryFromSources({
+        "lib.es2025.a.d.ts": "export {}; declare namespace global { interface Helper { a: string; } } declare global { interface AuditA { value: global.Helper; } }",
+        "lib.es2025.b.d.ts": "export {}; declare namespace global { interface Helper { b: number; } } declare global { interface AuditB { value: global.Helper; } }",
+    });
+
+    const directory = createTempDirectory(tempDirectories);
+    const probePath = path.join(directory, "probe.ts");
+    fs.writeFileSync(probePath, "declare const a: AuditA; a.value.b;");
+
+    assert.deepEqual(typecheck([...inventory.files.map(file => file.sourcePath), probePath]), [2339]);
+    assert.throws(
+        () => emitSelectedUnits({ inventory, selectedUnitIds: inventory.units.map(unit => unit.id) }),
+        /Cannot combine module-local symbol global from lib\.es2025\.a\.d\.ts and lib\.es2025\.b\.d\.ts/,
+    );
+});
+
 test("emission preserves multiline literal types inside global wrappers and containers", async () => {
     const inventory = await inventoryFromSources({
         "lib.es5.d.ts": [
