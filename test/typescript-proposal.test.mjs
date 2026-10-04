@@ -46,6 +46,7 @@ test("proposal generation follows the pinned TypeScript checkout declaration cor
         generateTypeScriptProposalLib({ repoRoot: proposalRepoRoot, manifestPath: repoManifestPath, manifest: repoManifest, typescriptDir }),
         generateTypeScriptProposalLib({ repoRoot: proposalRepoRoot, manifestPath: repoManifestPath, manifest: repoManifest, typescriptDir }),
     ]);
+
     try {
         const packageOutput = fs.readFileSync(repoGeneratedLibPath, "utf8");
         const proposalOutputs = proposals.map(proposal => fs.readFileSync(proposal.outputPath, "utf8"));
@@ -81,10 +82,12 @@ test("pinned proposal generation reads commit blobs instead of hidden working-tr
     execFileSync("git", ["config", "user.name", "Test"], { cwd: typescriptDir });
     execFileSync("git", ["add", "."], { cwd: typescriptDir });
     execFileSync("git", ["commit", "--quiet", "-m", "fixture"], { cwd: typescriptDir });
+
     const expectedCommit = execFileSync("git", ["rev-parse", "HEAD"], {
         cwd: typescriptDir,
         encoding: "utf8",
     }).trim();
+
     const trackedRelativePath = "tsc/internal/bundled/libs/lib.es2018.intl.d.ts";
     const trackedPath = path.join(typescriptDir, trackedRelativePath);
     fs.writeFileSync(
@@ -96,10 +99,12 @@ test("pinned proposal generation reads commit blobs instead of hidden working-tr
     );
     execFileSync("git", ["add", trackedRelativePath], { cwd: typescriptDir });
     execFileSync("git", ["commit", "--quiet", "-m", "replacement"], { cwd: typescriptDir });
+
     const replacementCommit = execFileSync("git", ["rev-parse", "HEAD"], {
         cwd: typescriptDir,
         encoding: "utf8",
     }).trim();
+
     execFileSync("git", ["reset", "--hard", expectedCommit], { cwd: typescriptDir });
     execFileSync("git", ["replace", expectedCommit, replacementCommit], { cwd: typescriptDir });
     fs.writeFileSync(
@@ -126,6 +131,7 @@ test("pinned proposal generation reads commit blobs instead of hidden working-tr
         typescriptDir,
         expectedCommit,
     });
+
     try {
         const output = fs.readFileSync(proposal.outputPath, "utf8");
         assert.doesNotMatch(output, /"LOCAL"|"REPLACEMENT"|injected\(\): void/u);

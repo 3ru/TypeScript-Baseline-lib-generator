@@ -21,6 +21,7 @@ import {
 
 /** @type {string[]} */
 const tempDirectories = [];
+
 const COPYRIGHT = "/*! *****\nCopyright (c) Microsoft Corporation. All rights reserved.\n***** */\n\n";
 
 test.afterEach(() => {
@@ -64,6 +65,7 @@ test("prepareTypeScriptBaselinePatch patches the unified TypeScript tree once", 
         generatedLibPath,
         fixturesRoot,
     });
+
     assert.equal(second.copiedGeneratedLib.changed, false);
     assert.equal(second.patchedCompilerOptions.changed, false);
     assert.equal(second.fixtureFiles.length, 2);
@@ -87,6 +89,7 @@ test("prepareTypeScriptBaselinePatch uses the checkout command's default directo
         generatedLibPath,
         fixturesRoot,
     });
+
     assert.equal(summary.typescriptDir, typescriptDir);
 });
 
@@ -254,6 +257,7 @@ function createFixtureTree(tempDirectory) {
     fs.mkdirSync(path.dirname(baselinePath), { recursive: true });
     fs.writeFileSync(testCasePath, "// @lib: baseline\nObject.hasOwn({}, 'x');\n");
     fs.writeFileSync(baselinePath, "fixture baseline\n");
+
     return fixturesRoot;
 }
 
@@ -265,11 +269,13 @@ function initializeGitFixture(directory, files) {
     execFileSync("git", ["init", "--quiet"], { cwd: directory });
     execFileSync("git", ["config", "user.email", "test@example.com"], { cwd: directory });
     execFileSync("git", ["config", "user.name", "Test"], { cwd: directory });
+
     for (const [relativePath, text] of Object.entries(files)) {
         const filePath = path.join(directory, relativePath);
         fs.mkdirSync(path.dirname(filePath), { recursive: true });
         fs.writeFileSync(filePath, text);
     }
+
     execFileSync("git", ["add", "."], { cwd: directory });
     execFileSync("git", ["commit", "--quiet", "-m", "fixture"], { cwd: directory });
 }

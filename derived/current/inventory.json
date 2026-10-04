@@ -7661,6 +7661,9 @@
         "lib.es2015.iterable.d.ts::IteratorResult::11",
         "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
+      "heritageSymbols": [
+        "IteratorObject"
+      ],
       "parameterNames": [],
       "surfacePath": "Generator",
       "order": 0
@@ -8338,6 +8341,9 @@
         "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
       ],
+      "heritageSymbols": [
+        "Iterator"
+      ],
       "parameterNames": [],
       "surfacePath": "IterableIterator",
       "order": 15
@@ -8383,6 +8389,9 @@
         "lib.es2025.iterator.d.ts::Iterator::2",
         "lib.es2025.iterator.d.ts::Iterator::31",
         "lib.es2025.iterator.d.ts::Iterator::5"
+      ],
+      "heritageSymbols": [
+        "Iterator"
       ],
       "parameterNames": [],
       "surfacePath": "IteratorObject",
@@ -8446,6 +8455,9 @@
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::IteratorObject::10"
+      ],
+      "heritageSymbols": [
+        "IteratorObject"
       ],
       "parameterNames": [],
       "surfacePath": "ArrayIterator",
@@ -8830,6 +8842,9 @@
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::IteratorObject::10"
+      ],
+      "heritageSymbols": [
+        "IteratorObject"
       ],
       "parameterNames": [],
       "surfacePath": "MapIterator",
@@ -9259,6 +9274,9 @@
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::IteratorObject::10"
+      ],
+      "heritageSymbols": [
+        "IteratorObject"
       ],
       "parameterNames": [],
       "surfacePath": "SetIterator",
@@ -9776,6 +9794,9 @@
         "lib.es2015.iterable.d.ts::BuiltinIteratorReturn::26",
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::IteratorObject::10"
+      ],
+      "heritageSymbols": [
+        "IteratorObject"
       ],
       "parameterNames": [],
       "surfacePath": "StringIterator",
@@ -18191,6 +18212,9 @@
         "lib.es5.d.ts::Promise::457",
         "lib.es5.d.ts::PromiseLike::454"
       ],
+      "heritageSymbols": [
+        "AsyncIteratorObject"
+      ],
       "parameterNames": [],
       "surfacePath": "AsyncGenerator",
       "order": 0
@@ -18775,6 +18799,9 @@
       "dependencyUnitIds": [
         "lib.es2018.asynciterable.d.ts::AsyncIterator::4"
       ],
+      "heritageSymbols": [
+        "AsyncIterator"
+      ],
       "parameterNames": [],
       "surfacePath": "AsyncIterableIterator",
       "order": 8
@@ -18817,6 +18844,9 @@
       ],
       "dependencyUnitIds": [
         "lib.es2018.asynciterable.d.ts::AsyncIterator::4"
+      ],
+      "heritageSymbols": [
+        "AsyncIterator"
       ],
       "parameterNames": [],
       "surfacePath": "AsyncIteratorObject",
@@ -25542,6 +25572,9 @@
         "lib.es2020.intl.d.ts::Intl.LocaleOptions::79",
         "lib.es2020.intl.d.ts::Intl.UnicodeBCP47LocaleIdentifier::2"
       ],
+      "heritageSymbols": [
+        "Intl.LocaleOptions"
+      ],
       "parameterNames": [],
       "surfacePath": "Intl.Locale",
       "order": 77
@@ -27666,6 +27699,9 @@
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
+      "heritageSymbols": [
+        "IteratorObject"
+      ],
       "parameterNames": [],
       "surfacePath": "RegExpStringIterator",
       "order": 2
@@ -27948,6 +27984,9 @@
       ],
       "dependencyUnitIds": [
         "lib.es2017.intl.d.ts::Intl.DateTimeFormatPart::17"
+      ],
+      "heritageSymbols": [
+        "Intl.DateTimeFormatPart"
       ],
       "parameterNames": [],
       "surfacePath": "Intl.DateTimeRangeFormatPart",
@@ -28681,6 +28720,9 @@
         "lib.es2022.error.d.ts::Error::4",
         "lib.es5.d.ts::Error::305",
         "lib.es5.d.ts::Error::314"
+      ],
+      "heritageSymbols": [
+        "Error"
       ],
       "parameterNames": [],
       "surfacePath": "AggregateError",
@@ -30833,6 +30875,9 @@
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
+      "heritageSymbols": [
+        "IteratorObject"
+      ],
       "parameterNames": [],
       "surfacePath": "Intl.SegmentIterator",
       "order": 10
@@ -31327,6 +31372,9 @@
         "lib.es2023.array.d.ts::Array::1",
         "lib.es5.d.ts::Array::401",
         "lib.es5.d.ts::Array::443"
+      ],
+      "heritageSymbols": [
+        "Array"
       ],
       "parameterNames": [],
       "surfacePath": "RegExpIndicesArray",
@@ -34109,6 +34157,9 @@
       "dependencyUnitIds": [
         "lib.es2018.intl.d.ts::Intl.NumberFormatPartTypeRegistry::34",
         "lib.es2020.intl.d.ts::Intl.NumberFormatPartTypeRegistry::61"
+      ],
+      "heritageSymbols": [
+        "Intl.NumberFormatPartTypeRegistry"
       ],
       "parameterNames": [],
       "surfacePath": "Intl.NumberFormatRangePartTypeRegistry",
@@ -38940,6 +38991,9 @@
         "lib.es2015.iterable.d.ts::IteratorObject::24",
         "lib.es2025.iterator.d.ts::IteratorObject::10"
       ],
+      "heritageSymbols": [
+        "IteratorObject"
+      ],
       "parameterNames": [],
       "surfacePath": "Iterator",
       "order": 3
@@ -39453,6 +39507,9 @@
         "lib.es2025.iterator.d.ts::Iterator::5",
         "lib.es2025.iterator.d.ts::IteratorObject::10",
         "lib.es2025.iterator.d.ts::IteratorObjectConstructor::6"
+      ],
+      "heritageSymbols": [
+        "IteratorObjectConstructor"
       ],
       "parameterNames": [],
       "surfacePath": "IteratorConstructor",
@@ -41186,6 +41243,9 @@
         "lib.es5.d.ts::ThisParameterType::77",
         "lib.esnext.decorators.d.ts::Function::4"
       ],
+      "heritageSymbols": [
+        "Function"
+      ],
       "parameterNames": [],
       "surfacePath": "CallableFunction",
       "order": 72
@@ -41324,6 +41384,9 @@
         "lib.es5.d.ts::Function::62",
         "lib.es5.d.ts::Function::76",
         "lib.esnext.decorators.d.ts::Function::4"
+      ],
+      "heritageSymbols": [
+        "Function"
       ],
       "parameterNames": [],
       "surfacePath": "NewableFunction",
@@ -42723,6 +42786,9 @@
         "lib.es2022.array.d.ts::ReadonlyArray::4",
         "lib.es2023.array.d.ts::ReadonlyArray::11",
         "lib.es5.d.ts::ReadonlyArray::370"
+      ],
+      "heritageSymbols": [
+        "ReadonlyArray"
       ],
       "parameterNames": [],
       "surfacePath": "TemplateStringsArray",
@@ -44553,6 +44619,9 @@
         "lib.es5.d.ts::Array::401",
         "lib.es5.d.ts::Array::443"
       ],
+      "heritageSymbols": [
+        "Array"
+      ],
       "parameterNames": [],
       "surfacePath": "RegExpMatchArray",
       "order": 233
@@ -44635,6 +44704,9 @@
         "lib.es2023.array.d.ts::Array::1",
         "lib.es5.d.ts::Array::401",
         "lib.es5.d.ts::Array::443"
+      ],
+      "heritageSymbols": [
+        "Array"
       ],
       "parameterNames": [],
       "surfacePath": "RegExpExecArray",
@@ -45635,6 +45707,9 @@
         "lib.es5.d.ts::Error::305",
         "lib.es5.d.ts::Error::314"
       ],
+      "heritageSymbols": [
+        "Error"
+      ],
       "parameterNames": [],
       "surfacePath": "EvalError",
       "order": 285
@@ -45660,6 +45735,9 @@
         "lib.es5.d.ts::EvalError::316",
         "lib.es5.d.ts::EvalError::322",
         "lib.esnext.error.d.ts::ErrorConstructor::1"
+      ],
+      "heritageSymbols": [
+        "ErrorConstructor"
       ],
       "parameterNames": [],
       "surfacePath": "EvalErrorConstructor",
@@ -45779,6 +45857,9 @@
         "lib.es5.d.ts::Error::305",
         "lib.es5.d.ts::Error::314"
       ],
+      "heritageSymbols": [
+        "Error"
+      ],
       "parameterNames": [],
       "surfacePath": "RangeError",
       "order": 291
@@ -45804,6 +45885,9 @@
         "lib.es5.d.ts::RangeError::324",
         "lib.es5.d.ts::RangeError::330",
         "lib.esnext.error.d.ts::ErrorConstructor::1"
+      ],
+      "heritageSymbols": [
+        "ErrorConstructor"
       ],
       "parameterNames": [],
       "surfacePath": "RangeErrorConstructor",
@@ -45923,6 +46007,9 @@
         "lib.es5.d.ts::Error::305",
         "lib.es5.d.ts::Error::314"
       ],
+      "heritageSymbols": [
+        "Error"
+      ],
       "parameterNames": [],
       "surfacePath": "ReferenceError",
       "order": 297
@@ -45948,6 +46035,9 @@
         "lib.es5.d.ts::ReferenceError::332",
         "lib.es5.d.ts::ReferenceError::338",
         "lib.esnext.error.d.ts::ErrorConstructor::1"
+      ],
+      "heritageSymbols": [
+        "ErrorConstructor"
       ],
       "parameterNames": [],
       "surfacePath": "ReferenceErrorConstructor",
@@ -46067,6 +46157,9 @@
         "lib.es5.d.ts::Error::305",
         "lib.es5.d.ts::Error::314"
       ],
+      "heritageSymbols": [
+        "Error"
+      ],
       "parameterNames": [],
       "surfacePath": "SyntaxError",
       "order": 303
@@ -46092,6 +46185,9 @@
         "lib.es5.d.ts::SyntaxError::340",
         "lib.es5.d.ts::SyntaxError::346",
         "lib.esnext.error.d.ts::ErrorConstructor::1"
+      ],
+      "heritageSymbols": [
+        "ErrorConstructor"
       ],
       "parameterNames": [],
       "surfacePath": "SyntaxErrorConstructor",
@@ -46211,6 +46307,9 @@
         "lib.es5.d.ts::Error::305",
         "lib.es5.d.ts::Error::314"
       ],
+      "heritageSymbols": [
+        "Error"
+      ],
       "parameterNames": [],
       "surfacePath": "TypeError",
       "order": 309
@@ -46236,6 +46335,9 @@
         "lib.es5.d.ts::TypeError::348",
         "lib.es5.d.ts::TypeError::354",
         "lib.esnext.error.d.ts::ErrorConstructor::1"
+      ],
+      "heritageSymbols": [
+        "ErrorConstructor"
       ],
       "parameterNames": [],
       "surfacePath": "TypeErrorConstructor",
@@ -46355,6 +46457,9 @@
         "lib.es5.d.ts::Error::305",
         "lib.es5.d.ts::Error::314"
       ],
+      "heritageSymbols": [
+        "Error"
+      ],
       "parameterNames": [],
       "surfacePath": "URIError",
       "order": 315
@@ -46380,6 +46485,9 @@
         "lib.es5.d.ts::URIError::356",
         "lib.es5.d.ts::URIError::362",
         "lib.esnext.error.d.ts::ErrorConstructor::1"
+      ],
+      "heritageSymbols": [
+        "ErrorConstructor"
       ],
       "parameterNames": [],
       "surfacePath": "URIErrorConstructor",
@@ -63917,6 +64025,10 @@
         "lib.esnext.temporal.d.ts::Temporal.DateLikeObject::14",
         "lib.esnext.temporal.d.ts::Temporal.TimeLikeObject::37"
       ],
+      "heritageSymbols": [
+        "Temporal.DateLikeObject",
+        "Temporal.TimeLikeObject"
+      ],
       "parameterNames": [],
       "surfacePath": "Temporal.DateTimeLikeObject",
       "order": 20
@@ -64287,6 +64399,9 @@
         "lib.es5.d.ts::Omit::472",
         "lib.esnext.temporal.d.ts::Temporal.DateLikeObject::14"
       ],
+      "heritageSymbols": [
+        "Omit"
+      ],
       "parameterNames": [],
       "surfacePath": "Temporal.YearMonthLikeObject",
       "order": 39
@@ -64312,6 +64427,9 @@
       "dependencyUnitIds": [
         "lib.esnext.temporal.d.ts::Temporal.DateTimeLikeObject::23",
         "lib.esnext.temporal.d.ts::Temporal.TimeZoneLike::10"
+      ],
+      "heritageSymbols": [
+        "Temporal.DateTimeLikeObject"
       ],
       "parameterNames": [],
       "surfacePath": "Temporal.ZonedDateTimeLikeObject",
@@ -64654,6 +64772,9 @@
         "lib.esnext.temporal.d.ts::Temporal.RoundingOptions::63",
         "lib.esnext.temporal.d.ts::Temporal.TimeUnit::51"
       ],
+      "heritageSymbols": [
+        "Temporal.RoundingOptions"
+      ],
       "parameterNames": [],
       "surfacePath": "Temporal.RoundingOptionsWithLargestUnit",
       "order": 56
@@ -64707,6 +64828,9 @@
         "lib.esnext.temporal.d.ts::Temporal.RoundingOptions::63",
         "lib.esnext.temporal.d.ts::Temporal.TimeUnit::51"
       ],
+      "heritageSymbols": [
+        "Pick"
+      ],
       "parameterNames": [],
       "surfacePath": "Temporal.ToStringRoundingOptions",
       "order": 58
@@ -64734,6 +64858,9 @@
         "lib.esnext.temporal.d.ts::Temporal.DateUnit::50",
         "lib.esnext.temporal.d.ts::Temporal.TimeUnit::51",
         "lib.esnext.temporal.d.ts::Temporal.ToStringRoundingOptions::71"
+      ],
+      "heritageSymbols": [
+        "Temporal.ToStringRoundingOptions"
       ],
       "parameterNames": [],
       "surfacePath": "Temporal.ToStringRoundingOptionsWithFractionalSeconds",
@@ -66085,6 +66212,9 @@
         "lib.esnext.temporal.d.ts::Temporal.TimeUnit::51",
         "lib.esnext.temporal.d.ts::Temporal.ToStringRoundingOptionsWithFractionalSeconds::73"
       ],
+      "heritageSymbols": [
+        "Temporal.ToStringRoundingOptionsWithFractionalSeconds"
+      ],
       "parameterNames": [],
       "surfacePath": "Temporal.PlainTimeToStringOptions",
       "order": 113
@@ -66792,6 +66922,10 @@
       "dependencyUnitIds": [
         "lib.esnext.temporal.d.ts::Temporal.PlainDateToStringOptions::84",
         "lib.esnext.temporal.d.ts::Temporal.PlainTimeToStringOptions::133"
+      ],
+      "heritageSymbols": [
+        "Temporal.PlainDateToStringOptions",
+        "Temporal.PlainTimeToStringOptions"
       ],
       "parameterNames": [],
       "surfacePath": "Temporal.PlainDateTimeToStringOptions",
@@ -67971,6 +68105,9 @@
       "dependencyUnitIds": [
         "lib.esnext.temporal.d.ts::Temporal.PlainDateTimeToStringOptions::163"
       ],
+      "heritageSymbols": [
+        "Temporal.PlainDateTimeToStringOptions"
+      ],
       "parameterNames": [],
       "surfacePath": "Temporal.ZonedDateTimeToStringOptions",
       "order": 188
@@ -68034,6 +68171,10 @@
       "dependencyUnitIds": [
         "lib.esnext.temporal.d.ts::Temporal.DisambiguationOptions::54",
         "lib.esnext.temporal.d.ts::Temporal.OverflowOptions::57"
+      ],
+      "heritageSymbols": [
+        "Temporal.DisambiguationOptions",
+        "Temporal.OverflowOptions"
       ],
       "parameterNames": [],
       "surfacePath": "Temporal.ZonedDateTimeFromOptions",
@@ -69524,6 +69665,10 @@
         "lib.esnext.temporal.d.ts::Temporal.RoundingOptionsWithLargestUnit::68",
         "lib.esnext.temporal.d.ts::Temporal.TimeUnit::51"
       ],
+      "heritageSymbols": [
+        "Temporal.DurationRelativeToOptions",
+        "Temporal.RoundingOptionsWithLargestUnit"
+      ],
       "parameterNames": [],
       "surfacePath": "Temporal.DurationRoundingOptions",
       "order": 253
@@ -69551,6 +69696,9 @@
         "lib.es5.d.ts::Exclude::470",
         "lib.esnext.temporal.d.ts::Temporal.TimeUnit::51",
         "lib.esnext.temporal.d.ts::Temporal.ToStringRoundingOptionsWithFractionalSeconds::73"
+      ],
+      "heritageSymbols": [
+        "Temporal.ToStringRoundingOptionsWithFractionalSeconds"
       ],
       "parameterNames": [],
       "surfacePath": "Temporal.DurationToStringOptions",
@@ -69581,6 +69729,9 @@
         "lib.esnext.temporal.d.ts::Temporal.DurationRelativeToOptions::281",
         "lib.esnext.temporal.d.ts::Temporal.PluralizeUnit::52",
         "lib.esnext.temporal.d.ts::Temporal.TimeUnit::51"
+      ],
+      "heritageSymbols": [
+        "Temporal.DurationRelativeToOptions"
       ],
       "parameterNames": [],
       "surfacePath": "Temporal.DurationTotalOptions",
@@ -70427,6 +70578,9 @@
       "dependencyUnitIds": [
         "lib.esnext.temporal.d.ts::Temporal.PlainTimeToStringOptions::133",
         "lib.esnext.temporal.d.ts::Temporal.TimeZoneLike::10"
+      ],
+      "heritageSymbols": [
+        "Temporal.PlainTimeToStringOptions"
       ],
       "parameterNames": [],
       "surfacePath": "Temporal.InstantToStringOptions",

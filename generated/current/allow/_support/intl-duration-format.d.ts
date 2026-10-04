@@ -22,176 +22,176 @@ and limitations under the License.
 // lib.es2025.intl.d.ts
 /////////////////////////////
 declare namespace Intl {
-    /**
-         * The locale matching algorithm to use.
-         *
-         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl#Locale_negotiation).
-         */
-        type DurationFormatLocaleMatcher = "lookup" | "best fit";
+/**
+     * The locale matching algorithm to use.
+     *
+     * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl#Locale_negotiation).
+     */
+    type DurationFormatLocaleMatcher = "lookup" | "best fit";
 
-    /**
-         * The style of the formatted duration.
-         *
-         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/DurationFormat#style).
-         */
-        type DurationFormatStyle = "long" | "short" | "narrow" | "digital";
+/**
+     * The style of the formatted duration.
+     *
+     * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/DurationFormat#style).
+     */
+    type DurationFormatStyle = "long" | "short" | "narrow" | "digital";
 
-    /**
-         * Whether to always display a unit, or only if it is non-zero.
-         *
-         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/DurationFormat#display).
-         */
-        type DurationFormatDisplayOption = "always" | "auto";
+/**
+     * Whether to always display a unit, or only if it is non-zero.
+     *
+     * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/DurationFormat#display).
+     */
+    type DurationFormatDisplayOption = "always" | "auto";
 
-    /**
-         * Value of the `unit` property in duration objects
-         *
-         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/format#duration).
-         */
-        type DurationFormatUnit =
-            | "years"
-            | "months"
-            | "weeks"
-            | "days"
-            | "hours"
-            | "minutes"
-            | "seconds"
-            | "milliseconds"
-            | "microseconds"
-            | "nanoseconds";
+/**
+     * Value of the `unit` property in duration objects
+     *
+     * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/format#duration).
+     */
+    type DurationFormatUnit =
+        | "years"
+        | "months"
+        | "weeks"
+        | "days"
+        | "hours"
+        | "minutes"
+        | "seconds"
+        | "milliseconds"
+        | "microseconds"
+        | "nanoseconds";
 
-    type DurationFormatUnitSingular =
-            | "year"
-            | "month"
-            | "week"
-            | "day"
-            | "hour"
-            | "minute"
-            | "second"
-            | "millisecond"
-            | "microsecond"
-            | "nanosecond";
+type DurationFormatUnitSingular =
+        | "year"
+        | "month"
+        | "week"
+        | "day"
+        | "hour"
+        | "minute"
+        | "second"
+        | "millisecond"
+        | "microsecond"
+        | "nanosecond";
 
-    /**
-         * An object representing the relative time format in parts
-         * that can be used for custom locale-aware formatting.
-         *
-         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/formatToParts).
-         */
-        type DurationFormatPart =
-            | {
-                type: "literal";
-                value: string;
-                unit?: DurationFormatUnitSingular;
-            }
-            | {
-                type: Exclude<NumberFormatPartTypes, "literal">;
-                value: string;
-                unit: DurationFormatUnitSingular;
-            };
+/**
+     * An object representing the relative time format in parts
+     * that can be used for custom locale-aware formatting.
+     *
+     * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/formatToParts).
+     */
+    type DurationFormatPart =
+        | {
+            type: "literal";
+            value: string;
+            unit?: DurationFormatUnitSingular;
+        }
+        | {
+            type: Exclude<NumberFormatPartTypes, "literal">;
+            value: string;
+            unit: DurationFormatUnitSingular;
+        };
 
-    /**
-         * An object with some or all properties of the `Intl.DurationFormat` constructor `options` parameter.
-         *
-         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/DurationFormat#parameters)
-         */
-        interface DurationFormatOptions {
-                localeMatcher?: DurationFormatLocaleMatcher | undefined;
+/**
+     * An object with some or all properties of the `Intl.DurationFormat` constructor `options` parameter.
+     *
+     * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/DurationFormat#parameters)
+     */
+    interface DurationFormatOptions {
+        localeMatcher?: DurationFormatLocaleMatcher | undefined;
 
-                numberingSystem?: string | undefined;
+        numberingSystem?: string | undefined;
 
-                style?: DurationFormatStyle | undefined;
+        style?: DurationFormatStyle | undefined;
 
-                years?: "long" | "short" | "narrow" | undefined;
+        years?: "long" | "short" | "narrow" | undefined;
 
-                yearsDisplay?: DurationFormatDisplayOption | undefined;
+        yearsDisplay?: DurationFormatDisplayOption | undefined;
 
-                months?: "long" | "short" | "narrow" | undefined;
+        months?: "long" | "short" | "narrow" | undefined;
 
-                monthsDisplay?: DurationFormatDisplayOption | undefined;
+        monthsDisplay?: DurationFormatDisplayOption | undefined;
 
-                weeks?: "long" | "short" | "narrow" | undefined;
+        weeks?: "long" | "short" | "narrow" | undefined;
 
-                weeksDisplay?: DurationFormatDisplayOption | undefined;
+        weeksDisplay?: DurationFormatDisplayOption | undefined;
 
-                days?: "long" | "short" | "narrow" | undefined;
+        days?: "long" | "short" | "narrow" | undefined;
 
-                daysDisplay?: DurationFormatDisplayOption | undefined;
+        daysDisplay?: DurationFormatDisplayOption | undefined;
 
-                hours?: "long" | "short" | "narrow" | "numeric" | "2-digit" | undefined;
+        hours?: "long" | "short" | "narrow" | "numeric" | "2-digit" | undefined;
 
-                hoursDisplay?: DurationFormatDisplayOption | undefined;
+        hoursDisplay?: DurationFormatDisplayOption | undefined;
 
-                minutes?: "long" | "short" | "narrow" | "numeric" | "2-digit" | undefined;
+        minutes?: "long" | "short" | "narrow" | "numeric" | "2-digit" | undefined;
 
-                minutesDisplay?: DurationFormatDisplayOption | undefined;
+        minutesDisplay?: DurationFormatDisplayOption | undefined;
 
-                seconds?: "long" | "short" | "narrow" | "numeric" | "2-digit" | undefined;
+        seconds?: "long" | "short" | "narrow" | "numeric" | "2-digit" | undefined;
 
-                secondsDisplay?: DurationFormatDisplayOption | undefined;
+        secondsDisplay?: DurationFormatDisplayOption | undefined;
 
-                milliseconds?: "long" | "short" | "narrow" | "numeric" | undefined;
+        milliseconds?: "long" | "short" | "narrow" | "numeric" | undefined;
 
-                millisecondsDisplay?: DurationFormatDisplayOption | undefined;
+        millisecondsDisplay?: DurationFormatDisplayOption | undefined;
 
-                microseconds?: "long" | "short" | "narrow" | "numeric" | undefined;
+        microseconds?: "long" | "short" | "narrow" | "numeric" | undefined;
 
-                microsecondsDisplay?: DurationFormatDisplayOption | undefined;
+        microsecondsDisplay?: DurationFormatDisplayOption | undefined;
 
-                nanoseconds?: "long" | "short" | "narrow" | "numeric" | undefined;
+        nanoseconds?: "long" | "short" | "narrow" | "numeric" | undefined;
 
-                nanosecondsDisplay?: DurationFormatDisplayOption | undefined;
+        nanosecondsDisplay?: DurationFormatDisplayOption | undefined;
 
-                fractionalDigits?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | undefined;
-    }
+        fractionalDigits?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | undefined;
+}
 
-    interface ResolvedDurationFormatOptions {
-                locale: UnicodeBCP47LocaleIdentifier;
+interface ResolvedDurationFormatOptions {
+        locale: UnicodeBCP47LocaleIdentifier;
 
-                numberingSystem: string;
+        numberingSystem: string;
 
-                style: DurationFormatStyle;
+        style: DurationFormatStyle;
 
-                years: "long" | "short" | "narrow";
+        years: "long" | "short" | "narrow";
 
-                yearsDisplay: DurationFormatDisplayOption;
+        yearsDisplay: DurationFormatDisplayOption;
 
-                months: "long" | "short" | "narrow";
+        months: "long" | "short" | "narrow";
 
-                monthsDisplay: DurationFormatDisplayOption;
+        monthsDisplay: DurationFormatDisplayOption;
 
-                weeks: "long" | "short" | "narrow";
+        weeks: "long" | "short" | "narrow";
 
-                weeksDisplay: DurationFormatDisplayOption;
+        weeksDisplay: DurationFormatDisplayOption;
 
-                days: "long" | "short" | "narrow";
+        days: "long" | "short" | "narrow";
 
-                daysDisplay: DurationFormatDisplayOption;
+        daysDisplay: DurationFormatDisplayOption;
 
-                hours: "long" | "short" | "narrow" | "numeric" | "2-digit";
+        hours: "long" | "short" | "narrow" | "numeric" | "2-digit";
 
-                hoursDisplay: DurationFormatDisplayOption;
+        hoursDisplay: DurationFormatDisplayOption;
 
-                minutes: "long" | "short" | "narrow" | "numeric" | "2-digit";
+        minutes: "long" | "short" | "narrow" | "numeric" | "2-digit";
 
-                minutesDisplay: DurationFormatDisplayOption;
+        minutesDisplay: DurationFormatDisplayOption;
 
-                seconds: "long" | "short" | "narrow" | "numeric" | "2-digit";
+        seconds: "long" | "short" | "narrow" | "numeric" | "2-digit";
 
-                secondsDisplay: DurationFormatDisplayOption;
+        secondsDisplay: DurationFormatDisplayOption;
 
-                milliseconds: "long" | "short" | "narrow" | "numeric";
+        milliseconds: "long" | "short" | "narrow" | "numeric";
 
-                millisecondsDisplay: DurationFormatDisplayOption;
+        millisecondsDisplay: DurationFormatDisplayOption;
 
-                microseconds: "long" | "short" | "narrow" | "numeric";
+        microseconds: "long" | "short" | "narrow" | "numeric";
 
-                microsecondsDisplay: DurationFormatDisplayOption;
+        microsecondsDisplay: DurationFormatDisplayOption;
 
-                nanoseconds: "long" | "short" | "narrow" | "numeric";
+        nanoseconds: "long" | "short" | "narrow" | "numeric";
 
-                nanosecondsDisplay: DurationFormatDisplayOption;
+        nanosecondsDisplay: DurationFormatDisplayOption;
 
-                fractionalDigits?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-    }
+        fractionalDigits?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+}
 }

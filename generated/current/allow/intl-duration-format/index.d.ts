@@ -24,59 +24,59 @@ and limitations under the License.
 // lib.es2025.intl.d.ts
 /////////////////////////////
 declare namespace Intl {
-    /**
-         * The Intl.DurationFormat object enables language-sensitive duration formatting.
+/**
+     * The Intl.DurationFormat object enables language-sensitive duration formatting.
+     *
+     * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat)
+     */
+    interface DurationFormat {
+        /**
+         * @param duration The duration object to be formatted. It should include some or all of the following properties: months, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds.
          *
-         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat)
+         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/format).
          */
-        interface DurationFormat {
-                /**
-                 * @param duration The duration object to be formatted. It should include some or all of the following properties: months, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds.
-                 *
-                 * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/format).
-                 */
-                format(duration: Partial<Record<DurationFormatUnit, number>>): string;
+        format(duration: Partial<Record<DurationFormatUnit, number>>): string;
 
-                /**
-                 * @param duration The duration object to be formatted. It should include some or all of the following properties: months, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds.
-                 *
-                 * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/formatToParts).
-                 */
-                formatToParts(duration: Partial<Record<DurationFormatUnit, number>>): DurationFormatPart[];
+        /**
+         * @param duration The duration object to be formatted. It should include some or all of the following properties: months, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds.
+         *
+         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/formatToParts).
+         */
+        formatToParts(duration: Partial<Record<DurationFormatUnit, number>>): DurationFormatPart[];
 
-                /**
-                 * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/resolvedOptions).
-                 */
-                resolvedOptions(): ResolvedDurationFormatOptions;
-    }
+        /**
+         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/resolvedOptions).
+         */
+        resolvedOptions(): ResolvedDurationFormatOptions;
+}
 
-    const DurationFormat: {
-                prototype: DurationFormat;
+const DurationFormat: {
+        prototype: DurationFormat;
 
-                /**
-                 * @param locales A string with a BCP 47 language tag, or an array of such strings.
-                 *   For the general form and interpretation of the `locales` argument, see the [Intl](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl#locale_identification_and_negotiation)
-                 *   page.
-                 *
-                 * @param options An object for setting up a duration format.
-                 *
-                 * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/DurationFormat).
-                 */
-                new (locales?: LocalesArgument, options?: DurationFormatOptions): DurationFormat;
+        /**
+         * @param locales A string with a BCP 47 language tag, or an array of such strings.
+         *   For the general form and interpretation of the `locales` argument, see the [Intl](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl#locale_identification_and_negotiation)
+         *   page.
+         *
+         * @param options An object for setting up a duration format.
+         *
+         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/DurationFormat).
+         */
+        new (locales?: LocalesArgument, options?: DurationFormatOptions): DurationFormat;
 
-                /**
-                 * Returns an array containing those of the provided locales that are supported in display names without having to fall back to the runtime's default locale.
-                 *
-                 * @param locales A string with a BCP 47 language tag, or an array of such strings.
-                 *   For the general form and interpretation of the `locales` argument, see the [Intl](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl#locale_identification_and_negotiation)
-                 *   page.
-                 *
-                 * @param options An object with a locale matcher.
-                 *
-                 * @returns An array of strings representing a subset of the given locale tags that are supported in display names without having to fall back to the runtime's default locale.
-                 *
-                 * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/supportedLocalesOf).
-                 */
-                supportedLocalesOf(locales?: LocalesArgument, options?: { localeMatcher?: DurationFormatLocaleMatcher; }): UnicodeBCP47LocaleIdentifier[];
-    };
+        /**
+         * Returns an array containing those of the provided locales that are supported in display names without having to fall back to the runtime's default locale.
+         *
+         * @param locales A string with a BCP 47 language tag, or an array of such strings.
+         *   For the general form and interpretation of the `locales` argument, see the [Intl](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl#locale_identification_and_negotiation)
+         *   page.
+         *
+         * @param options An object with a locale matcher.
+         *
+         * @returns An array of strings representing a subset of the given locale tags that are supported in display names without having to fall back to the runtime's default locale.
+         *
+         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat/supportedLocalesOf).
+         */
+        supportedLocalesOf(locales?: LocalesArgument, options?: { localeMatcher?: DurationFormatLocaleMatcher; }): UnicodeBCP47LocaleIdentifier[];
+};
 }

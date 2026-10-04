@@ -1071,7 +1071,7 @@
     {
       "year": 2020,
       "outputPath": "generated/current/year/2020/index.d.ts",
-      "contentHash": "sha256-37070d861cfe386653cb7f2174009f9040e1e38e7dd8c42a271c90d03221c8cc",
+      "contentHash": "sha256-9a8752a75a8c7c57a43174e986f2e43f0ac05526b739d5b71488b365e743d59c",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -1702,7 +1702,7 @@
     {
       "year": 2021,
       "outputPath": "generated/current/year/2021/index.d.ts",
-      "contentHash": "sha256-bef6c646f03e1822bb699a80525ad3f00b716a48f804964a5febdec4a3a73c17",
+      "contentHash": "sha256-879c5fc01ab387aa8081fba4aa26383de44c332ead05b04ca6bacfd250a21305",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -2397,7 +2397,7 @@
     {
       "year": 2022,
       "outputPath": "generated/current/year/2022/index.d.ts",
-      "contentHash": "sha256-b15e474041af2d6b95db413bf3e9e4953f89ead33679df763f4ad8275245000f",
+      "contentHash": "sha256-a6a79f10683753856da19a492ee1451c01123d23abd7cb5d68a23735cba6a5f3",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -3102,7 +3102,7 @@
     {
       "year": 2023,
       "outputPath": "generated/current/year/2023/index.d.ts",
-      "contentHash": "sha256-7fe871afdc5ba183c2942cf3642461df4cffba6ac808c7cb5c5391a7e0d014a4",
+      "contentHash": "sha256-3d740e009e79d6e8996dfbf9fdfe70f0445027627d4e9d99d87f3a4de9d48784",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -3829,7 +3829,7 @@
     {
       "year": 2024,
       "outputPath": "generated/current/year/2024/index.d.ts",
-      "contentHash": "sha256-fc090f5baf6146ade06fca1d78f99cb38602c202e1f3a9820110e815bbb36732",
+      "contentHash": "sha256-b53954e6dc67ee1c8d942aad4ca0d76bbff9a42d8dd03b7fa7ca78dcdf93f83d",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -4586,7 +4586,7 @@
     {
       "year": 2025,
       "outputPath": "generated/current/year/2025/index.d.ts",
-      "contentHash": "sha256-ca9e417cbda66904a277ae025e3cc7383a7268571ffcc5aec4a751eff7d01169",
+      "contentHash": "sha256-139fdb314cddf099a5ce5a0e74752afa0a1b60bace01f25dddac09c3a12698f4",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
