@@ -1,110 +1,69 @@
 # TypeScript Baseline Lib Generator
 
-This project generates `baseline.d.ts`. This TypeScript lib contains declarations for JavaScript features that are [Baseline Widely available](https://web.dev/baseline).
+Catch JavaScript API calls that are too new for your Baseline target. `typescript-baseline-lib` gives your editor and TypeScript compiler a set of built-in types selected by [Baseline](https://web.dev/baseline) browser support data.
 
-The generator currently classifies `javascript.builtins.*` and the `arguments` object from `web-features`.
+TypeScript's `ESNext` lib can accept APIs that your supported browsers cannot run. This package selects declarations from TypeScript using per-API data from `web-features`. By default, it includes Baseline Widely available APIs: those supported across the Baseline core browsers for at least 30 months.
 
-## Best-practice setup
+In the October 2026 snapshot, TypeScript accepts `.at()` but reports an error for `Promise.try()`:
 
-TypeScript does not yet include `"baseline"` as a built-in `lib`. Install this package and the supported TypeScript major:
+```ts
+["a", "b"].at(-1);
+Promise.try(() => 42);
+```
+
+Use it to check browser code or shared JavaScript modules before shipping. It checks API types; it does not transform syntax or load polyfills.
+
+## Get started
+
+The package supports TypeScript 6 and 7. Install it with TypeScript:
 
 ```sh
 npm install --save-dev typescript@^7 typescript-baseline-lib
 ```
 
-Configure the package as the complete global lib:
+For JavaScript built-ins without browser or Node.js globals, start with this `tsconfig.json`:
 
 ```json
 {
   "compilerOptions": {
     "noLib": true,
     "strict": true,
+    "noEmit": true,
     "types": ["typescript-baseline-lib"]
   }
 }
 ```
 
-Run the compiler:
+Run the check:
 
 ```sh
-npx tsc --noEmit
+npx tsc
 ```
 
-With this configuration, TypeScript accepts supported JavaScript APIs that are Baseline Widely available. TypeScript reports APIs outside this target as errors.
+This package replaces TypeScript's standard JavaScript libs. Do not combine it with `lib` or standard `es*` declarations. For browser globals, an existing tsconfig, or a separate CI check, follow the [Usage Guide](docs/USAGE.md).
 
-Examples include `Promise.try` and `Intl.Segmenter` before they reach this Baseline status. The project goal is first-class `--lib baseline` support in TypeScript.
+## Choose a target
 
-For more configurations, read the [Usage Guide](docs/USAGE.md).
+| Target | Use it when |
+| --- | --- |
+| `typescript-baseline-lib` | You want the Widely available snapshot in the installed package. |
+| `typescript-baseline-lib/year/2024` | You want APIs that became Newly available by the end of 2024. |
+| `typescript-baseline-lib/allow/promise-try` | You load a suitable polyfill and need its types alongside the root target. |
 
-This package replaces the default TypeScript libs. Do not set `compilerOptions.lib`. Do not combine this package with standard `es*` libs.
+Year targets are complete alternatives to the root target. Choose one completed year from 2020 onward; do not combine it with the root or an `allow/*` entry. A year fixes the cutoff, while the installed package fixes the declaration snapshot. Pin the package version and commit your lockfile for repeatable checks.
 
-If your project needs other ambient type packages, add them to `types`. Some packages require runtime APIs outside the selected Baseline target.
+An `allow/*` entry adds types only. Load the matching polyfill before using the API. The [allowlist](registry/allowlist.json) defines the public entries, and their paths remain valid after an API becomes Widely available. See the [polyfill example](docs/USAGE.md#i-polyfill-one-api-outside-the-rolling-target) for setup.
 
-The generator preserves audited declarations that support TypeScript. These declarations do not represent runtime APIs.
+## Scope
 
-The generator does not add unavailable runtime APIs to support third-party packages.
+The package covers JavaScript built-ins and the `arguments` object. It does not filter DOM or Worker APIs, check syntax support, or prove that code will run in every browser. Additional ambient declarations can expose APIs outside the selected target.
 
-## Allow a polyfilled feature
+The generator can only select APIs modeled by TypeScript declarations. Its [generation report](derived/current/generation.json) records declaration coverage and known gaps. Helper types needed by TypeScript are kept separately from runtime API availability.
 
-If the runtime loads an audited polyfill, add its generated `web-features` entry after the base package. For example, core-js can provide `Promise.try`:
+For syntax and Web API checks, use [eslint-plugin-baseline-js](https://github.com/3ru/eslint-plugin-baseline-js) alongside this package.
 
-```ts
-import "core-js/proposals/promise-try";
-```
+## Work on the generator
 
-```json
-{
-  "compilerOptions": {
-    "noLib": true,
-    "types": [
-      "typescript-baseline-lib",
-      "typescript-baseline-lib/allow/promise-try"
-    ]
-  }
-}
-```
+This repository generates the npm package from pinned TypeScript and `web-features` inputs. The same inputs produce the same declarations, and the tests check both supported TypeScript majors and integration with the pinned upstream compiler.
 
-Only entries in `registry/allowlist.json` are public. The registry defines permanent public paths.
-
-Published entry paths remain valid. After all registered compat keys become Baseline Widely available, the entry refers to the base package.
-
-The generator rejects features with `baselineStatus: false`.
-
-## Target a Baseline year
-
-Baseline year targets contain all JavaScript features that became Baseline Newly available by the end of a completed calendar year. For example, Baseline 2024 includes `Promise.withResolvers`:
-
-```json
-{
-  "compilerOptions": {
-    "noLib": true,
-    "types": ["typescript-baseline-lib/year/2024"]
-  }
-}
-```
-
-The generator creates year entry points from the `baselineLowDate` of each compat row. Each entry is a complete alternative to the rolling base.
-
-The generator omits the current year until that year is complete. The first generated year is 2020.
-
-The generator cannot close the TypeScript declaration graphs for 2015 through 2019. Those graphs require symbols from later years.
-
-This limit belongs to the implementation, not the Baseline specification.
-
-Do not combine a `year/*` entry point with the base package or an `allow/*` entry point. Each year file is a complete historical target.
-
-An `allow/*` entry applies only to the current rolling base. The generation report lists declaration-backed compat keys and managed upstream gaps.
-
-The report is in `derived/current/generation.json`. The generator does not create declarations for behavior that TypeScript cannot model.
-
-Year boundaries apply to runtime JavaScript APIs. The pinned TypeScript toolchain supplies helper declarations.
-
-These helper declarations are not historical runtime features.
-
-## Current contract
-
-- The public targets include the rolling base, completed cumulative years from 2020, and audited `allow/*` additions.
-- The scope includes `javascript.builtins.*` and the `arguments` object.
-- DOM, Web Worker, syntax, grammar, statements, and operators are outside the scope.
-- `registry/compat-management.json` manages special compat rows and records a source URL for each row.
-- The repository stores one rolling dataset and one set of derived artifacts. Git stores the history.
+The long-term goal is native `--lib baseline` support in TypeScript. For the current package, use the configuration above. See [Contributing](CONTRIBUTING.md) to run the generator and tests, or [Operations](docs/OPERATIONS.md) to update its inputs.
