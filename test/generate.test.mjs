@@ -48,6 +48,7 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
     assert.match(topLevelOutput, /interface Iterator<T, TReturn = any, TNext = any> \{[\s\S]*next\(/);
     assert.match(topLevelOutput, /interface ArrayBufferTypes \{[\s\S]*ArrayBuffer: ArrayBuffer;/);
     assert.match(topLevelOutput, /interface ListFormatOptions \{[\s\S]*localeMatcher\?:/);
+
     for (const typeName of [
         "Awaited",
         "Partial",
@@ -83,6 +84,7 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
             `expected erased declaration ${typeName}`,
         );
     }
+
     assert.doesNotMatch(topLevelOutput, /\/\/\/ <reference lib=/);
     assert.equal([...topLevelOutput.matchAll(/Copyright \(c\) Microsoft Corporation/g)].length, 1);
 
@@ -91,6 +93,7 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
     // probes never appear until they're promoted.
     const negativeProbes = selectActiveNegativeProbes(classificationReport.classifiedCompatRows);
     assert.ok(negativeProbes.length >= 4, "expected stable probes plus at least one active low probe");
+
     for (const probe of negativeProbes) {
         if (probe.absencePattern) {
             assert.doesNotMatch(
@@ -100,6 +103,7 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
             );
         }
     }
+
     assert.doesNotMatch(topLevelOutput, /^declare function escape\b/m);
 
     // The exclusion-invariant audit info must appear in the report.
@@ -111,19 +115,23 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
             entry => entry.compatKeys.includes("javascript.builtins.Function.caller"),
         ),
     );
+
     const classifiedRowByCompatKey = new Map(classificationReport.classifiedCompatRows.map(
         /** @param {{ compatKey: string; }} row */
         row => [row.compatKey, row],
     ));
+
     const excludedUnitById = new Map(generationReport.excludedUnits.map(
         /** @param {{ unitId: string; }} entry */
         entry => [entry.unitId, entry],
     ));
+
     for (const compatKey of Object.keys(registry.declarationMappings ?? {})) {
         const classifiedRow = classifiedRowByCompatKey.get(compatKey);
         assert.ok(classifiedRow, `expected mapped classification row ${compatKey}`);
         assert.equal(classifiedRow.resolutionKind, "member");
         assert.ok(classifiedRow.resolvedUnitIds.length > 0);
+
         if (!classifiedRow.includeInTarget) {
             for (const unitId of classifiedRow.resolvedUnitIds) {
                 assert.ok(
@@ -151,6 +159,7 @@ test("generate emits the current TypeScript-declarable Baseline JavaScript surfa
     // the determinism check (a regression that actually happened).
     for (const [label, report] of [["generation", generationReport], ["inventory", inventoryReport]]) {
         assert.ok(Array.isArray(report.sourceLibs) && report.sourceLibs.length > 0, `${label} report must list source libs`);
+
         for (const sourceLib of report.sourceLibs) {
             assert.equal(
                 sourceLib.sourcePath,

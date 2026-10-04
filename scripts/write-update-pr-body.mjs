@@ -8,12 +8,17 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveManagedOutputPath } from "../lib/shared.mjs";
 import { compareYearContracts } from "../lib/year-contracts.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
+
 const scriptDirectory = path.dirname(scriptPath);
+
 const repoRoot = path.resolve(scriptDirectory, "..");
+
 const defaultManifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
+
 const defaultOutputPath = path.join(repoRoot, ".tmp", "baseline-lib-update-pr.md");
 
 if (process.argv[1] && path.resolve(process.argv[1]) === scriptPath) {
@@ -27,10 +32,15 @@ async function main(args) {
     const manifestPath = path.resolve(args.manifest ?? defaultManifestPath);
     const outputPath = path.resolve(args.out ?? defaultOutputPath);
     const summaryOutputPath = args.summaryOut ? path.resolve(args.summaryOut) : undefined;
-    const baseRef = args.baseRef ?? "HEAD";
+    const baseRef = readFromGit(["rev-parse", "--verify", `${args.baseRef ?? "HEAD"}^{commit}`]).trim();
     const currentManifest = await readJsonFile(manifestPath);
     const currentState = await readCurrentState(currentManifest, manifestPath);
-    const previousManifest = readJsonFileFromGit(baseRef, path.relative(repoRoot, manifestPath));
+    const manifestRelativePath = path.relative(repoRoot, manifestPath);
+
+    const previousManifest = readFromGit(["ls-tree", "--name-only", baseRef, "--", manifestRelativePath]).trim()
+        ? readJsonFileFromGit(baseRef, manifestRelativePath)
+        : undefined;
+
     const previousState = previousManifest
         ? readStateFromGit(previousManifest, manifestPath, baseRef)
         : undefined;
@@ -62,6 +72,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--manifest":
                 args.manifest = requireArgValue(argv[++index], current);
@@ -95,6 +106,7 @@ function requireArgValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 
@@ -115,9 +127,9 @@ Examples:
  */
 async function readCurrentState(manifest, manifestPath) {
     return {
-        classification: await readJsonFile(resolveManifestRelativePath(manifestPath, manifest.classificationOutput)),
-        generation: await readJsonFile(resolveManifestRelativePath(manifestPath, manifest.generationOutput)),
-        compatManagement: await readJsonFile(resolveManifestRelativePath(manifestPath, manifest.compatManagementOutput)),
+        classification: await readJsonFile(resolveReportPath(manifest.classificationOutput, manifestPath, "classificationOutput")),
+        generation: await readJsonFile(resolveReportPath(manifest.generationOutput, manifestPath, "generationOutput")),
+        compatManagement: await readJsonFile(resolveReportPath(manifest.compatManagementOutput, manifestPath, "compatManagementOutput")),
     };
 }
 
@@ -128,9 +140,9 @@ async function readCurrentState(manifest, manifestPath) {
  */
 function readStateFromGit(manifest, manifestPath, baseRef) {
     return {
-        classification: readJsonFileFromGit(baseRef, path.relative(repoRoot, resolveManifestRelativePath(manifestPath, manifest.classificationOutput))),
-        generation: readJsonFileFromGit(baseRef, path.relative(repoRoot, resolveManifestRelativePath(manifestPath, manifest.generationOutput))),
-        compatManagement: readJsonFileFromGit(baseRef, path.relative(repoRoot, resolveManifestRelativePath(manifestPath, manifest.compatManagementOutput))),
+        classification: readJsonFileFromGit(baseRef, path.relative(repoRoot, resolveReportPath(manifest.classificationOutput, manifestPath, "classificationOutput"))),
+        generation: readJsonFileFromGit(baseRef, path.relative(repoRoot, resolveReportPath(manifest.generationOutput, manifestPath, "generationOutput"))),
+        compatManagement: readJsonFileFromGit(baseRef, path.relative(repoRoot, resolveReportPath(manifest.compatManagementOutput, manifestPath, "compatManagementOutput"))),
     };
 }
 
@@ -159,6 +171,7 @@ export function buildUpdateSummary(options) {
     const currentAllowEntries = currentState.generation.allowEntries ?? [];
     const previousAllowEntries = previousState?.generation?.allowEntries ?? [];
     const allowEntryChanges = compareAllowEntries(previousAllowEntries, currentAllowEntries);
+
     const yearContractComparison = compareYearContracts(
         JSON.stringify(previousState?.generation ?? {}),
         JSON.stringify(currentState.generation),
@@ -166,21 +179,27 @@ export function buildUpdateSummary(options) {
 
     /** @type {string[]} */
     const reviewFlags = [];
+
     if (!previousCompatRegistry || previousCompatRegistry.sourceHash !== currentState.compatManagement.registry.sourceHash) {
         reviewFlags.push("`registry/compat-management.json` changed. Verify every edited group still has the right category, upstream action, and primary-source URLs.");
     }
+
     if ((delta(currentClassificationSummary.notModeledUpstreamCount, previousClassificationSummary?.notModeledUpstreamCount) ?? 0) !== 0) {
         reviewFlags.push("`not-modeled-upstream` count changed. Inspect `derived/current/classification.json` and `derived/current/compat-management-report.json` before merging.");
     }
+
     if ((delta(currentCompatSummary.managedUpstreamStateCounts.actionable, previousState?.compatManagement?.summary?.managedUpstreamStateCounts?.actionable) ?? 0) !== 0) {
         reviewFlags.push("Actionable upstream-gap count changed. Confirm whether a new or updated `microsoft/TypeScript` or `web-features` action item is needed.");
     }
+
     if (allowEntryChanges.length) {
         reviewFlags.push("Allow entry state or compat contract changed. Verify the polyfill contract and generated declaration diff before merging.");
     }
+
     if (yearContractComparison.changes.length) {
         reviewFlags.push("Baseline year contract changed. Inspect every year declaration diff before selecting the release bump.");
     }
+
     if (!reviewFlags.length) {
         reviewFlags.push("No special review flags beyond the normal generated diff review.");
     }
@@ -307,23 +326,29 @@ function compareAllowEntries(previousEntries, currentEntries) {
     for (const name of names) {
         const previous = previousByName.get(name);
         const current = currentByName.get(name);
+
         if (!previous) {
             changes.push(`added allow/${name} (${current?.kind ?? "unknown"})`);
             continue;
         }
+
         if (!current) {
             changes.push(`removed allow/${name}`);
             continue;
         }
+
         if (previous.kind !== current.kind) {
             changes.push(`allow/${name}: ${previous.kind ?? "unknown"} -> ${current.kind ?? "unknown"}`);
         }
+
         const previousCompatKeys = [...(previous.compatKeys ?? [])].sort();
         const currentCompatKeys = [...(current.compatKeys ?? [])].sort();
+
         if (JSON.stringify(previousCompatKeys) !== JSON.stringify(currentCompatKeys)) {
             changes.push(`allow/${name}: compat contract changed`);
         }
     }
+
     return changes;
 }
 
@@ -339,33 +364,31 @@ async function readJsonFile(filePath) {
  * @param {string} repoRelativePath
  */
 function readJsonFileFromGit(gitRef, repoRelativePath) {
-    const sourceText = readTextFileFromGit(gitRef, repoRelativePath);
-    return sourceText ? JSON.parse(sourceText) : undefined;
+    return JSON.parse(readFromGit(["show", `${gitRef}:${repoRelativePath}`]));
 }
 
 /**
- * @param {string} gitRef
- * @param {string} repoRelativePath
+ * @param {string[]} args
  */
-function readTextFileFromGit(gitRef, repoRelativePath) {
-    try {
-        return execFileSync("git", ["show", `${gitRef}:${repoRelativePath}`], {
-            cwd: repoRoot,
-            encoding: "utf8",
-            stdio: ["ignore", "pipe", "ignore"],
-        });
-    }
-    catch {
-        return undefined;
-    }
+function readFromGit(args) {
+    return execFileSync("git", args, {
+        cwd: repoRoot,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        maxBuffer: 16 * 1024 * 1024,
+    });
 }
 
 /**
- * @param {string} manifestFilePath
  * @param {string} relativePath
+ * @param {string} manifestPath
+ * @param {string} propertyName
  */
-function resolveManifestRelativePath(manifestFilePath, relativePath) {
-    return path.resolve(path.dirname(manifestFilePath), relativePath);
+function resolveReportPath(relativePath, manifestPath, propertyName) {
+    return resolveManagedOutputPath(relativePath, repoRoot, manifestPath, propertyName, [
+        path.join(repoRoot, "derived"),
+        path.join(repoRoot, ".tmp"),
+    ]);
 }
 
 /**
@@ -373,9 +396,10 @@ function resolveManifestRelativePath(manifestFilePath, relativePath) {
  * @param {number | undefined | null} previous
  */
 function delta(current, previous) {
-    if (typeof current !== "number" || typeof previous !== "number") {
+    if (current == null || previous == null) {
         return undefined;
     }
+
     return current - previous;
 }
 
@@ -384,9 +408,10 @@ function delta(current, previous) {
  * @param {number | undefined | null} countDelta
  */
 function formatCountWithDelta(count, countDelta) {
-    if (typeof countDelta !== "number" || countDelta === 0) {
+    if (countDelta == null || countDelta === 0) {
         return `${count}`;
     }
+
     return `${count} (${countDelta > 0 ? "+" : ""}${countDelta})`;
 }
 
@@ -412,8 +437,10 @@ function formatTransition(previous, current) {
     if (!previous) {
         return current ?? "n/a";
     }
+
     if (previous === current) {
         return current ?? previous;
     }
+
     return `${previous} -> ${current ?? "n/a"}`;
 }

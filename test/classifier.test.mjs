@@ -173,6 +173,7 @@ async function classifyFixture(options) {
         version: "0.0.0-test",
     });
     fs.writeFileSync(path.join(libDirectory, "lib.es5.d.ts"), options.libSource ?? FIXTURE_LIB_SOURCE);
+
     for (const [fileName, sourceText] of Object.entries(options.additionalLibSources ?? {})) {
         fs.writeFileSync(path.join(libDirectory, fileName), sourceText);
     }
@@ -181,9 +182,9 @@ async function classifyFixture(options) {
         libDirectory,
         reportPathPrefix: "typescript/lib",
     });
+
     const inventory = await createSurfaceInventory({
         snapshotName: "classifier-test",
-        repoRoot: tempDirectory,
         sourceLibEntries,
         inventoryOutputPath: path.join(tempDirectory, "out", "inventory.json"),
     });
@@ -196,21 +197,23 @@ async function classifyFixture(options) {
     writeJsonFile(path.join(tempDirectory, "registry.json"), {
         kind: "typescript-baseline-lib/compat-management-registry",
         schemaVersion: 1,
-        ...(options.declarationMappings ? { declarationMappings: options.declarationMappings } : {}),
+        declarationMappings: options.declarationMappings,
         compilerSupport: [],
         runtimeAliases: [],
         groups: options.registryGroups ?? [],
     });
 
     const manifestPath = path.join(tempDirectory, "manifest.json");
+
     const manifest = {
         snapshot: { name: "classifier-test" },
-        ...(options.baselineTarget ? { baselineTarget: options.baselineTarget } : {}),
+        baselineTarget: options.baselineTarget,
         dataset: "dataset.json",
         compatManagementRegistry: "registry.json",
         classificationOutput: "derived/current/classification.json",
         compatManagementOutput: "derived/current/compat-management-report.json",
     };
+
     writeJsonFile(manifestPath, manifest);
 
     return classifyManifest({
@@ -226,13 +229,19 @@ async function classifyFixture(options) {
  * @param {string | boolean} baselineStatus
  */
 function row(compatKey, baselineStatus) {
-    return {
+    /** @type {{ compatKey: string; featureId: string; featureName: string; baselineStatus: string | boolean; baselineLowDate?: string; }} */
+    const compatRow = {
         compatKey,
         featureId: "widget-fixture",
         featureName: "Widget fixture",
         baselineStatus,
-        ...(baselineStatus === false ? {} : { baselineLowDate: "2020-01-01" }),
     };
+
+    if (baselineStatus !== false) {
+        compatRow.baselineLowDate = "2020-01-01";
+    }
+
+    return compatRow;
 }
 
 // When resolving the abstract TypedArray row, the classifier requires that
@@ -256,6 +265,7 @@ function typedArrayFamilyRows(overrides = {}) {
         "BigInt64Array",
         "BigUint64Array",
     ];
+
     return names.map(name => row(`javascript.builtins.${name}`, overrides[name] ?? "high"));
 }
 
@@ -266,11 +276,13 @@ function typedArrayFamilyRows(overrides = {}) {
 function findRow(classification, compatKey) {
     const found = classification.classifiedCompatRows.find(candidate => candidate.compatKey === compatKey);
     assert.ok(found, `expected classified row for ${compatKey}`);
+
     return found;
 }
 
 test("SharedArrayBuffer selects its ArrayBufferLike augmentation only when the root is included", async () => {
     const key = "javascript.builtins.SharedArrayBuffer";
+
     const libSource = [
         "interface ArrayBuffer { byteLength: number; }",
         "interface ArrayBufferTypes { ArrayBuffer: ArrayBuffer; }",
@@ -280,6 +292,7 @@ test("SharedArrayBuffer selects its ArrayBufferLike augmentation only when the r
         "declare var SharedArrayBuffer: SharedArrayBufferConstructor;",
         "interface ArrayBufferTypes { SharedArrayBuffer: SharedArrayBuffer; }",
     ].join("\n");
+
     const rows = [row("javascript.builtins.ArrayBuffer", "high"), { ...row(key, "high"), baselineLowDate: "2021-12-01" }];
     const current = await classifyFixture({ rows, libSource });
     const currentRow = findRow(current, key);
@@ -348,6 +361,7 @@ test("classifier routes synthetic compat rows to the expected resolution kinds",
         classification,
         "javascript.builtins.Widget.configure.options_size_parameter.extended_values",
     );
+
     assert.equal(qualifiedOptionRow.resolutionKind, "option-property");
     assert.ok(qualifiedOptionRow.resolvedUnitIds.some(unitId => unitId.includes("WidgetOptions.size")));
 
@@ -382,8 +396,35 @@ test("classifier routes synthetic compat rows to the expected resolution kinds",
     assert.equal(argumentsCallee.includeInTarget, false);
 });
 
+test("inherited members follow extends clauses, not parameter or return types", async () => {
+    const libSource = [
+        "interface Root { inherited(): string; overridden(): string; }",
+        "interface Middle extends Root { overridden(): 'middle'; }",
+        "interface Widget extends Middle { configure(options: WidgetOptions): Result; }",
+        "interface WidgetOptions { parameterOnly(): void; guessedByName(): void; }",
+        "interface Result { returnOnly(): void; }",
+    ].join("\n");
+
+    const classification = await classifyFixture({
+        libSource,
+        rows: [row("javascript.builtins.Widget.inherited", "high"), row("javascript.builtins.Widget.overridden", "high")],
+    });
+
+    assert.match(findRow(classification, "javascript.builtins.Widget.inherited").resolvedUnitIds.join(), /Root\.inherited/);
+    assert.match(findRow(classification, "javascript.builtins.Widget.overridden").resolvedUnitIds.join(), /Middle\.overridden/);
+    assert.doesNotMatch(findRow(classification, "javascript.builtins.Widget.overridden").resolvedUnitIds.join(), /Root\.overridden/);
+
+    for (const member of ["parameterOnly", "returnOnly", "guessedByName"]) {
+        await assert.rejects(
+            classifyFixture({ libSource, rows: [row(`javascript.builtins.Widget.${member}`, "high")] }),
+            new RegExp(`Special compat keys missing registry metadata:[\\s\\S]*Widget\\.${member}`),
+        );
+    }
+});
+
 test("classifier resolves declaration mappings and audits their containers", async () => {
     const compatKey = "javascript.builtins.Widget.legacy";
+
     const widgetLibSource = [
         "interface UnrelatedHelper {",
         '    "$future": string;',
@@ -398,17 +439,20 @@ test("classifier resolves declaration mappings and audits their containers", asy
         "}",
         "",
     ].join("\n");
+
     const rows = [
         row("javascript.builtins.Widget", "high"),
         row("javascript.builtins.Widget.Widget", "high"),
         row(compatKey, false),
     ];
+
     const declarationMappings = {
         [compatKey]: {
             scope: "static",
             memberNames: ["legacy", "$alias"],
         },
     };
+
     const registryGroups = [{
         id: "widget-legacy",
         category: "legacy_excluded",
@@ -435,6 +479,7 @@ test("classifier resolves declaration mappings and audits their containers", asy
         declarationMappings,
         registryGroups,
     });
+
     const classifiedRow = findRow(classification, compatKey);
     assert.equal(classifiedRow.resolutionKind, "member");
     assert.deepEqual(
@@ -483,9 +528,11 @@ test("classifier resolves declaration mappings and audits their containers", asy
 test("classifier audits declaration mappings on synthetic roots", async () => {
     const compatKey = "javascript.builtins.TypedArray.at";
     const rows = [row(compatKey, false), ...typedArrayFamilyRows()];
+
     const declarationMappings = {
         [compatKey]: { scope: "instance", memberNames: ["at"] },
     };
+
     const registryGroups = [{
         id: "typed-array-mapping",
         category: "legacy_excluded",
@@ -497,6 +544,7 @@ test("classifier audits declaration mappings on synthetic roots", async () => {
         externalAction: { kind: "none", note: "Synthetic fixture." },
         compatKeys: [compatKey],
     }];
+
     const classification = await classifyFixture({ rows, declarationMappings, registryGroups });
 
     const classifiedRow = findRow(classification, compatKey);
@@ -519,11 +567,13 @@ test("classifier honors the low baseline target and rejects unknown targets", as
         rows: [row("javascript.builtins.Iterator.map", "low")],
         baselineTarget: "low",
     });
+
     assert.equal(findRow(lowTarget, "javascript.builtins.Iterator.map").includeInTarget, true);
 
     const highTarget = await classifyFixture({
         rows: [row("javascript.builtins.Iterator.map", "low")],
     });
+
     assert.equal(findRow(highTarget, "javascript.builtins.Iterator.map").includeInTarget, false);
 
     await assert.rejects(
@@ -537,6 +587,7 @@ test("classifier honors the low baseline target and rejects unknown targets", as
 
 test("classifier fails closed on unmanaged, stale, and kind-drifted registry state", async () => {
     const mysteryKey = "javascript.builtins.Widget.mystery";
+
     /**
      * @param {{ compatKeys: string[]; expectedResolutionKinds?: string[]; }} groupOptions
      */
@@ -564,6 +615,7 @@ test("classifier fails closed on unmanaged, stale, and kind-drifted registry sta
         rows: [row(mysteryKey, "high")],
         registryGroups: [registryGroup({ compatKeys: [mysteryKey] })],
     });
+
     const managedRow = findRow(managed, mysteryKey);
     assert.equal(managedRow.resolutionKind, "not-modeled-upstream");
     assert.equal(managedRow.management?.groupId, "widget-mystery");
@@ -594,7 +646,7 @@ test("classifier fails closed on unmanaged, stale, and kind-drifted registry sta
     );
 });
 
-test("dataset loader rejects duplicate compat keys before classification", async () => {
+test("dataset loader rejects repeated compat keys in the same feature before classification", async () => {
     await assert.rejects(
         classifyFixture({
             rows: [
@@ -602,7 +654,7 @@ test("dataset loader rejects duplicate compat keys before classification", async
                 row("javascript.builtins.Widget.configure", "high"),
             ],
         }),
-        /duplicate compatKey javascript\.builtins\.Widget\.configure/,
+        /Duplicate compat key membership javascript\.builtins\.Widget\.configure in feature widget-fixture/,
     );
 });
 
@@ -617,6 +669,7 @@ test("typed array family follows each concrete array's own baseline status", asy
             ...typedArrayFamilyRows({ Float16Array: "low" }),
         ],
     });
+
     const todayRow = findRow(today, "javascript.builtins.TypedArray.at");
     assert.ok(todayRow.resolvedUnitIds.some(unitId => unitId.includes("Int8Array.at")));
     assert.ok(!todayRow.resolvedUnitIds.some(unitId => unitId.includes("Float16Array.at")));
@@ -628,6 +681,7 @@ test("typed array family follows each concrete array's own baseline status", asy
             ...typedArrayFamilyRows(),
         ],
     });
+
     const promotedRow = findRow(promoted, "javascript.builtins.TypedArray.at");
     assert.ok(promotedRow.resolvedUnitIds.some(unitId => unitId.includes("Int8Array.at")));
     assert.ok(promotedRow.resolvedUnitIds.some(unitId => unitId.includes("Float16Array.at")));
@@ -674,6 +728,8 @@ function jsonParseRegistryGroup() {
 test("JSON.parse reviver verdict stays excluded while TypeScript does not model the context argument", async () => {
     const libSource = [
         "interface JSON {",
+        "    parse(text: string): any;",
+        "    /** The reviver receives no context parameter in this signature. */",
         "    parse(text: string, reviver?: (this: any, key: string, value: any) => any): any;",
         "}",
         "declare var JSON: JSON;",
@@ -685,25 +741,36 @@ test("JSON.parse reviver verdict stays excluded while TypeScript does not model 
         libSource,
         registryGroups: [jsonParseRegistryGroup()],
     });
+
     const parseRow = findRow(classification, JSON_PARSE_KEY);
     assert.equal(parseRow.resolutionKind, "already-excluded-upstream");
     assert.equal(parseRow.includeInTarget, false);
 });
 
 test("JSON.parse reviver verdict fails closed once TypeScript models the context argument", async () => {
-    // A lib where TypeScript has added the context argument to reviver. The
-    // pinned verdict must stop and prompt re-evaluation instead of silently lying.
     const libSource = [
         "interface JSONParseContext { source: string; }",
         "interface JSON {",
-        "    parse(text: string, reviver?: (this: any, key: string, value: any, context: JSONParseContext) => any): any;",
+        "    parse(text: string, visit?: ((this: any, key: string, value: any, info: JSONParseContext) => any) | undefined): any;",
         "}",
         "declare var JSON: JSON;",
         "",
     ].join("\n");
 
     await assert.rejects(
-        () => classifyFixture({ rows: [row(JSON_PARSE_KEY, "low")], libSource }),
-        /reviver context argument[\s\S]*stale|now appears to model the reviver context/u,
+        () => classifyFixture({ rows: [row(JSON_PARSE_KEY, "low")], libSource, registryGroups: [jsonParseRegistryGroup()] }),
+        /resolution kind no longer matches registry expectations/u,
+    );
+});
+
+test("JSON.parse callback aliases require an explicit mapping update", async () => {
+    const libSource = [
+        "type Reviver = (key: string, value: unknown, info: { source: string }) => unknown;",
+        "interface JSON { parse(text: string, reviver?: Reviver): unknown; }",
+    ].join("\n");
+
+    await assert.rejects(
+        classifyFixture({ rows: [row(JSON_PARSE_KEY, "low")], libSource, registryGroups: [jsonParseRegistryGroup()] }),
+        /Unsupported JSON\.parse reviver type.*Reviver/,
     );
 });
