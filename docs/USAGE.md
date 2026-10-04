@@ -1,16 +1,12 @@
 # Usage Guide
 
-Copy these configurations for common `typescript-baseline-lib` use cases.
-
-Use TypeScript 7 for new projects. This package also supports TypeScript 6 for tools that require its programmatic API.
+Use `typescript-baseline-lib` to check JavaScript built-in APIs against your Baseline policy in the editor or CI. The examples below work with TypeScript 6 and 7; the install commands use TypeScript 7 unless noted.
 
 ## Before you choose a configuration
 
-- Set `noLib` to `true`. TypeScript then ignores `lib`.
-- Choose one complete target. Use the rolling root package or one `year/*` entry.
-- If the runtime loads the matching polyfill, add an `allow/*` entry to the rolling root package.
-- Do not enable `skipLibCheck`. This option hides declaration conflicts and weakens the compatibility gate.
-- This package filters JavaScript built-in declarations by Baseline status. It does not transform syntax, install polyfills, or filter DOM APIs.
+Choose one complete target: the rolling root package or one `year/*` entry. Set `noLib` to `true` so TypeScript uses that target instead of its standard libraries. Do not combine it with `lib` or standard `es*` declarations, and keep `skipLibCheck` disabled so declaration conflicts remain visible. If you extend another configuration, use the [separate CI gate](#i-want-a-separate-ci-gate) example to clear an inherited `lib` setting.
+
+These declarations control which built-in APIs TypeScript knows about. The compiler's `target` option controls emitted JavaScript syntax; it does not make runtime APIs available. This package does not transform syntax, load polyfills, or filter DOM APIs.
 
 ## I want the current Baseline Widely available target
 
@@ -40,7 +36,7 @@ Run the compiler:
 npx tsc -p tsconfig.json
 ```
 
-Each package release contains one rolling snapshot. If your compatibility contract must remain fixed, select a year target.
+Each package release contains a Baseline snapshot, so updating the package can change the APIs accepted by the rolling target. Use a year target for a fixed availability cutoff, and pin the package version and keep your lockfile for reproducible checks.
 
 ## I want a browser application with DOM types
 
@@ -64,9 +60,7 @@ Configure both type packages:
 }
 ```
 
-`@types/web` supplies `document`, `Window`, and other browser declarations. This package does not filter those DOM declarations.
-
-The Baseline gate applies only to the generated JavaScript built-ins.
+`@types/web` supplies `document`, `Window`, and other browser declarations. Those declarations are not filtered by this package: the Baseline check still applies only to the generated JavaScript built-ins. Keep your existing JSX settings if the project uses `.tsx` files.
 
 ## I want a separate CI gate
 
@@ -76,8 +70,10 @@ Keep the normal `tsconfig.json`. Create `tsconfig.baseline.json` for the Baselin
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "lib": null,
     "noLib": true,
     "noEmit": true,
+    "skipLibCheck": false,
     "types": ["typescript-baseline-lib"]
   },
   "include": ["src/**/*.ts"]
@@ -100,9 +96,7 @@ Run the gate:
 npm run check:baseline
 ```
 
-The child configuration replaces the inherited ambient `types`. The `noLib` option disables each inherited standard `lib`.
-
-For browser source, install `@types/web`. Then use `"types": ["typescript-baseline-lib", "web"]`.
+The child configuration replaces the inherited `types` and clears `lib` with `null`. Without that override, an inherited `lib` conflicts with `noLib` and TypeScript reports TS5053. Setting `skipLibCheck` to `false` also keeps declaration checking enabled when the parent configuration disables it. For browser source, install `@types/web` and use `"types": ["typescript-baseline-lib", "web"]`.
 
 ## I want a shared package for browsers and Node.js
 
@@ -112,23 +106,21 @@ Apply the Baseline gate only to platform-neutral source:
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "lib": null,
     "noLib": true,
     "noEmit": true,
+    "skipLibCheck": false,
     "types": ["typescript-baseline-lib"]
   },
   "include": ["src/shared/**/*.ts"]
 }
 ```
 
-Do not add `dom`, `web`, or `node` globals to this shared-source gate. Use separate build configurations for browser and Node.js entry points.
-
-Do not add `@types/node` to this shared-source gate. Node declarations can require runtime surfaces before they reach the selected target.
-
-Examples include `Disposable` and `Float16Array`.
+Keep browser and Node.js globals out of this shared-source check, and use separate configurations for platform-specific entry points. Node declarations can require APIs outside the selected Baseline target, such as `Disposable` and `Float16Array`. Baseline describes browser availability; it does not certify support in a particular Node.js version.
 
 ## I want a fixed Baseline year
 
-Use one complete cumulative year entry:
+Use one complete cumulative year entry to check APIs that became Baseline Newly available by the end of that year:
 
 ```json
 {
@@ -142,7 +134,7 @@ Use one complete cumulative year entry:
 }
 ```
 
-Do not combine a `year/*` entry with the root package or an `allow/*` entry. The package supplies completed year targets from 2020.
+The package supplies completed year targets from 2020. Each year entry replaces the rolling target, so do not combine it with the root package or an `allow/*` entry. The cutoff stays fixed, but later package releases can correct compatibility data or declarations; pin the package version when the exact output must stay unchanged.
 
 ## I polyfill one API outside the rolling target
 
@@ -161,7 +153,7 @@ import "core-js/proposals/promise-try";
 const result = Promise.try(() => 42);
 ```
 
-Then add its audited declaration entry:
+Then add the matching declaration entry:
 
 ```json
 {
@@ -177,9 +169,7 @@ Then add its audited declaration entry:
 }
 ```
 
-An `allow/*` entry changes type availability only. It does not install or load a runtime polyfill.
-
-The permanent allowlist in the repository defines the public entries.
+An `allow/*` entry adds types to the rolling target; it does not install or load a polyfill. Your application must provide the API at runtime. Choose an entry from the [public allowlist](../registry/allowlist.json); those paths stay valid when an API later joins the rolling target.
 
 ## I want Vite to use the same policy
 
@@ -195,11 +185,9 @@ export default defineConfig({
 });
 ```
 
-Combine this setting with the browser TypeScript configuration. Vite transforms syntax, but it does not usually polyfill JavaScript APIs.
+Combine this setting with the browser TypeScript configuration. Vite's build target handles syntax; it does not add polyfills for calls such as `Promise.try`. Vite freezes its Baseline browser snapshot for each major release, while this package updates its root entry in separate releases. The policy names align, but the snapshots may differ.
 
-Vite freezes its Baseline browser snapshot for each major release. This package updates its root entry through separate dataset and package releases.
-
-## I want Browserslist and TypeScript to use the same target
+## I want a Baseline policy in Browserslist
 
 For a rolling target, add `.browserslistrc`:
 
@@ -217,7 +205,7 @@ baseline 2024
 
 Use it with `"types": ["typescript-baseline-lib/year/2024"]`.
 
-Browserslist supplies target data to compatible build and CSS tools. The TypeScript package separately limits the JavaScript built-in declaration surface.
+Browserslist selects browsers for compatible build and CSS tools, while this package selects JavaScript built-in declarations. Their data is updated separately, so a matching policy name does not guarantee an identical snapshot.
 
 ## I must use TypeScript 6
 
@@ -231,11 +219,13 @@ Use the same `noLib` and `types` values from the other configurations. This conf
 
 ## I want ESLint to enforce the same Baseline
 
-Install [`eslint-plugin-baseline-js`](https://github.com/3ru/eslint-plugin-baseline-js). This plugin covers syntax and Web APIs that a TypeScript lib cannot model.
+Use [`eslint-plugin-baseline-js`](https://github.com/3ru/eslint-plugin-baseline-js) for additional checks on syntax and Web APIs. It complements the built-in API checks provided by this package:
 
 ```sh
 npm install --save-dev eslint eslint-plugin-baseline-js
 ```
+
+Add the plugin to your ESLint flat configuration. This minimal example works for JavaScript; TypeScript files also need your usual TypeScript parser and file patterns. Keep that setup when adding these entries.
 
 ```js
 // eslint.config.mjs
@@ -250,7 +240,7 @@ export default [
 ];
 ```
 
-For the same fixed year, set `available: 2024` and use `typescript-baseline-lib/year/2024`.
+For a matching year policy, set `available: 2024` and use `typescript-baseline-lib/year/2024`. The plugin and this package have separate data releases and coverage, so they may not report exactly the same features.
 
 ## I want to inspect the loaded TypeScript files
 
@@ -260,7 +250,7 @@ Run:
 npx tsc -p tsconfig.baseline.json --explainFiles
 ```
 
-The output must include `typescript-baseline-lib`. It must not include standard TypeScript `lib.es*.d.ts` files.
+The output should include `typescript-baseline-lib` and exclude standard TypeScript `lib.es*.d.ts` files. If a missing-API error suggests adding an `es*` library, that would broaden the declarations beyond your selected target. Choose an API within the target or provide a suitable polyfill and allow entry instead.
 
 ## References
 
