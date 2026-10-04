@@ -5,7 +5,9 @@ import path from "node:path";
 import { runRecordedUpdateStep, writeUpdateDiagnostics } from "../lib/update-diagnostics.mjs";
 
 const cwd = process.cwd();
+
 const outputDirectory = path.join(cwd, ".tmp", "update-diagnostics");
+
 const [mode, step, separator, command, ...args] = process.argv.slice(2);
 
 if (mode === "run" && step && separator === "--" && command) {
@@ -17,9 +19,11 @@ else if (mode === "report" && !step) {
         outputDirectory,
         steps: JSON.parse(process.env.UPDATE_WORKFLOW_STEPS ?? "{}"),
     });
+
     if (process.env.GITHUB_STEP_SUMMARY) {
         fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, markdown);
     }
+
     console.log(`Wrote ${path.relative(cwd, outputDirectory)}/summary.md`);
 }
 else {
