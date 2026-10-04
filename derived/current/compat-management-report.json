@@ -8,33 +8,33 @@
     "kind": "typescript-baseline-lib/compat-management-registry",
     "schemaVersion": 1,
     "sourcePath": "registry/compat-management.json",
-    "sourceHash": "sha256-a2e0009acc49a898cb3154ab149fe75a1760643216e28e502d1d133a924f104a",
-    "groupCount": 19,
-    "managedCompatCount": 60
+    "sourceHash": "sha256-5aad0f5fa9d5a6b4b43e7ccc9ee8220eaf5d617bdfe3f6b31edebae55d7cb9c6",
+    "groupCount": 20,
+    "managedCompatCount": 61
   },
   "summary": {
-    "managedCompatCount": 60,
+    "managedCompatCount": 61,
     "managedCategoryCounts": {
       "actionable_upstream_gap": 12,
       "handled_outside_lib": 3,
       "legacy_excluded": 14,
-      "tracked_by_canonical_lib": 27,
+      "tracked_by_canonical_lib": 28,
       "ts_settled_limitation": 4
     },
     "managedDeliveryCounts": {
       "cover-checker": 2,
-      "defer-upstream": 43,
+      "defer-upstream": 44,
       "exclude": 15
     },
     "managedUpstreamStateCounts": {
       "actionable": 7,
       "settled": 21,
-      "tracked": 32
+      "tracked": 33
     },
     "managedResolutionKindCounts": {
       "already-excluded-upstream": 1,
       "member": 6,
-      "not-modeled-upstream": 51,
+      "not-modeled-upstream": 52,
       "root-availability": 2
     }
   },
@@ -370,6 +370,34 @@
       ]
     },
     {
+      "id": "iterator-join-tracked",
+      "category": "tracked_by_canonical_lib",
+      "delivery": "defer-upstream",
+      "upstreamState": "tracked",
+      "compatRoot": "Iterator",
+      "expectedResolutionKinds": [
+        "not-modeled-upstream"
+      ],
+      "reason": "Iterator.join is tracked for TypeScript 7.1 but is absent from the pinned libraries.",
+      "sourceUrls": [
+        "https://github.com/microsoft/TypeScript/issues/63700",
+        "https://tc39.es/proposal-iterator-join/#sec-iterator.prototype.join"
+      ],
+      "externalAction": {
+        "kind": "watch-existing",
+        "repo": "microsoft/TypeScript",
+        "targetUrl": "https://github.com/microsoft/TypeScript/issues/63700",
+        "note": "Update the mapping when the declaration lands."
+      },
+      "compatKeyCount": 1,
+      "compatKeys": [
+        "javascript.builtins.Iterator.join"
+      ],
+      "actualResolutionKinds": [
+        "not-modeled-upstream"
+      ]
+    },
+    {
       "id": "math-sum-precise-tracked",
       "category": "tracked_by_canonical_lib",
       "delivery": "defer-upstream",
@@ -485,16 +513,17 @@
         "not-modeled-upstream",
         "already-excluded-upstream"
       ],
-      "reason": "proposal-json-parse-with-source is tracked upstream, but the current TypeScript lib still lacks JSON.rawJSON, JSON.isRawJSON, and the reviver context parameter surface required by web-features.",
+      "reason": "TypeScript 7.0 lacks these declarations. The pinned upstream source includes all three in lib.es2026.json.d.ts.",
       "sourceUrls": [
         "https://github.com/microsoft/TypeScript/issues/61330",
+        "https://github.com/microsoft/TypeScript/pull/64096",
         "https://github.com/tc39/proposal-json-parse-with-source"
       ],
       "externalAction": {
         "kind": "watch-existing",
         "repo": "microsoft/TypeScript",
         "targetUrl": "https://github.com/microsoft/TypeScript/issues/61330",
-        "note": "Watch the existing Domain: lib.d.ts issue and promote once the canonical lib surface lands."
+        "note": "Watch the next TypeScript release and remove the source-specific expectation once the published declarations include these APIs."
       },
       "compatKeyCount": 3,
       "compatKeys": [

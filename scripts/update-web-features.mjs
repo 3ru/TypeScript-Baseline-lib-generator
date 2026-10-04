@@ -14,18 +14,24 @@ import {
 } from "../lib/web-features-dataset.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
+
 const scriptDirectory = path.dirname(scriptPath);
+
 const repoRoot = path.resolve(scriptDirectory, "..");
 
 const args = parseArgs(process.argv.slice(2));
+
 const manifestPath = path.resolve(args.manifest ?? path.join(repoRoot, "manifests", "baseline-js.json"));
+
 const snapshotDate = args.snapshotDate ?? new Date().toISOString().slice(0, 10);
+
 const snapshotName = args.snapshotName ?? "baseline-js";
 
 await main();
 
 async function main() {
     const datasetPath = path.join(repoRoot, "datasets", "web-features-js-compat.json");
+
     const dataset = await buildWebFeaturesDataset({
         repoRoot,
         snapshotDate,
@@ -37,11 +43,13 @@ async function main() {
     const existingDataset = existsSync(datasetPath)
         ? JSON.parse(readFileSync(datasetPath, "utf8"))
         : undefined;
+
     const effectiveDate = resolveSnapshotDate({
         existingDataset,
         newDataset: dataset,
         candidateDate: snapshotDate,
     });
+
     dataset.snapshot.baselineDate = effectiveDate;
     dataset.snapshot.extractedDate = effectiveDate;
 
@@ -57,6 +65,7 @@ async function main() {
         baselineDate: effectiveDate,
         updateOutputPaths: true,
     });
+
     await writeManifest({
         manifestPath,
         manifest,
@@ -78,6 +87,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--manifest":
                 args.manifest = requireArgValue(argv[++index], current);
@@ -108,6 +118,7 @@ function requireArgValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 

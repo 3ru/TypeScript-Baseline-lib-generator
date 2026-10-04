@@ -46,6 +46,7 @@ test("package metadata stages deterministically with the TypeScript peer contrac
     const classification = readJsonFile(repoClassificationPath);
     const includedCompatCount = countIncludedCompatRows(classification.classifiedCompatRows);
     assert.ok(includedCompatCount < classification.summary.includedCompatCount);
+
     const expectedSnapshot = {
         schemaVersion: 1,
         baselineDate: repoManifest.snapshot.baselineDate,
@@ -55,6 +56,7 @@ test("package metadata stages deterministically with the TypeScript peer contrac
         includedCompatCount,
         generatorVersion: repoManifest.snapshot.generatorVersion,
     };
+
     assert.deepEqual(
         readJsonFile(path.join(firstStage.stageDirectory, "snapshot.json")),
         expectedSnapshot,
@@ -108,12 +110,14 @@ test("TypeScript peer range contains every pinned compiler line", () => {
         () => assertTypeScriptPeerRange(">=6 <8", []),
         /No TypeScript versions were provided/,
     );
+
     for (const range of [">=06 <8", ">=8 <8", undefined]) {
         assert.throws(
             () => assertTypeScriptPeerRange(/** @type {any} */ (range), ["7.0.2"]),
             /Unsupported TypeScript peer range/,
         );
     }
+
     assert.throws(
         () => assertTypeScriptPeerRange(">=6 <8", ["07.0.2"]),
         /Unsupported TypeScript version: 07\.0\.2/,
@@ -158,9 +162,11 @@ function readPackageContents(packageDirectory) {
     function visit(currentDirectory, relativeDirectory) {
         const entries = fs.readdirSync(currentDirectory, { withFileTypes: true })
             .sort((left, right) => left.name.localeCompare(right.name));
+
         for (const entry of entries) {
             const relativePath = relativeDirectory ? path.join(relativeDirectory, entry.name) : entry.name;
             const fullPath = path.join(currentDirectory, entry.name);
+
             if (entry.isDirectory()) {
                 visit(fullPath, relativePath);
             }
@@ -171,5 +177,6 @@ function readPackageContents(packageDirectory) {
     }
 
     visit(packageDirectory, "");
+
     return contents;
 }

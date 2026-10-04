@@ -10,6 +10,7 @@ import {
     checkoutTypeScriptSource,
     readTypeScriptSourcePin,
 } from "../lib/typescript-source.mjs";
+import { readLibSourceConfig } from "../lib/toolchain-libs.mjs";
 import {
     cleanupTempDirectories,
     createTempDirectory,
@@ -41,10 +42,12 @@ test("source pinning and checkout remain exact after the tracked branch advances
     commitAll(sourceDirectory, "first");
 
     const manifest = {};
+
     const pin = applyTypeScriptSourcePin({
         manifest,
         repository: sourceDirectory,
     });
+
     assert.equal(pin.ref, "main");
 
     fs.writeFileSync(path.join(sourceDirectory, "value.txt"), "second\n");
@@ -54,6 +57,7 @@ test("source pinning and checkout remain exact after the tracked branch advances
         manifest,
         outDirectory: checkoutDirectory,
     });
+
     assert.equal(result.commit, pin.commit);
     assert.equal(execFileSync("git", ["rev-parse", "HEAD"], { cwd: checkoutDirectory, encoding: "utf8" }).trim(), pin.commit);
     assert.equal(fs.readFileSync(path.join(checkoutDirectory, "value.txt"), "utf8"), "first\n");
@@ -69,6 +73,7 @@ test("source pinning and checkout remain exact after the tracked branch advances
         outDirectory: checkoutDirectory,
         force: true,
     });
+
     assert.equal(refreshed.reusedExistingCheckout, false);
     assert.ok(!fs.existsSync(path.join(checkoutDirectory, "local.txt")));
     assert.equal(fs.readFileSync(path.join(checkoutDirectory, "value.txt"), "utf8"), "first\n");
@@ -82,6 +87,27 @@ test("repo manifest pins a cross-platform verified lib source", () => {
     assert.ok(libSource.referencePlatforms.length >= 2, "expected at least two reference platforms");
     assert.match(libSource.libContentHash, /^sha256-[0-9a-f]{64}$/u);
     assert.ok(Number.isInteger(libSource.libFileCount) && libSource.libFileCount > 0);
+});
+
+test("lib source pins reject coerced values and duplicate reference platforms", () => {
+    assert.deepEqual(readLibSourceConfig(repoManifest), repoManifest.libSource);
+
+    for (const referencePlatforms of [
+        ["linux-x64", "linux-x64"],
+        ["linux-x64", 42],
+        ["linux-x64", null],
+        ["linux-x64", "../other"],
+    ]) {
+        assert.throws(
+            () => readLibSourceConfig({ libSource: { ...repoManifest.libSource, referencePlatforms } }),
+            /referencePlatforms/,
+        );
+    }
+
+    assert.throws(
+        () => readLibSourceConfig({ libSource: { ...repoManifest.libSource, libContentHash: [repoManifest.libSource.libContentHash] } }),
+        /libContentHash/,
+    );
 });
 
 /**

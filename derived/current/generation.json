@@ -16,15 +16,15 @@
   "inventoryOutputPath": "derived/current/inventory.json",
   "summary": {
     "sourceLibCount": 84,
-    "classifiedCompatCount": 1150,
-    "selectedUnitCount": 1909,
+    "classifiedCompatCount": 1153,
+    "selectedUnitCount": 1922,
     "completeContainerCount": 176,
-    "excludedUnitCount": 414,
+    "excludedUnitCount": 408,
     "preservedTypeOnlyUnitCount": 29,
     "transformedUnitCount": 2,
     "allowEntryCount": 15,
-    "allowEntryUnitCount": 126,
-    "allowSupportUnitCount": 77,
+    "allowEntryUnitCount": 118,
+    "allowSupportUnitCount": 73,
     "yearLibCount": 6
   },
   "sourceLibs": [
@@ -608,10 +608,6 @@
     },
     {
       "kind": "allow-support",
-      "outputPath": "generated/current/allow/_support/promise-withresolvers.d.ts"
-    },
-    {
-      "kind": "allow-support",
       "outputPath": "generated/current/allow/_support/set-methods.d.ts"
     },
     {
@@ -676,30 +672,24 @@
   ],
   "allowEntries": [
     {
-      "kind": "active",
+      "kind": "alias",
       "entryName": "array-fromasync",
       "outputPath": "generated/current/allow/array-fromasync/index.d.ts",
       "compatKeys": [
         "javascript.builtins.Array.fromAsync"
       ],
-      "unitIds": [
-        "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::2",
-        "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::3"
-      ],
+      "unitIds": [],
       "supportUnitIds": []
     },
     {
-      "kind": "active",
+      "kind": "alias",
       "entryName": "array-group",
       "outputPath": "generated/current/allow/array-group/index.d.ts",
       "compatKeys": [
         "javascript.builtins.Map.groupBy",
         "javascript.builtins.Object.groupBy"
       ],
-      "unitIds": [
-        "lib.es2024.collection.d.ts::MapConstructor.groupBy::2",
-        "lib.es2024.object.d.ts::ObjectConstructor.groupBy::2"
-      ],
+      "unitIds": [],
       "supportUnitIds": []
     },
     {
@@ -959,21 +949,14 @@
       "supportUnitIds": []
     },
     {
-      "kind": "active",
+      "kind": "alias",
       "entryName": "promise-withresolvers",
       "outputPath": "generated/current/allow/promise-withresolvers/index.d.ts",
       "compatKeys": [
         "javascript.builtins.Promise.withResolvers"
       ],
-      "unitIds": [
-        "lib.es2024.promise.d.ts::PromiseConstructor.withResolvers::7"
-      ],
-      "supportUnitIds": [
-        "lib.es2024.promise.d.ts::PromiseWithResolvers.promise::2",
-        "lib.es2024.promise.d.ts::PromiseWithResolvers.reject::4",
-        "lib.es2024.promise.d.ts::PromiseWithResolvers.resolve::3",
-        "lib.es2024.promise.d.ts::PromiseWithResolvers::1"
-      ]
+      "unitIds": [],
+      "supportUnitIds": []
     },
     {
       "kind": "active",
@@ -1050,7 +1033,7 @@
       ]
     },
     {
-      "kind": "active",
+      "kind": "alias",
       "entryName": "transferable-arraybuffer",
       "outputPath": "generated/current/allow/transferable-arraybuffer/index.d.ts",
       "compatKeys": [
@@ -1058,11 +1041,7 @@
         "javascript.builtins.ArrayBuffer.transfer",
         "javascript.builtins.ArrayBuffer.transferToFixedLength"
       ],
-      "unitIds": [
-        "lib.es2024.arraybuffer.d.ts::ArrayBuffer.detached::5",
-        "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transfer::6",
-        "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transferToFixedLength::7"
-      ],
+      "unitIds": [],
       "supportUnitIds": []
     },
     {
@@ -1092,7 +1071,7 @@
     {
       "year": 2020,
       "outputPath": "generated/current/year/2020/index.d.ts",
-      "contentHash": "sha256-37070d861cfe386653cb7f2174009f9040e1e38e7dd8c42a271c90d03221c8cc",
+      "contentHash": "sha256-9a8752a75a8c7c57a43174e986f2e43f0ac05526b739d5b71488b365e743d59c",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -1723,7 +1702,7 @@
     {
       "year": 2021,
       "outputPath": "generated/current/year/2021/index.d.ts",
-      "contentHash": "sha256-32eff0354d555bac166068b673c9253de514e7d66c62d9529dca525294f56a51",
+      "contentHash": "sha256-879c5fc01ab387aa8081fba4aa26383de44c332ead05b04ca6bacfd250a21305",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -2411,14 +2390,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1791,
+      "selectedUnitCount": 1792,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 2
     },
     {
       "year": 2022,
       "outputPath": "generated/current/year/2022/index.d.ts",
-      "contentHash": "sha256-3bf13c02fec1aa78b05d8181b5941a3f9a794ea0527052bad6461bb04e5685b0",
+      "contentHash": "sha256-a6a79f10683753856da19a492ee1451c01123d23abd7cb5d68a23735cba6a5f3",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -3116,14 +3095,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1846,
+      "selectedUnitCount": 1847,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 2
     },
     {
       "year": 2023,
       "outputPath": "generated/current/year/2023/index.d.ts",
-      "contentHash": "sha256-ab5b2463a60479471ccf98811f8ca9da76d8220a11bf92dc02b7ab06bb2044e8",
+      "contentHash": "sha256-3d740e009e79d6e8996dfbf9fdfe70f0445027627d4e9d99d87f3a4de9d48784",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -3843,14 +3822,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1909,
+      "selectedUnitCount": 1910,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 2
     },
     {
       "year": 2024,
       "outputPath": "generated/current/year/2024/index.d.ts",
-      "contentHash": "sha256-09e74810ca650a81e4dff5d5fd18b3c3669ff719b9601f11987ce85ed8d1f138",
+      "contentHash": "sha256-b53954e6dc67ee1c8d942aad4ca0d76bbff9a42d8dd03b7fa7ca78dcdf93f83d",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -4600,14 +4579,14 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 1968,
+      "selectedUnitCount": 1969,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 0
     },
     {
       "year": 2025,
       "outputPath": "generated/current/year/2025/index.d.ts",
-      "contentHash": "sha256-d10524e61d0ecf8177c8c6b27c6388074c9c84c30099e9485d61a1d9cb2049b1",
+      "contentHash": "sha256-139fdb314cddf099a5ce5a0e74752afa0a1b60bace01f25dddac09c3a12698f4",
       "includedCompatKeys": [
         "javascript.builtins.AggregateError",
         "javascript.builtins.AggregateError.AggregateError",
@@ -4811,6 +4790,7 @@
         "javascript.builtins.FinalizationRegistry.register",
         "javascript.builtins.FinalizationRegistry.register.symbol_as_target",
         "javascript.builtins.FinalizationRegistry.unregister",
+        "javascript.builtins.FinalizationRegistry.unregister.symbol_as_target",
         "javascript.builtins.Float16Array",
         "javascript.builtins.Float16Array.Float16Array",
         "javascript.builtins.Float32Array",
@@ -5397,7 +5377,7 @@
         "javascript.builtins.globalThis",
         "javascript.builtins.undefined"
       ],
-      "selectedUnitCount": 2125,
+      "selectedUnitCount": 2126,
       "preservedTypeOnlyUnitCount": 29,
       "transformedUnitCount": 0
     }
@@ -5488,6 +5468,18 @@
       ]
     },
     {
+      "unitId": "lib.es2019.string.d.ts::String.trimLeft::4",
+      "compatKeys": [
+        "javascript.builtins.String.trimLeft"
+      ]
+    },
+    {
+      "unitId": "lib.es2019.string.d.ts::String.trimRight::5",
+      "compatKeys": [
+        "javascript.builtins.String.trimRight"
+      ]
+    },
+    {
       "unitId": "lib.es2022.intl.d.ts::Intl.Segmenter.<construct>::30",
       "compatKeys": [
         "javascript.builtins.Intl.Segmenter.Segmenter"
@@ -5559,12 +5551,6 @@
       ]
     },
     {
-      "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.detached::5",
-      "compatKeys": [
-        "javascript.builtins.ArrayBuffer.detached"
-      ]
-    },
-    {
       "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.maxByteLength::2",
       "compatKeys": [
         "javascript.builtins.ArrayBuffer.maxByteLength"
@@ -5580,36 +5566,6 @@
       "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.resize::4",
       "compatKeys": [
         "javascript.builtins.ArrayBuffer.resize"
-      ]
-    },
-    {
-      "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transfer::6",
-      "compatKeys": [
-        "javascript.builtins.ArrayBuffer.transfer"
-      ]
-    },
-    {
-      "unitId": "lib.es2024.arraybuffer.d.ts::ArrayBuffer.transferToFixedLength::7",
-      "compatKeys": [
-        "javascript.builtins.ArrayBuffer.transferToFixedLength"
-      ]
-    },
-    {
-      "unitId": "lib.es2024.collection.d.ts::MapConstructor.groupBy::2",
-      "compatKeys": [
-        "javascript.builtins.Map.groupBy"
-      ]
-    },
-    {
-      "unitId": "lib.es2024.object.d.ts::ObjectConstructor.groupBy::2",
-      "compatKeys": [
-        "javascript.builtins.Object.groupBy"
-      ]
-    },
-    {
-      "unitId": "lib.es2024.promise.d.ts::PromiseConstructor.withResolvers::7",
-      "compatKeys": [
-        "javascript.builtins.Promise.withResolvers"
       ]
     },
     {
@@ -6116,18 +6072,6 @@
       "unitId": "lib.es5.d.ts::unescape::12",
       "compatKeys": [
         "javascript.builtins.unescape"
-      ]
-    },
-    {
-      "unitId": "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::2",
-      "compatKeys": [
-        "javascript.builtins.Array.fromAsync"
-      ]
-    },
-    {
-      "unitId": "lib.esnext.array.d.ts::ArrayConstructor.fromAsync::3",
-      "compatKeys": [
-        "javascript.builtins.Array.fromAsync"
       ]
     },
     {

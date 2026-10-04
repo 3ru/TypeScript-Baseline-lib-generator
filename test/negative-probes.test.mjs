@@ -28,6 +28,7 @@ const compilerFixturePath = path.join(
     "compiler",
     "libBaseline.ts",
 );
+
 const positiveSmokeFixturePath = path.join(
     repoRoot,
     "fixtures",
@@ -49,6 +50,7 @@ test("checked-in classification still excludes every stable probe and at least o
             `stable probe ${stableProbe.compatKey} must stay active`,
         );
     }
+
     assert.ok(
         activeProbes.length > STABLE_NEGATIVE_PROBES.length,
         "expected at least one active Baseline-low probe",
@@ -60,18 +62,21 @@ test("TypeScript fixtures stay in sync with stable exclusion checks", () => {
     // uses only permanently stable probes. This catches any drift between the
     // fixture and the probe definitions.
     const fixtureSource = fs.readFileSync(compilerFixturePath, "utf8");
+
     for (const probe of STABLE_NEGATIVE_PROBES) {
         assert.ok(
             fixtureSource.includes(probe.sourceText),
             `compiler fixture must contain stable probe source: ${probe.sourceText}`,
         );
     }
+
     for (const candidate of LOW_NEGATIVE_PROBE_CANDIDATES) {
         assert.ok(
             !fixtureSource.includes(candidate.sourceText),
             `compiler fixture must not hard-code dated low probe: ${candidate.compatKey}`,
         );
     }
+
     assert.ok(
         fixtureSource.includes(REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION),
         "compiler fixture must contain the RegExp legacy static absence assertion",
@@ -82,15 +87,19 @@ test("TypeScript fixtures stay in sync with stable exclusion checks", () => {
     );
 
     const registry = readJsonFile(repoRegistryPath);
+
     const legacyGroup = registry.groups.find(
         /** @param {{ id: string; }} group */
         group => group.id === "regexp-legacy-statics-excluded",
     );
+
     assert.ok(legacyGroup);
+
     const mappedMemberNames = legacyGroup.compatKeys.flatMap(
         /** @param {string} compatKey */
         compatKey => registry.declarationMappings[compatKey].memberNames,
     );
+
     assert.deepEqual(
         [...new Set(mappedMemberNames)].sort(),
         [...REGEXP_LEGACY_STATIC_MEMBER_NAMES].sort(),
@@ -106,6 +115,7 @@ test("selectActiveNegativeProbes fails with actionable messages", () => {
     function classificationRow(compatKey, includeInTarget) {
         return { compatKey, includeInTarget };
     }
+
     const allExcluded = [
         ...STABLE_NEGATIVE_PROBES.map(probe => classificationRow(probe.compatKey, false)),
         ...LOW_NEGATIVE_PROBE_CANDIDATES.map(probe => classificationRow(probe.compatKey, false)),
@@ -139,15 +149,18 @@ test("selectActiveNegativeProbes fails with actionable messages", () => {
 
     // A promoted low probe silently drops out of the candidates.
     const [firstLow, ...remainingLow] = LOW_NEGATIVE_PROBE_CANDIDATES;
+
     const partiallyPromoted = selectActiveNegativeProbes(
         allExcluded.map(row =>
             row.compatKey === firstLow.compatKey ? classificationRow(row.compatKey, true) : row
         ),
     );
+
     assert.ok(!partiallyPromoted.some(probe => probe.compatKey === firstLow.compatKey));
     assert.ok(remainingLow.every(candidate => partiallyPromoted.some(probe => probe.compatKey === candidate.compatKey)));
 
     const rendered = renderNegativeProbeSource(partiallyPromoted);
+
     for (const probe of partiallyPromoted) {
         assert.ok(rendered.includes(probe.sourceText));
         assert.ok(rendered.includes(probe.compatKey));

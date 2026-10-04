@@ -22,43 +22,43 @@ and limitations under the License.
 // lib.es2022.intl.d.ts
 /////////////////////////////
 declare namespace Intl {
-    /**
-         * An object with some or all properties of the `Intl.Segmenter` constructor `options` parameter.
-         *
-         * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter#parameters)
+/**
+     * An object with some or all properties of the `Intl.Segmenter` constructor `options` parameter.
+     *
+     * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/Segmenter#parameters)
+     */
+    interface SegmenterOptions {
+        /** The locale matching algorithm to use. For information about this option, see [Intl page](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl#Locale_negotiation). */
+        localeMatcher?: "best fit" | "lookup" | undefined;
+
+        /** The type of input to be split */
+        granularity?: "grapheme" | "word" | "sentence" | undefined;
+}
+
+interface ResolvedSegmenterOptions {
+        locale: string;
+
+        granularity: "grapheme" | "word" | "sentence";
+}
+
+interface SegmentIterator<T> extends IteratorObject<T, BuiltinIteratorReturn, unknown> {
+        [Symbol.iterator](): SegmentIterator<T>;
+}
+
+interface SegmentData {
+        /** A string containing the segment extracted from the original input string. */
+        segment: string;
+
+        /** The code unit index in the original input string at which the segment begins. */
+        index: number;
+
+        /** The complete input string that was segmented. */
+        input: string;
+
+        /**
+         * A boolean value only if granularity is "word"; otherwise, undefined.
+         * If granularity is "word", then isWordLike is true when the segment is word-like (i.e., consists of letters/numbers/ideographs/etc.); otherwise, false.
          */
-        interface SegmenterOptions {
-                /** The locale matching algorithm to use. For information about this option, see [Intl page](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl#Locale_negotiation). */
-                localeMatcher?: "best fit" | "lookup" | undefined;
-
-                /** The type of input to be split */
-                granularity?: "grapheme" | "word" | "sentence" | undefined;
-    }
-
-    interface ResolvedSegmenterOptions {
-                locale: string;
-
-                granularity: "grapheme" | "word" | "sentence";
-    }
-
-    interface SegmentIterator<T> extends IteratorObject<T, BuiltinIteratorReturn, unknown> {
-                [Symbol.iterator](): SegmentIterator<T>;
-    }
-
-    interface SegmentData {
-                /** A string containing the segment extracted from the original input string. */
-                segment: string;
-
-                /** The code unit index in the original input string at which the segment begins. */
-                index: number;
-
-                /** The complete input string that was segmented. */
-                input: string;
-
-                /**
-                 * A boolean value only if granularity is "word"; otherwise, undefined.
-                 * If granularity is "word", then isWordLike is true when the segment is word-like (i.e., consists of letters/numbers/ideographs/etc.); otherwise, false.
-                 */
-                isWordLike?: boolean;
-    }
+        isWordLike?: boolean;
+}
 }

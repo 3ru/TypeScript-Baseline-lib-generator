@@ -1,11 +1,11 @@
 {
     "snapshot": {
         "name": "baseline-js",
-        "baselineDate": "2026-07-21",
+        "baselineDate": "2026-10-02",
         "generatorVersion": "0.0.1",
         "typescriptVersion": "7.0.2",
-        "webFeaturesPackageVersion": "3.34.1",
-        "webFeaturesGitHead": "c8b4c88e92fe9f49168371f766358bea6a4f18ab",
+        "webFeaturesPackageVersion": "3.40.1",
+        "webFeaturesGitHead": "8606657a71535d688f5473579712717fe9442c0f",
         "typescriptStradaVersion": "6.0.3"
     },
     "toolchain": {
@@ -16,7 +16,7 @@
     "typescriptSource": {
         "repository": "https://github.com/microsoft/TypeScript.git",
         "ref": "main",
-        "commit": "d6c4afddb2c55f4a9dea7b59293a99a8fdea1799"
+        "commit": "09b1db0617311f3b39f165bb3480c0ce2f718b27"
     },
     "baselineTarget": "high",
     "dataset": "../datasets/web-features-js-compat.json",

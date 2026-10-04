@@ -15,8 +15,11 @@ import {
 } from "./helpers.mjs";
 
 const repoRoot = path.resolve("/repo");
+
 const manifestPath = path.join(repoRoot, "manifests", "baseline.json");
+
 const generatedRoot = path.join(repoRoot, "generated", "current");
+
 /** @type {string[]} */
 const tempDirectories = [];
 

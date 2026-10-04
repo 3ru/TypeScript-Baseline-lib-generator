@@ -5,11 +5,15 @@ import { fileURLToPath } from "node:url";
 import { generateFirstClassBaselineLib } from "../lib/generator.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
+
 const scriptDirectory = path.dirname(scriptPath);
+
 const repoRoot = path.resolve(scriptDirectory, "..");
+
 const defaultManifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
 
 const args = parseArgs(process.argv.slice(2));
+
 const manifestPath = path.resolve(args.manifest ?? defaultManifestPath);
 
 await main();
@@ -37,6 +41,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--manifest":
                 args.manifest = requireArgValue(argv[++index], current);
@@ -61,6 +66,7 @@ function requireArgValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 

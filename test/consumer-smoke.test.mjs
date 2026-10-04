@@ -63,14 +63,17 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
         "process.stdout.write(JSON.stringify(snapshot));",
         "",
     ].join("\n"));
+
     const importedSnapshot = JSON.parse(execFileSync(process.execPath, [importProbePath], {
         cwd: consumerDirectory,
         encoding: "utf8",
     }));
+
     const requiredSnapshot = JSON.parse(execFileSync(process.execPath, [requireProbePath], {
         cwd: consumerDirectory,
         encoding: "utf8",
     }));
+
     assert.deepEqual(importedSnapshot, stagedSnapshot);
     assert.deepEqual(requiredSnapshot, stagedSnapshot);
 
@@ -79,6 +82,11 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
         "const reversed = [1, 2, 3].toReversed();",
         "Intl.supportedValuesOf(\"currency\");",
         "reversed.length;",
+        "Promise.withResolvers<number>();",
+        "Array.fromAsync([1, 2, 3]);",
+        "Object.groupBy([1, 2, 3], value => String(value));",
+        "Map.groupBy([1, 2, 3], value => value % 2);",
+        "new ArrayBuffer(8).transfer().transferToFixedLength().detached;",
         REGEXP_LEGACY_STATIC_ABSENCE_ASSERTION,
         "",
     ].join("\n"));
@@ -106,6 +114,7 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
 
     const failure = runTscExpectFailure(["-p", path.join(consumerDirectory, "tsconfig.fail.json")], { cwd: consumerDirectory });
     assert.equal(failure.ok, false);
+
     for (const probe of negativeProbes) {
         assert.match(failure.output, probe.errorPattern, `expected excluded probe ${probe.compatKey} to fail compilation`);
     }
@@ -114,6 +123,7 @@ test("staged consumer smoke: stock tsc accepts supported baseline APIs and rejec
     // caught by either checker).
     const stradaFailure = runTscStradaExpectFailure(["-p", path.join(consumerDirectory, "tsconfig.fail.json")], { cwd: consumerDirectory });
     assert.equal(stradaFailure.ok, false);
+
     for (const probe of negativeProbes) {
         assert.match(stradaFailure.output, probe.errorPattern, `expected excluded probe ${probe.compatKey} to fail compilation under strada`);
     }

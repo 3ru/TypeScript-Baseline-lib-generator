@@ -46,6 +46,16 @@ test("compat-management registry keeps compiler support and runtime aliases disj
     );
 });
 
+test("compat-management expectations distinguish published and upstream declarations", async () => {
+    const published = await loadCompatManagementRegistry(repoRegistryPath, "typescript");
+    const upstream = await loadCompatManagementRegistry(repoRegistryPath, "microsoft/TypeScript");
+    const key = "javascript.builtins.JSON.rawJSON";
+    assert.deepEqual(published.entryByCompatKey.get(key)?.expectedResolutionKinds, [
+        "not-modeled-upstream", "already-excluded-upstream",
+    ]);
+    assert.deepEqual(upstream.entryByCompatKey.get(key)?.expectedResolutionKinds, ["member"]);
+});
+
 test("compat-management registry validates declaration mappings", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const registry = readJsonFile(repoRegistryPath);
@@ -95,6 +105,7 @@ test("compat-management registry fails schema validation on unexpected propertie
             if (index !== 0) {
                 return group;
             }
+
             return {
                 ...group,
                 category: "invalid-category",
@@ -108,6 +119,7 @@ test("compat-management registry fails schema validation on unexpected propertie
         error => {
             assert.match(String(error), /failed JSON schema validation/);
             assert.match(String(error), /invalid-category|unexpected property stray/);
+
             return true;
         },
     );

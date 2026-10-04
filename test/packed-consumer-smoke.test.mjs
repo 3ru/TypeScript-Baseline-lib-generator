@@ -34,6 +34,7 @@ test.afterEach(() => {
 test("packed consumer smoke: npm-packed baseline package typechecks through compilerOptions.types", async () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const consumerDirectory = path.join(tempDirectory, "consumer");
+
     const tarballPath = process.env.BASELINE_PACKAGE_TARBALL
         ? path.resolve(process.env.BASELINE_PACKAGE_TARBALL)
         : (await createBaselinePackageTarball({ tempDirectories })).tarballPath;
@@ -116,8 +117,10 @@ test("packed consumer smoke: npm-packed baseline package typechecks through comp
         runTscExpectFailure(["-p", path.join(consumerDirectory, "tsconfig.fail.json")], { cwd: consumerDirectory }),
         runTscStradaExpectFailure(["-p", path.join(consumerDirectory, "tsconfig.fail.json")], { cwd: consumerDirectory }),
     ];
+
     for (const failure of failures) {
         assert.equal(failure.ok, false);
+
         for (const probe of negativeProbes) {
             assert.match(failure.output, probe.errorPattern, `expected excluded probe ${probe.compatKey} to fail compilation`);
         }

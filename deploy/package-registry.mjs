@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const deployDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 export const repoRoot = path.resolve(deployDirectory, "..");
+
 export const deployGeneratedDirectory = path.join(deployDirectory, "generated");
 
 export const baselinePackage = {

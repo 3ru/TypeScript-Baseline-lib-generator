@@ -5,11 +5,15 @@ import { fileURLToPath } from "node:url";
 import { loadCompatManagementRegistry } from "../lib/compat-management-registry.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
+
 const scriptDirectory = path.dirname(scriptPath);
+
 const repoRoot = path.resolve(scriptDirectory, "..");
+
 const defaultRegistryPath = path.join(repoRoot, "registry", "compat-management.json");
 
 const args = parseArgs(process.argv.slice(2));
+
 const registryPath = path.resolve(args.registry ?? defaultRegistryPath);
 
 await main();
@@ -32,6 +36,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--registry":
                 args.registry = requireArgValue(argv[++index], current);
@@ -56,6 +61,7 @@ function requireArgValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 

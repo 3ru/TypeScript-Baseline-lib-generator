@@ -42,6 +42,7 @@ test.afterEach(() => {
 test("year entrypoints are cumulative, date-bounded, and deterministic", () => {
     const tempDirectory = createTempDirectory(tempDirectories);
     const fixture = createManifest(tempDirectory);
+
     const expectedYears = resolveBaselineYears(
         repoManifest.snapshot.baselineDate,
         repoManifest.firstClassLib.firstYear,
@@ -51,6 +52,7 @@ test("year entrypoints are cumulative, date-bounded, and deterministic", () => {
     const firstSnapshot = readDirectorySnapshot(path.join(fixture.outputRoot, "generated", "year"));
     const report = readJsonFile(fixture.generationOutputPath);
     const classification = readJsonFile(fixture.classificationOutputPath);
+
     const classifiedRowByKey = new Map(classification.classifiedCompatRows.map(
         /** @param {{ compatKey: string; }} row */
         row => [row.compatKey, row],
@@ -60,6 +62,7 @@ test("year entrypoints are cumulative, date-bounded, and deterministic", () => {
         /** @param {{ year: number; }} entry */
         entry => entry.year,
     ), expectedYears);
+
     for (let index = 1; index < report.yearEntries.length; index++) {
         assert.ok(
             report.yearEntries[index - 1].selectedUnitCount <= report.yearEntries[index].selectedUnitCount,
@@ -73,14 +76,18 @@ test("year entrypoints are cumulative, date-bounded, and deterministic", () => {
             `Baseline ${report.yearEntries[index].year} must include the prior year's declared compat keys`,
         );
     }
+
     for (const entry of report.yearEntries) {
         assert.match(entry.contentHash, /^sha256-[0-9a-f]{64}$/);
+
         const contents = fs.readFileSync(
             path.join(fixture.outputRoot, "generated", "year", String(entry.year), "index.d.ts"),
         );
+
         assert.equal(entry.contentHash, `sha256-${createHash("sha256").update(contents).digest("hex")}`);
         assert.deepEqual(entry.includedCompatKeys, [...entry.includedCompatKeys].sort());
         assert.deepEqual(entry.notModeledUpstreamCompatKeys, [...entry.notModeledUpstreamCompatKeys].sort());
+
         for (const compatKey of entry.notModeledUpstreamCompatKeys) {
             assert.ok(
                 classifiedRowByKey.get(compatKey)?.management,
@@ -112,6 +119,7 @@ test("year entrypoints are cumulative, date-bounded, and deterministic", () => {
             path.join(fixture.outputRoot, "generated", "year", String(year), "index.d.ts"),
             "utf8",
         );
+
         assert.doesNotMatch(source, /\bsubstr\s*\(/);
         assert.doesNotMatch(source, /^declare function escape\b/m);
     }
@@ -234,12 +242,14 @@ test("weekly update summary reports year contract changes for manual review", ()
         includedCompatKeys: ["javascript.builtins.Array"],
         notModeledUpstreamCompatKeys: [],
     }]);
+
     const currentState = createUpdateState([{
         year: 2024,
         contentHash: `sha256-${"b".repeat(64)}`,
         includedCompatKeys: ["javascript.builtins.Array"],
         notModeledUpstreamCompatKeys: [],
     }]);
+
     const manifest = {
         snapshot: {
             name: "baseline-js",
@@ -249,6 +259,7 @@ test("weekly update summary reports year contract changes for manual review", ()
         libSource: {},
         typescriptSource: {},
     };
+
     const summary = buildUpdateSummary({
         currentManifest: manifest,
         currentState,
@@ -331,6 +342,7 @@ function writeConsumerConfig(consumerDirectory, name, types) {
  */
 function assertCompilerFailuresContain(consumerDirectory, name, expectedError) {
     const configPath = path.join(consumerDirectory, `tsconfig.${name}.json`);
+
     for (const failure of [
         runTscExpectFailure(["-p", configPath], { cwd: consumerDirectory }),
         runTscStradaExpectFailure(["-p", configPath], { cwd: consumerDirectory }),

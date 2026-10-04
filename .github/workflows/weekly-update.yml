@@ -24,36 +24,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - id: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: setup-node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "npm"
-      - run: npm ci
+      - id: install
+        run: node scripts/update-diagnostics.mjs run install -- npm ci
 
       - name: Run static JS checks
-        run: npm run lint
+        id: lint
+        run: node scripts/update-diagnostics.mjs run lint -- npm run lint
 
       - name: Pin latest web-features release
-        run: npm install --save-exact "web-features@$(npm view web-features dist-tags.latest)"
+        id: pin-web-features
+        run: node scripts/update-diagnostics.mjs run pin-web-features -- bash -e -o pipefail -c 'npm install --save-exact "web-features@$(npm view web-features dist-tags.latest)"'
 
       - name: Update manifest and dataset
-        run: npm run update:web-features -- --snapshot-date "$(date -u +%F)"
+        id: update-dataset
+        run: node scripts/update-diagnostics.mjs run update-dataset -- npm run update:web-features -- --snapshot-date "$(date -u +%F)"
 
       - name: Validate compat-management schema
-        run: npm run validate:registry
+        id: validate-registry
+        run: node scripts/update-diagnostics.mjs run validate-registry -- npm run validate:registry
 
       - name: Verify pinned web-features dataset
-        run: npm run verify:dataset
+        id: verify-dataset
+        run: node scripts/update-diagnostics.mjs run verify-dataset -- npm run verify:dataset
 
       - name: Regenerate baseline
-        run: npm run generate
+        id: generate
+        run: node scripts/update-diagnostics.mjs run generate -- npm run generate
 
       - name: Run standalone validation
-        run: npm test
+        id: test
+        run: node scripts/update-diagnostics.mjs run test -- npm test
 
       - name: Prepare pull request body
-        run: npm run write:update-pr-body -- --out .tmp/baseline-lib-update-pr.md --summary-out .tmp/baseline-lib-update-summary.json
+        id: pr-body
+        run: node scripts/update-diagnostics.mjs run pr-body -- npm run write:update-pr-body -- --out .tmp/baseline-lib-update-pr.md --summary-out .tmp/baseline-lib-update-summary.json
+
+      - name: Write update diagnostics
+        if: always()
+        env:
+          UPDATE_WORKFLOW_STEPS: ${{ toJSON(steps) }}
+        run: node scripts/update-diagnostics.mjs report
 
       # By GitHub design, PRs opened with the default GITHUB_TOKEN don't trigger
       # any pull_request workflow (validate / test-typescript / package-dry-run).
@@ -71,6 +88,7 @@ jobs:
           fi
 
       - name: Create pull request
+        id: pull-request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           token: ${{ secrets.AUTOMATION_TOKEN || github.token }}
@@ -79,3 +97,12 @@ jobs:
           commit-message: "chore: update web-features baseline snapshot"
           title: "chore: update web-features baseline snapshot"
           body-path: .tmp/baseline-lib-update-pr.md
+
+      - name: Upload update diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: update-diagnostics
+          path: .tmp/update-diagnostics
+          include-hidden-files: true
+          if-no-files-found: error

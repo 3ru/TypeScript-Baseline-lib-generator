@@ -16,9 +16,13 @@ import { assertTypeScriptPeerRange } from "../deploy/package-lib.mjs";
 import { baselinePackage } from "../deploy/package-registry.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
+
 const scriptDirectory = path.dirname(scriptPath);
+
 const repoRoot = path.resolve(scriptDirectory, "..");
+
 const manifestPath = path.join(repoRoot, "manifests", "baseline-js.json");
+
 const workRoot = path.join(repoRoot, ".tmp", "toolchain-update");
 
 // TypeScript 7 is the primary toolchain. The lib.*.d.ts files ship in
@@ -33,6 +37,7 @@ const workRoot = path.join(repoRoot, ".tmp", "toolchain-update");
 // The source integration separately pins the current microsoft/TypeScript main
 // commit, where the compiler implementation and test harness now live together.
 const libSourcePlatformPackagePrefix = "@typescript/typescript-";
+
 const libSourceReferencePlatforms = ["linux-x64", "darwin-arm64", "win32-x64"];
 
 const args = parseArgs(process.argv.slice(2));
@@ -45,6 +50,7 @@ async function main() {
             `typescript@${baselinePackage.typescriptPeerDependencyRange}`,
             "supported TypeScript",
         );
+
     const stradaVersion = args.stradaVersion ?? resolveLatestStradaVersion();
 
     assertTypeScriptPeerRange(baselinePackage.typescriptPeerDependencyRange, [typescriptVersion]);
@@ -109,14 +115,17 @@ function resolveLatestStradaVersion() {
 function resolveLatestStableVersion(packageSpecifier, label) {
     const versions = npmViewField(repoRoot, packageSpecifier, "version");
     const versionList = Array.isArray(versions) ? versions : [versions];
+
     const stableVersions = versionList
         .filter(version => typeof version === "string" && /^\d+\.\d+\.\d+$/u.test(version))
         .sort(compareStableSemver);
 
     const latest = stableVersions.at(-1);
+
     if (!latest) {
         throw new Error(`Could not resolve the latest stable ${label} version from the registry`);
     }
+
     return latest;
 }
 
@@ -127,12 +136,15 @@ function resolveLatestStableVersion(packageSpecifier, label) {
 function compareStableSemver(left, right) {
     const leftParts = left.split(".").map(Number);
     const rightParts = right.split(".").map(Number);
+
     for (let index = 0; index < 3; index++) {
         const difference = leftParts[index] - rightParts[index];
+
         if (difference) {
             return difference;
         }
     }
+
     return 0;
 }
 
@@ -189,11 +201,13 @@ function computeCrossPlatformLibSourcePin(typescriptVersion) {
     }
 
     const [first, ...rest] = results;
+
     for (const other of rest) {
         if (other.hash !== first.hash || other.fileCount !== first.fileCount) {
             const details = results
                 .map(result => `- ${result.platformKey}: ${result.fileCount} files, ${result.hash}`)
                 .join("\n");
+
             throw new Error(
                 `Platform lib packages for typescript@${typescriptVersion} are not content-identical:\n${details}`,
             );
@@ -220,6 +234,7 @@ function parseArgs(argv) {
 
     for (let index = 0; index < argv.length; index++) {
         const current = argv[index];
+
         switch (current) {
             case "--typescript-version":
                 args.typescriptVersion = requireArgValue(argv[++index], current);
@@ -247,6 +262,7 @@ function requireArgValue(value, flagName) {
     if (!value) {
         throw new Error(`Missing value for ${flagName}`);
     }
+
     return value;
 }
 
