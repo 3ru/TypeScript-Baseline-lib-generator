@@ -16,7 +16,7 @@
     "typescriptSource": {
         "repository": "https://github.com/microsoft/TypeScript.git",
         "ref": "main",
-        "commit": "09b1db0617311f3b39f165bb3480c0ce2f718b27"
+        "commit": "50d70a3f5f453a79a4323b263165da51f656a4e3"
     },
     "baselineTarget": "high",
     "dataset": "../datasets/web-features-js-compat.json",
