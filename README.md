@@ -42,6 +42,9 @@ npx tsc
 
 This package replaces TypeScript's standard JavaScript libs. Do not combine it with `lib` or standard `es*` declarations. For browser globals, an existing tsconfig, or a separate CI check, follow the [Usage Guide](docs/USAGE.md).
 
+Try the [demo](https://github.com/3ru/baseline-checks-demo) to check JavaScript APIs with TypeScript and ESLint in your editor and CI.
+Its [example PR](https://github.com/3ru/baseline-checks-demo/pull/1) changes one line to use `Set.prototype.difference()` and intentionally fails both checks.
+
 ## Choose a target
 
 | Target | Use it when |
